@@ -14,6 +14,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { ShareQr } from "@/components/dashboard/ShareQr";
 import { AnimatedNumber } from "@/components/motion/AnimatedNumber";
 import { PageTitle } from "@/components/motion/PageTitle";
 import { useAnalyticsSummary } from "@/lib/queries/analytics";
@@ -128,6 +129,15 @@ function DashboardHome() {
 			// Private browsing / storage disabled — non-critical, skip.
 		}
 		posthog.capture("checklist_dismissed");
+	}
+
+	function showChecklist() {
+		setChecklistDismissed(false);
+		try {
+			localStorage.removeItem(checklistDismissedStorageKey(user.id));
+		} catch {
+			// Private browsing / storage disabled — non-critical, skip.
+		}
 	}
 
 	const stats = [
@@ -366,7 +376,9 @@ function DashboardHome() {
 					</div>
 				</section>
 
-				{!checklistDismissed && (
+				{checklistDismissed && user.username ? (
+					<ShareQr username={user.username} onShowChecklist={showChecklist} />
+				) : (
 					<section className="py-8 lg:pl-10">
 						<p className="font-mono text-[9px] uppercase tracking-[0.12em] text-brand">
 							03 / Setup
