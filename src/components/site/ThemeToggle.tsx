@@ -22,7 +22,7 @@ export function ThemeToggle() {
 			type="button"
 			onClick={toggle}
 			aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-			className="relative inline-flex h-8 w-8 items-center justify-center text-muted-foreground transition-[color,transform] active:scale-90 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+			className="relative inline-flex h-11 w-11 items-center justify-center text-muted-foreground transition-[color,transform] md:h-8 md:w-8 active:scale-90 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 		>
 			<Sun2Icon
 				size={15}
