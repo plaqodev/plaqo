@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import posthog from "posthog-js";
 import {
 	deleteIntegrationAccount,
+	listMyGithubRepos,
 	listMyIntegrationAccounts,
 	refreshIntegration,
 	upsertIntegrationAccount,
@@ -54,5 +55,16 @@ export function useRefreshIntegration() {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: integrationAccountsKey });
 		},
+	});
+}
+
+// Keyed by handle so reconnecting a different GitHub account refetches.
+// Only loaded when the picker needs it (manual mode).
+export function useMyGithubRepos(handle: string | null, enabled: boolean) {
+	return useQuery({
+		queryKey: ["github-repos", handle] as const,
+		queryFn: () => listMyGithubRepos(),
+		enabled: enabled && Boolean(handle),
+		staleTime: 5 * 60 * 1000,
 	});
 }

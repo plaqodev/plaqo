@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import { ConfirmDialog } from "@/components/dashboard/ConfirmDialog";
+import { GithubFeaturedRepos } from "@/components/dashboard/GithubFeaturedRepos";
 import { PageTitle } from "@/components/motion/PageTitle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -180,8 +181,8 @@ function IntegrationsPage() {
 						</PageTitle>
 
 						<p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-							Connect the services you use and keep your plaqo profile
-							updated automatically.
+							Connect the services you use and keep your plaqo profile updated
+							automatically.
 						</p>
 					</div>
 
@@ -300,10 +301,23 @@ function IntegrationRow({
 		}
 
 		try {
-			const config: Record<string, string> = {};
+			const config: Record<string, unknown> = {};
 
 			if (help.configField && configValue.trim()) {
 				config[help.configField.key] = configValue.trim();
+			}
+
+			// The featured-repos picker owns config.pinned. Keep it when only
+			// re-saving the same GitHub account; a different handle means a
+			// different account, whose repos those pins don't belong to.
+			const pinned = account?.config?.pinned;
+			if (
+				provider === "github" &&
+				Array.isArray(pinned) &&
+				pinned.length > 0 &&
+				handle.trim() === account?.handle
+			) {
+				config.pinned = pinned;
 			}
 
 			await upsertAccount.mutateAsync({
@@ -501,6 +515,10 @@ function IntegrationRow({
 					)}
 				</div>
 			</div>
+
+			{provider === "github" && account && (
+				<GithubFeaturedRepos account={account} />
+			)}
 
 			{confirmingDelete && (
 				<ConfirmDialog

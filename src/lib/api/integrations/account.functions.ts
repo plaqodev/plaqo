@@ -9,7 +9,7 @@ import { integrationAccounts, integrationCache, profiles } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { authMiddleware } from "@/lib/auth-middleware";
 import { runProviderFetch } from "@/lib/integrations/dispatch.server";
-import { REPO_SLUG_RE } from "@/lib/integrations/github.server";
+import { REPO_SLUG_RE } from "@/lib/integrations/repo-slug";
 import { SECRET_CONFIG_KEYS } from "@/lib/integrations/secrets.server";
 import { PROVIDERS, type Provider } from "@/lib/integrations/types";
 import { limitsFor } from "@/lib/plan-limits";
@@ -195,6 +195,28 @@ export const upsertIntegrationAccount = createServerFn({ method: "POST" })
 			);
 		}
 		return { ok: true as const };
+	});
+
+// Repos for the dashboard's featured-repositories picker: whatever the
+// signed-in user's connected GitHub account owns. Reads the handle from the
+// stored integration, never from the client, so nobody can page through
+// another account's repos with the server's token.
+export const listMyGithubRepos = createServerFn({ method: "GET" })
+	.middleware([authMiddleware])
+	.handler(async ({ context }) => {
+		const [row] = await db
+			.select({ handle: integrationAccounts.handle })
+			.from(integrationAccounts)
+			.where(
+				and(
+					eq(integrationAccounts.userId, context.userId),
+					eq(integrationAccounts.provider, "github"),
+				),
+			)
+			.limit(1);
+		if (!row) return [];
+		const { listOwnerRepos } = await import("@/lib/integrations/github.server");
+		return listOwnerRepos(row.handle);
 	});
 
 export const deleteIntegrationAccount = createServerFn({ method: "POST" })
