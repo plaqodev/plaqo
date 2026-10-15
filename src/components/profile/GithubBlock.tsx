@@ -112,7 +112,7 @@ export function GithubBlock({
 	);
 }
 
-function buildWeeks(heatmap: GithubPayload["heatmap"]) {
+export function buildWeeks(heatmap: GithubPayload["heatmap"]) {
 	if (heatmap.length === 0) return [];
 
 	const byDate = new Map(

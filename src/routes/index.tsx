@@ -4,8 +4,10 @@ import { Faq, faqs } from "@/components/landing/Faq";
 import { Features } from "@/components/landing/Features";
 import { Hero } from "@/components/landing/Hero";
 import { Pricing } from "@/components/landing/Pricing";
+import { PREVIEW_USERNAME } from "@/components/landing/ProfilePreview";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { getPublicProfile } from "@/lib/api/public-profile.functions";
 import { absoluteUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
@@ -115,15 +117,23 @@ export const Route = createFileRoute("/")({
 			links: [{ rel: "canonical", href: absoluteUrl("/") }],
 		};
 	},
+	// The hero's live preview renders a real profile. A failed or missing
+	// profile just hides that block — it must never take the landing down.
+	loader: async () => ({
+		preview: await getPublicProfile({
+			data: { username: PREVIEW_USERNAME },
+		}).catch(() => null),
+	}),
 	component: Landing,
 });
 
 function Landing() {
+	const { preview } = Route.useLoaderData();
 	return (
 		<div className="min-h-dvh bg-background text-foreground">
 			<Header />
 			<main>
-				<Hero />
+				<Hero preview={preview} />
 				<Features />
 				<Pricing />
 				<Faq />

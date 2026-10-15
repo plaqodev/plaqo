@@ -1,12 +1,13 @@
 import { ArrowRightIcon, ArrowRightUpIcon } from "@solar-icons/react/linear";
 import { motion, useReducedMotion } from "motion/react";
+import type { PublicProfile } from "@/lib/api/public-profile.functions";
 import { SITE_DOMAIN } from "@/lib/site";
 
 import { ProfilePreview } from "./ProfilePreview";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-export function Hero() {
+export function Hero({ preview }: { preview: PublicProfile }) {
 	const reduceMotion = useReducedMotion();
 
 	const duration = reduceMotion ? 0.01 : 0.7;
@@ -158,30 +159,32 @@ export function Hero() {
 					</motion.div>
 				</div>
 
-				<motion.div
-					className="mt-20 sm:mt-24 lg:mt-32"
-					initial={{ opacity: 0, y: 30 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{
-						duration: reduceMotion ? 0.01 : 0.9,
-						delay: 0.82,
-						ease,
-					}}
-				>
-					<div className="mb-4 flex items-center justify-between">
-						<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-							01 / Public profile
-						</p>
+				{preview && (
+					<motion.div
+						className="mt-20 sm:mt-24 lg:mt-32"
+						initial={{ opacity: 0, y: 30 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{
+							duration: reduceMotion ? 0.01 : 0.9,
+							delay: 0.82,
+							ease,
+						}}
+					>
+						<div className="mb-4 flex items-center justify-between">
+							<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+								01 / Public profile
+							</p>
 
-						<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-							Live preview
-						</p>
-					</div>
+							<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+								Live preview
+							</p>
+						</div>
 
-					<div className="border border-border bg-surface-elevated">
-						<ProfilePreview />
-					</div>
-				</motion.div>
+						<div className="border border-border">
+							<ProfilePreview profile={preview} />
+						</div>
+					</motion.div>
+				)}
 			</div>
 		</section>
 	);
