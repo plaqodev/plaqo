@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import type { AnalyticsSummary } from "@/lib/api/analytics.functions";
 import { startProCheckout } from "@/lib/billing";
 import { useMyAnalytics } from "@/lib/queries/analytics";
+import { useProMonthlyLabel } from "@/lib/queries/pricing";
 
 export const Route = createFileRoute("/_authenticated/dashboard/analytics")({
 	head: () => ({ meta: [{ title: "Analytics — plaqo" }] }),
@@ -66,8 +67,8 @@ function AnalyticsPage() {
 						</PageTitle>
 
 						<p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-							Understand how people discover and interact with your public
-							plaqo page over the last {days} days.
+							Understand how people discover and interact with your public plaqo
+							page over the last {days} days.
 						</p>
 					</div>
 
@@ -174,6 +175,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 }
 
 function UpgradeGate() {
+	const proPrice = useProMonthlyLabel();
 	useEffect(() => {
 		posthog.capture("paywall_shown", { resource: "analytics" });
 	}, []);
@@ -216,7 +218,7 @@ function UpgradeGate() {
 						onClick={handleUpgrade}
 						className="mt-6 h-10 rounded-none bg-foreground px-5 font-mono text-[10px] uppercase tracking-[0.08em] text-background shadow-none transition-transform active:scale-[0.98] hover:bg-brand hover:text-brand-foreground"
 					>
-						Upgrade to Pro — $5/mo
+						Upgrade to Pro — {proPrice}
 					</Button>
 				</div>
 			</div>

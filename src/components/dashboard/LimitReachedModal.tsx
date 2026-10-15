@@ -5,6 +5,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { startProCheckout } from "@/lib/billing";
+import { useProMonthlyLabel } from "@/lib/queries/pricing";
 import { ModalShell } from "./ModalShell";
 import { PlanComparisonTable } from "./PlanComparisonTable";
 
@@ -31,6 +32,7 @@ export function LimitReachedModal({
 }) {
 	const reduceMotion = useReducedMotion();
 	const [pending, setPending] = useState(false);
+	const proPrice = useProMonthlyLabel();
 
 	async function handleUpgrade() {
 		posthog.capture("paywall_upgrade_clicked", { resource });
@@ -96,7 +98,7 @@ export function LimitReachedModal({
 							disabled={pending}
 							className="h-10 rounded-none bg-foreground px-5 font-mono text-[10px] uppercase tracking-[0.08em] text-background shadow-none hover:bg-brand hover:text-brand-foreground"
 						>
-							{pending ? "Redirecting…" : "Upgrade to Pro — $5/mo"}
+							{pending ? "Redirecting…" : `Upgrade to Pro — ${proPrice}`}
 						</Button>
 					</div>
 				</>

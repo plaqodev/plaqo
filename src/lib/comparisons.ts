@@ -59,7 +59,7 @@ export const COMPARISONS: Comparison[] = [
 			},
 			{
 				label: "Pricing",
-				devlinks: "Free forever, $5/mo Pro",
+				devlinks: "Free forever; Pro adds unlimited + analytics",
 				competitor: "Free tier limited, paid tiers for advanced features",
 			},
 		],
@@ -104,7 +104,7 @@ export const COMPARISONS: Comparison[] = [
 			},
 			{
 				label: "Pricing",
-				devlinks: "Free forever, $5/mo Pro",
+				devlinks: "Free forever; Pro adds unlimited + analytics",
 				competitor: "Free tier limited, paid tiers for advanced features",
 			},
 		],
@@ -130,7 +130,8 @@ export const COMPARISONS: Comparison[] = [
 			{
 				label: "A single shareable URL",
 				devlinks: "plaqo.dev/you",
-				competitor: "Lives inside github.com/username, or a domain you buy and host",
+				competitor:
+					"Lives inside github.com/username, or a domain you buy and host",
 			},
 			{
 				label: "Design control",

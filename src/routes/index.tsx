@@ -7,12 +7,31 @@ import { Pricing } from "@/components/landing/Pricing";
 import { PREVIEW_USERNAME } from "@/components/landing/ProfilePreview";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { getProPricing } from "@/lib/api/pricing.functions";
 import { getPublicProfile } from "@/lib/api/public-profile.functions";
+import { PRO_PRICES } from "@/lib/pricing";
 import { absoluteUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
-	head: () => {
+	head: ({ loaderData }) => {
 		const orgId = absoluteUrl("/#organization");
+		const tier = loaderData?.pricing?.tier ?? "founding";
+		const proOffer = (billing: "monthly" | "yearly") => {
+			const price = String(PRO_PRICES[tier][billing]);
+			return {
+				"@type": "Offer",
+				name: billing === "monthly" ? "Pro" : "Pro (yearly)",
+				price,
+				priceCurrency: "USD",
+				availability: "https://schema.org/InStock",
+				priceSpecification: {
+					"@type": "UnitPriceSpecification",
+					price,
+					priceCurrency: "USD",
+					unitText: billing === "monthly" ? "MONTH" : "ANN",
+				},
+			};
+		};
 
 		// @graph con lo que ya existe de verdad en la página: la copy de
 		// Pricing.tsx (sin inventar aggregateRating, no hay reviews reales) y
@@ -59,19 +78,10 @@ export const Route = createFileRoute("/")({
 							priceCurrency: "USD",
 							availability: "https://schema.org/InStock",
 						},
-						{
-							"@type": "Offer",
-							name: "Pro",
-							price: "5",
-							priceCurrency: "USD",
-							availability: "https://schema.org/InStock",
-							priceSpecification: {
-								"@type": "UnitPriceSpecification",
-								price: "5",
-								priceCurrency: "USD",
-								unitText: "MONTH",
-							},
-						},
+						proOffer("monthly"),
+						...(loaderData?.pricing?.yearlyAvailable
+							? [proOffer("yearly")]
+							: []),
 					],
 				},
 				{
@@ -119,23 +129,29 @@ export const Route = createFileRoute("/")({
 	},
 	// The hero's live preview renders a real profile. A failed or missing
 	// profile just hides that block — it must never take the landing down.
-	loader: async () => ({
-		preview: await getPublicProfile({
-			data: { username: PREVIEW_USERNAME },
-		}).catch(() => null),
-	}),
+	// The pricing table's founding-spots count is live too; on failure it
+	// falls back to plain founding pricing (Pricing's FALLBACK).
+	loader: async () => {
+		const [preview, pricing] = await Promise.all([
+			getPublicProfile({ data: { username: PREVIEW_USERNAME } }).catch(
+				() => null,
+			),
+			getProPricing().catch(() => null),
+		]);
+		return { preview, pricing };
+	},
 	component: Landing,
 });
 
 function Landing() {
-	const { preview } = Route.useLoaderData();
+	const { preview, pricing } = Route.useLoaderData();
 	return (
 		<div className="min-h-dvh bg-background text-foreground">
 			<Header />
 			<main>
 				<Hero preview={preview} />
 				<Features />
-				<Pricing />
+				<Pricing pricing={pricing} />
 				<Faq />
 				<Cta />
 			</main>

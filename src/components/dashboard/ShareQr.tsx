@@ -21,9 +21,12 @@ function download(href: string, filename: string) {
 export function ShareQr({
 	username,
 	onShowChecklist,
+	accent,
 }: {
 	username: string;
 	onShowChecklist: () => void;
+	// Pro bonus: the theme accent recolors the eyes (when dark enough to scan).
+	accent?: string | null;
 }) {
 	// The origin the dashboard is served from: plaqo.dev in production,
 	// localhost or a preview URL while developing — the code opens whatever
@@ -34,7 +37,10 @@ export function ShareQr({
 	useEffect(() => setOrigin(window.location.origin), []);
 	const url = origin ? `${origin}/${username}` : null;
 	const shownUrl = url?.replace(/^https?:\/\//, "") ?? "";
-	const svg = useMemo(() => (url ? buildQrSvg(url) : ""), [url]);
+	const svg = useMemo(
+		() => (url ? buildQrSvg(url, { accent }) : ""),
+		[url, accent],
+	);
 	const svgSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 	const filename = `plaqo-${username}-qr`;
 

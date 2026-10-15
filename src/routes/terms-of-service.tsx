@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { FOUNDING_SPOTS, REFUND_DAYS } from "@/lib/pricing";
 
 export const Route = createFileRoute("/terms-of-service")({
 	head: () => ({
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/terms-of-service")({
 	component: TermsPage,
 });
 
-const EFFECTIVE_DATE = "September 15, 2026";
+const EFFECTIVE_DATE = "October 15, 2026";
 const CONTACT_EMAIL = "support@plaqo.dev";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -47,8 +48,8 @@ function TermsPage() {
 				</h1>
 
 				<p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
-					Effective {EFFECTIVE_DATE}. By creating an account or using plaqo,
-					you agree to these terms. See also our{" "}
+					Effective {EFFECTIVE_DATE}. By creating an account or using plaqo, you
+					agree to these terms. See also our{" "}
 					<Link
 						to="/privacy"
 						className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
@@ -71,10 +72,10 @@ function TermsPage() {
 
 					<Section title="The service">
 						<p>
-							plaqo lets you build a public developer profile — links,
-							projects, code snippets, articles, talks, and live stats synced
-							from services like GitHub, Dev.to, and others you connect —
-							published at a public URL you choose. Some features (see{" "}
+							plaqo lets you build a public developer profile — links, projects,
+							code snippets, articles, talks, and live stats synced from
+							services like GitHub, Dev.to, and others you connect — published
+							at a public URL you choose. Some features (see{" "}
 							<a
 								href="/#pricing"
 								className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
@@ -109,11 +110,10 @@ function TermsPage() {
 
 					<Section title="Your content">
 						<p>
-							You own everything you post to plaqo — your bio, links,
-							projects, snippets, articles, and anything else you add. By
-							posting it, you give us the license we need to store it and
-							display it publicly at your profile URL, which is exactly what
-							plaqo is for.
+							You own everything you post to plaqo — your bio, links, projects,
+							snippets, articles, and anything else you add. By posting it, you
+							give us the license we need to store it and display it publicly at
+							your profile URL, which is exactly what plaqo is for.
 						</p>
 						<p>
 							Your profile page is public by design. Don't post anything you
@@ -172,27 +172,41 @@ function TermsPage() {
 
 					<Section title="Plans and billing">
 						<p>
-							plaqo offers a Free plan and a paid Pro plan ($5/month at the
-							time of writing — see{" "}
+							plaqo offers a Free plan and a paid Pro plan — see{" "}
 							<a
 								href="/#pricing"
 								className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
 							>
 								Pricing
 							</a>{" "}
-							for current limits and features of each). Pro subscriptions are
-							billed monthly in advance and processed by Dodo Payments, our
-							payment processor — we never see or store your full card number.
+							for current prices, limits and features. Pro is billed in advance,
+							monthly or yearly, and payments are processed by Dodo Payments,
+							our payment processor — we never see or store your full card
+							number.
+						</p>
+						<p>
+							The first {FOUNDING_SPOTS} Pro members get a founding price. It
+							stays the same for as long as that subscription remains active; if
+							you cancel and subscribe again later, the price at that time
+							applies.
 						</p>
 						<p>
 							You can cancel your Pro subscription at any time; it stays active
 							until the end of the billing period you already paid for, then
-							your account reverts to the Free plan limits.{" "}
-							<span className="italic">
-								[Refund policy hasn't been formally defined — get this reviewed
-								and stated explicitly before relying on it, e.g. whether
-								partial-period refunds are ever offered.]
-							</span>
+							your account reverts to the Free plan limits.
+						</p>
+						<p>
+							Refunds: if Pro isn't for you, email{" "}
+							<a
+								href={`mailto:${CONTACT_EMAIL}`}
+								className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
+							>
+								{CONTACT_EMAIL}
+							</a>{" "}
+							within {REFUND_DAYS} days of your first Pro payment, or of a
+							yearly renewal, and we'll refund that payment in full. Other
+							payments, including monthly renewals after the first, aren't
+							refunded, but you can cancel before the next one.
 						</p>
 						<p>
 							We may change our prices. If we do, we'll give existing
@@ -214,16 +228,16 @@ function TermsPage() {
 
 					<Section title="Intellectual property">
 						<p>
-							The plaqo name, design, and software are ours. These terms
-							don't grant you any rights to them beyond using the service as
-							intended. Your content remains yours, as described above.
+							The plaqo name, design, and software are ours. These terms don't
+							grant you any rights to them beyond using the service as intended.
+							Your content remains yours, as described above.
 						</p>
 					</Section>
 
 					<Section title="Termination">
 						<p>
-							You can stop using plaqo at any time. To request deletion of
-							your account and data, email{" "}
+							You can stop using plaqo at any time. To request deletion of your
+							account and data, email{" "}
 							<a
 								href={`mailto:${CONTACT_EMAIL}`}
 								className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"

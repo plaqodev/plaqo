@@ -11,6 +11,7 @@ const PUBLIC_SERVER_FNS = new Set([
 	"searchProfiles",
 	"gradeGithubUsername",
 	"sendContactMessage",
+	"getProPricing", // pricing table: tier + founding spots count, no user data
 ]);
 
 const SRC = join(import.meta.dirname, "..");

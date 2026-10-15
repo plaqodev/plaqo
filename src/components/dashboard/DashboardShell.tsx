@@ -34,8 +34,9 @@ import toast from "react-hot-toast";
 import { Logo } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { authClient } from "@/lib/auth-client";
-import { startProCheckout } from "@/lib/billing";
+import { startProCheckout, takeCheckoutIntent } from "@/lib/billing";
 import { PLAN_LIMITS } from "@/lib/plan-limits";
+import type { Billing } from "@/lib/pricing";
 import { useProfileCore } from "@/lib/queries/profile-data";
 import { SITE_DOMAIN } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -102,16 +103,27 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 	const [mobileNavOpen, setMobileNavOpen] = useState(false);
 	const [upgradePending, setUpgradePending] = useState(false);
 
+	// "Go Pro" on the landing page while signed out leaves a checkout intent;
+	// once the new account reaches the dashboard, pick the checkout back up.
+	// Already-Pro accounts just drop it.
+	const plan = core.data?.plan;
+	// biome-ignore lint/correctness/useExhaustiveDependencies: run once per loaded plan; handleUpgrade only touches state setters
+	useEffect(() => {
+		if (!plan) return;
+		const intent = takeCheckoutIntent();
+		if (intent && plan !== "pro") handleUpgrade(intent);
+	}, [plan]);
+
 	async function handleSignOut() {
 		await authClient.signOut();
 		await router.invalidate();
 		await navigate({ to: "/" });
 	}
 
-	async function handleUpgrade() {
+	async function handleUpgrade(billing: Billing = "monthly") {
 		setUpgradePending(true);
 		try {
-			await startProCheckout();
+			await startProCheckout(billing);
 		} catch (err) {
 			toast.error(
 				err instanceof Error ? err.message : "Couldn't start checkout",
@@ -144,7 +156,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 						<WorkspaceNav
 							pathname={pathname}
 							isPro={isPro}
-							onUpgrade={handleUpgrade}
+							onUpgrade={() => handleUpgrade()}
 							upgradePending={upgradePending}
 						/>
 					</div>

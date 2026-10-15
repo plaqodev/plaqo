@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "motion/react";
 import type { PublicProfile } from "@/lib/api/public-profile.functions";
 import { SITE_DOMAIN } from "@/lib/site";
 
+import { focusClaimField } from "./claim";
 import { HandleTypewriter } from "./HandleTypewriter";
 import { ProfilePreview } from "./ProfilePreview";
 
@@ -141,19 +142,7 @@ export function Hero({ preview }: { preview: PublicProfile }) {
 					>
 						<button
 							type="button"
-							onClick={() => {
-								const input = document.getElementById("cta-username");
-								if (!input) return;
-								// Focus inside the tap itself — iOS only raises the
-								// keyboard for focus() during the user gesture — then
-								// bring the field to the middle of the screen.
-								input.focus({ preventScroll: true });
-								input.scrollIntoView({
-									behavior: reduceMotion ? "auto" : "smooth",
-									block: "center",
-								});
-								history.replaceState(null, "", "#cta");
-							}}
+							onClick={() => focusClaimField(reduceMotion)}
 							className="group inline-flex items-center gap-2 border border-foreground px-5 py-3 font-mono text-[11px] uppercase tracking-[0.08em] text-foreground transition-colors hover:border-brand hover:text-brand"
 						>
 							Claim your profile

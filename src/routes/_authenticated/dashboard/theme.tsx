@@ -29,6 +29,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { startProCheckout } from "@/lib/billing";
+import { useProMonthlyLabel } from "@/lib/queries/pricing";
 import {
 	useApplyThemeTemplate,
 	useProfileCore,
@@ -822,6 +823,8 @@ function CssPane({
 		if (!isPro) posthog.capture("paywall_shown", { resource: "custom_css" });
 	}, [isPro]);
 
+	const proPrice = useProMonthlyLabel();
+
 	async function handleUpgrade() {
 		posthog.capture("paywall_upgrade_clicked", { resource: "custom_css" });
 		try {
@@ -863,7 +866,7 @@ function CssPane({
 							onClick={handleUpgrade}
 							className="mt-5 h-9 rounded-none bg-foreground px-4 font-mono text-[10px] uppercase tracking-[0.08em] text-background shadow-none transition-transform active:scale-[0.98] hover:bg-brand hover:text-brand-foreground"
 						>
-							Upgrade to Pro — $5/mo
+							Upgrade to Pro — {proPrice}
 						</Button>
 					</div>
 				</div>

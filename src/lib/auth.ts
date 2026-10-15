@@ -38,6 +38,10 @@ const dodoClient = new DodoPayments({
 // Distinto product ID entre sandbox y producción en el dashboard de Dodo,
 // por eso va por env var y no hardcodeado.
 const DODO_PRO_PRODUCT_ID = process.env.DODO_PRO_PRODUCT_ID || "pdt_REPLACE_ME";
+// Yearly Pro. Optional: until it's created in Dodo, checkout only offers
+// monthly. Both products grant the same "pro" plan (the webhook doesn't
+// look at which product was bought). See src/lib/pricing.ts.
+const DODO_PRO_ANNUAL_PRODUCT_ID = process.env.DODO_PRO_ANNUAL_PRODUCT_ID;
 
 async function setPlan(userId: string, plan: "free" | "pro") {
 	await db
@@ -206,7 +210,12 @@ export const auth = betterAuth({
 			}),
 			use: [
 				checkout({
-					products: [{ productId: DODO_PRO_PRODUCT_ID, slug: "pro" }],
+					products: [
+						{ productId: DODO_PRO_PRODUCT_ID, slug: "pro" },
+						...(DODO_PRO_ANNUAL_PRODUCT_ID
+							? [{ productId: DODO_PRO_ANNUAL_PRODUCT_ID, slug: "pro-annual" }]
+							: []),
+					],
 					successUrl: absoluteUrl("/dashboard?upgraded=1"),
 					authenticatedUsersOnly: true,
 				}),

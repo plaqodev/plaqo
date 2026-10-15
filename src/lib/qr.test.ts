@@ -1,6 +1,6 @@
 import QRCode from "qrcode";
 import { describe, expect, it } from "vitest";
-import { buildQrSvg } from "./qr";
+import { buildQrSvg, qrEyeColor } from "./qr";
 
 const URL = "https://plaqo.dev/ingfranciscastillo";
 
@@ -28,5 +28,25 @@ describe("buildQrSvg", () => {
 
 	it("is deterministic for the same URL", () => {
 		expect(buildQrSvg(URL)).toBe(buildQrSvg(URL));
+	});
+});
+
+describe("qrEyeColor (Pro accent)", () => {
+	it("keeps an accent that's dark enough to scan against the paper", () => {
+		expect(qrEyeColor("#0f766e")).toBe("#0f766e"); // dark teal
+		expect(qrEyeColor("#1d4ed8")).toBe("#1d4ed8"); // deep blue
+	});
+
+	it("falls back to vermilion for light or invalid accents", () => {
+		expect(qrEyeColor("#7aa2f7")).toBe("#9D3326"); // light blue
+		expect(qrEyeColor("#facc15")).toBe("#9D3326"); // yellow
+		expect(qrEyeColor("not-a-color")).toBe("#9D3326");
+		expect(qrEyeColor(null)).toBe("#9D3326");
+	});
+
+	it("recolors the eyes and the mark's post", () => {
+		const svg = buildQrSvg(URL, { accent: "#0f766e" });
+		expect(svg).toContain('fill="#0f766e"');
+		expect(svg).not.toContain('fill="#9D3326"');
 	});
 });

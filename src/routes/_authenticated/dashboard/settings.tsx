@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { authClient } from "@/lib/auth-client";
 import { openBillingPortal, startProCheckout } from "@/lib/billing";
+import { useProMonthlyLabel } from "@/lib/queries/pricing";
 import { useProfileCore, useWipeProfileData } from "@/lib/queries/profile-data";
 import { passwordSchema } from "@/lib/schemas/auth";
 
@@ -34,6 +35,7 @@ function SettingsPage() {
 	const [confirm, setConfirm] = useState("");
 	const [pwLoading, setPwLoading] = useState(false);
 	const [billingLoading, setBillingLoading] = useState(false);
+	const proPrice = useProMonthlyLabel();
 
 	async function handleBilling() {
 		setBillingLoading(true);
@@ -197,7 +199,7 @@ function SettingsPage() {
 						description={
 							isPro
 								? "View invoices, update your payment method, or cancel your subscription."
-								: "Unlimited links, projects and snippets, analytics, custom CSS, and no plaqo branding — $5/month."
+								: `Unlimited links, projects and snippets, analytics, custom CSS, and no plaqo branding — ${proPrice}.`
 						}
 					/>
 

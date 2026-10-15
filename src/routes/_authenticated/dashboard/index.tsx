@@ -377,7 +377,11 @@ function DashboardHome() {
 				</section>
 
 				{checklistDismissed && user.username ? (
-					<ShareQr username={user.username} onShowChecklist={showChecklist} />
+					<ShareQr
+						username={user.username}
+						onShowChecklist={showChecklist}
+						accent={core.data?.plan === "pro" ? data.theme?.accent : null}
+					/>
 				) : (
 					<section className="py-8 lg:pl-10">
 						<p className="font-mono text-[9px] uppercase tracking-[0.12em] text-brand">
