@@ -1,8 +1,9 @@
-import { ArrowRightIcon, ArrowRightUpIcon } from "@solar-icons/react/linear";
+import { ArrowRightIcon } from "@solar-icons/react/linear";
 import { motion, useReducedMotion } from "motion/react";
 import type { PublicProfile } from "@/lib/api/public-profile.functions";
 import { SITE_DOMAIN } from "@/lib/site";
 
+import { HandleTypewriter } from "./HandleTypewriter";
 import { ProfilePreview } from "./ProfilePreview";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -125,7 +126,7 @@ export function Hero({ preview }: { preview: PublicProfile }) {
 							ease,
 						}}
 					>
-						{SITE_DOMAIN}/<span className="text-foreground">your-handle</span>
+						{SITE_DOMAIN}/<HandleTypewriter />
 					</motion.p>
 
 					<motion.div
@@ -147,14 +148,6 @@ export function Hero({ preview }: { preview: PublicProfile }) {
 								size={13}
 								className="transition-transform duration-300 group-hover:translate-x-1"
 							/>
-						</a>
-
-						<a
-							href="/ingfranciscastillo"
-							className="inline-flex items-center gap-2 px-1 py-3 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
-						>
-							See example
-							<ArrowRightUpIcon size={13} />
 						</a>
 					</motion.div>
 				</div>
