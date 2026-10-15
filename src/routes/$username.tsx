@@ -27,7 +27,7 @@ import {
 	useState,
 } from "react";
 import toast from "react-hot-toast";
-import { SOCIAL_PLATFORM_ICONS } from "@/components/brand-icons";
+import { GithubIcon, SOCIAL_PLATFORM_ICONS } from "@/components/brand-icons";
 import { ModalShell } from "@/components/dashboard/ModalShell";
 import { BlueskyBlock } from "@/components/profile/BlueskyBlock";
 import { DevtoBlock } from "@/components/profile/DevtoBlock";
@@ -941,34 +941,38 @@ function ProjectsSection({
 						</div>
 						<div
 							className={cx(
-								"mt-auto flex gap-3 pt-3 text-xs",
+								"mt-auto -ml-1.5 flex items-center gap-1 pt-3",
 								themed ? "tt-muted" : "text-muted-foreground",
 							)}
 						>
 							{p.github && (
 								<a
 									href={sanitizeHref(p.github)}
+									aria-label={`${p.name} on GitHub`}
+									title="GitHub"
 									className={cx(
-										"inline-flex items-center gap-1",
+										"inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors",
 										themed ? "hover:opacity-80" : "hover:text-foreground",
 									)}
 									target="_blank"
 									rel="noreferrer"
 								>
-									GitHub <ArrowRightIcon className="h-3 w-3" />
+									<GithubIcon size={16} />
 								</a>
 							)}
 							{p.demo && (
 								<a
 									href={sanitizeHref(p.demo)}
+									aria-label={`${p.name} live demo`}
+									title="Live demo"
 									className={cx(
-										"inline-flex items-center gap-1",
+										"inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors",
 										themed ? "hover:opacity-80" : "hover:text-foreground",
 									)}
 									target="_blank"
 									rel="noreferrer"
 								>
-									Live demo <ArrowRightIcon className="h-3 w-3" />
+									<GlobalIcon className="h-4 w-4" />
 								</a>
 							)}
 						</div>

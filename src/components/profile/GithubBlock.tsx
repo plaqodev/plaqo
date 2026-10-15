@@ -61,7 +61,9 @@ export function GithubBlock({
 						target="_blank"
 						rel="noreferrer"
 						className={cx(
-							"rounded-xl border p-4 transition-colors",
+							// flex-col + mt-auto on the stats row pins stars/forks to
+							// the bottom, so they line up across a row of cards.
+							"flex flex-col rounded-xl border p-4 transition-colors",
 							themed
 								? "tt-panel hover:opacity-90"
 								: "border-hairline bg-surface hover:bg-surface-elevated",
@@ -92,7 +94,7 @@ export function GithubBlock({
 						)}
 						<div
 							className={cx(
-								"mt-3 flex gap-4 text-[11px]",
+								"mt-auto flex gap-4 pt-3 text-[11px]",
 								themed ? "tt-muted" : "text-muted-foreground",
 							)}
 						>
