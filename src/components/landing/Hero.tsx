@@ -139,8 +139,21 @@ export function Hero({ preview }: { preview: PublicProfile }) {
 							ease,
 						}}
 					>
-						<a
-							href="/#cta"
+						<button
+							type="button"
+							onClick={() => {
+								const input = document.getElementById("cta-username");
+								if (!input) return;
+								// Focus inside the tap itself — iOS only raises the
+								// keyboard for focus() during the user gesture — then
+								// bring the field to the middle of the screen.
+								input.focus({ preventScroll: true });
+								input.scrollIntoView({
+									behavior: reduceMotion ? "auto" : "smooth",
+									block: "center",
+								});
+								history.replaceState(null, "", "#cta");
+							}}
 							className="group inline-flex items-center gap-2 border border-foreground px-5 py-3 font-mono text-[11px] uppercase tracking-[0.08em] text-foreground transition-colors hover:border-brand hover:text-brand"
 						>
 							Claim your profile
@@ -148,7 +161,7 @@ export function Hero({ preview }: { preview: PublicProfile }) {
 								size={13}
 								className="transition-transform duration-300 group-hover:translate-x-1"
 							/>
-						</a>
+						</button>
 					</motion.div>
 				</div>
 

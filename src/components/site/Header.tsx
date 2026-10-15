@@ -66,7 +66,7 @@ export function Header() {
 						<Link to="/" className="group flex w-fit items-center gap-2.5">
 							<Logo className="text-foreground" />
 
-							<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground transition-colors group-hover:text-brand">
+							<span className="hidden font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground transition-colors group-hover:text-brand min-[360px]:inline">
 								01
 							</span>
 						</Link>
@@ -125,12 +125,12 @@ export function Header() {
 						{isAuthenticated && user ? (
 							<Link
 								to="/dashboard"
-								className="group inline-flex items-center gap-2 border border-foreground px-4 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-foreground transition-[color,border-color,transform] active:scale-[0.97] hover:border-brand hover:text-brand md:py-2"
+								className="group inline-flex items-center gap-2 border border-foreground px-3 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-foreground transition-[color,border-color,transform] active:scale-[0.97] hover:border-brand hover:text-brand min-[360px]:px-4 md:py-2"
 							>
 								Dashboard
 								<ArrowRightUpIcon
 									size={13}
-									className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+									className="hidden transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 min-[360px]:block"
 								/>
 							</Link>
 						) : (
@@ -146,12 +146,12 @@ export function Header() {
 								<Link
 									to="/signup"
 									search={{ username: undefined }}
-									className="group inline-flex items-center gap-2 border border-foreground px-4 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-foreground transition-[color,border-color,transform] active:scale-[0.97] hover:border-brand hover:text-brand md:py-2"
+									className="group inline-flex items-center gap-2 border border-foreground px-3 py-3 font-mono text-[10px] uppercase tracking-[0.08em] text-foreground transition-[color,border-color,transform] active:scale-[0.97] hover:border-brand hover:text-brand min-[360px]:px-4 md:py-2"
 								>
 									Get started
 									<ArrowRightUpIcon
 										size={13}
-										className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+										className="hidden transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 min-[360px]:block"
 									/>
 								</Link>
 							</>

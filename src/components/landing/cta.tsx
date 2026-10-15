@@ -34,7 +34,7 @@ export function Cta() {
 	return (
 		<section id="cta" className="border-t border-border">
 			<div className="mx-auto max-w-editorial px-5 py-28 sm:px-8 sm:py-36 lg:py-44">
-				<div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
+				<div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
 					<motion.div
 						initial={reduceMotion ? false : { opacity: 0, y: 24 }}
 						whileInView={{ opacity: 1, y: 0 }}
@@ -99,7 +99,7 @@ export function Cta() {
 										: "border-foreground"
 								}`}
 							>
-								<span className="shrink-0 font-mono text-[12px] text-muted-foreground">
+								<span className="shrink-0 font-mono text-base text-muted-foreground sm:text-[12px]">
 									{SITE_DOMAIN}/
 								</span>
 
@@ -110,7 +110,7 @@ export function Cta() {
 									onChange={(e) => setUsername(e.target.value)}
 									autoComplete="off"
 									spellCheck={false}
-									className="min-w-0 flex-1 bg-transparent px-1 font-mono text-[12px] text-foreground placeholder:text-muted-foreground focus:outline-none"
+									className="min-w-0 flex-1 bg-transparent px-1 font-mono text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-[12px]"
 								/>
 
 								<AnimatePresence>
