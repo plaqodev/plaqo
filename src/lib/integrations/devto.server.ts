@@ -5,7 +5,7 @@ export async function fetchDevto(input: { handle: string }): Promise<FetchResult
   if (!handle) throw new Error("Empty Dev.to username");
   const res = await fetch(
     `https://dev.to/api/articles?username=${encodeURIComponent(handle)}&per_page=10`,
-    { headers: { Accept: "application/json", "User-Agent": "DevLinks-Integrations/1.0" } },
+    { headers: { Accept: "application/json", "User-Agent": "plaqo-Integrations/1.0" } },
   );
   if (!res.ok) throw new Error(`Dev.to ${res.status}`);
   const rows = (await res.json()) as Array<Record<string, unknown>>;

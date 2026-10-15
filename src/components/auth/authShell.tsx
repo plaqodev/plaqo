@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import toast from "react-hot-toast";
 import { GithubIcon, GoogleIcon } from "@/components/brand-icons";
 import { PageTitle } from "@/components/motion/PageTitle";
+import { Logo } from "@/components/site/Logo";
 import { authClient } from "@/lib/auth-client";
 
 // Vite env vars are always strings, so `Boolean(...)` would treat the literal
@@ -25,9 +26,7 @@ export function AuthShell({
 		<div className="min-h-dvh bg-background text-foreground">
 			<header className="mx-auto flex h-16 w-full max-w-editorial items-center justify-between border-b border-border px-5 sm:px-8">
 				<Link to="/" className="flex items-center gap-2.5">
-					<span className="font-display text-xl leading-none tracking-[-0.03em]">
-						DevLinks
-					</span>
+					<Logo />
 					<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
 						01
 					</span>
@@ -38,7 +37,7 @@ export function AuthShell({
 				<div className="mx-auto w-full max-w-md">
 					<div>
 						<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-brand">
-							DevLinks / Account
+							plaqo / Account
 						</p>
 						<PageTitle className="mt-5 font-display text-5xl leading-[0.95] tracking-[-0.04em] sm:text-6xl">
 							{title}

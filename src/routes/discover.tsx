@@ -114,11 +114,11 @@ export const Route = createFileRoute("/discover")({
 		const label = filterLabel(search);
 
 		const title = label
-			? `${label} developers — Discover — DevLinks`
-			: "Discover developers — DevLinks";
+			? `${label} developers — Discover — plaqo`
+			: "Discover developers — plaqo";
 		const description = label
-			? `Browse developer profiles matching ${label} on DevLinks.`
-			: "Search developer profiles on DevLinks. Filter by language, country, technologies, seniority and availability.";
+			? `Browse developer profiles matching ${label} on plaqo.`
+			: "Search developer profiles on plaqo. Filter by language, country, technologies, seniority and availability.";
 
 		const shouldNoindex = filtered && resultCount < MIN_INDEXABLE_RESULTS;
 		const canonicalPath = buildDiscoverPath(search);

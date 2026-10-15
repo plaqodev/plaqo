@@ -29,7 +29,7 @@ export const Route = createFileRoute("/login")({
 			throw redirect({ to: search.redirect ?? "/dashboard" });
 		}
 	},
-	head: () => ({ meta: [{ title: "Sign in — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Sign in — plaqo" }] }),
 	component: LoginPage,
 });
 
@@ -45,7 +45,7 @@ function LoginPage() {
 	return (
 		<AuthShell
 			title="Welcome back."
-			subtitle="Sign in to manage your DevLinks profile."
+			subtitle="Sign in to manage your plaqo profile."
 			footer={
 				<Link
 					to="/signup"
@@ -171,7 +171,7 @@ function LoginPage() {
 				</FieldGroup>
 			</form>
 			<p className="mt-8 border-t border-border pt-6 text-center text-sm text-muted-foreground">
-				New to DevLinks?{" "}
+				New to plaqo?{" "}
 				<Link
 					to="/signup"
 					search={{ username: undefined }}

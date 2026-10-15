@@ -11,7 +11,7 @@ const ROWS = [
 	{ key: "custom_css", label: "Custom CSS", free: "—", pro: "Included" },
 	{
 		key: "branding",
-		label: "DevLinks branding",
+		label: "plaqo branding",
 		free: "Shown",
 		pro: "Removed",
 	},

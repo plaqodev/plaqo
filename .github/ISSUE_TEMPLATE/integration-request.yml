@@ -1,5 +1,5 @@
 name: Integration request
-description: Ask for a service/technology to be supported as a DevLinks integration
+description: Ask for a service/technology to be supported as a plaqo integration
 title: "[Integration] "
 labels: ["integration request"]
 body:
@@ -7,7 +7,7 @@ body:
     id: service
     attributes:
       label: Service or technology
-      description: What should DevLinks connect to?
+      description: What should plaqo connect to?
       placeholder: e.g. Codeberg, Bluesky, Notion
     validations:
       required: true
@@ -24,7 +24,7 @@ body:
   - type: textarea
     id: why
     attributes:
-      label: What would you want your DevLinks profile to show from it?
+      label: What would you want your plaqo profile to show from it?
       placeholder: e.g. my published packages, my latest posts, my star count...
     validations:
       required: false

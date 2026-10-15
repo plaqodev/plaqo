@@ -19,6 +19,7 @@ import { PageTitle } from "@/components/motion/PageTitle";
 import { useAnalyticsSummary } from "@/lib/queries/analytics";
 import { useIntegrationAccounts } from "@/lib/queries/integrations";
 import { useProfileCore, useProfileData } from "@/lib/queries/profile-data";
+import { SITE_DOMAIN } from "@/lib/site";
 
 function sharedStorageKey(userId: string) {
 	return `devlinks:shared:${userId}`;
@@ -33,7 +34,7 @@ function checklistDismissedStorageKey(userId: string) {
 }
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
-	head: () => ({ meta: [{ title: "Dashboard — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Dashboard — plaqo" }] }),
 	component: DashboardHome,
 });
 
@@ -207,7 +208,7 @@ function DashboardHome() {
 					</PageTitle>
 
 					<p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-						Here&apos;s how your DevLinks page is doing this week.
+						Here&apos;s how your plaqo page is doing this week.
 					</p>
 				</div>
 
@@ -318,7 +319,7 @@ function DashboardHome() {
 							<p className="mt-2 text-sm text-muted-foreground">
 								Shared at{" "}
 								<span className="font-mono text-[11px] text-foreground">
-									devlinks.com/{user.username}
+									{SITE_DOMAIN}/{user.username}
 								</span>
 							</p>
 						</div>

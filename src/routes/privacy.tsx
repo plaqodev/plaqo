@@ -6,10 +6,10 @@ import { Header } from "@/components/site/Header";
 export const Route = createFileRoute("/privacy")({
 	head: () => ({
 		meta: [
-			{ title: "Privacy Policy — DevLinks" },
+			{ title: "Privacy Policy — plaqo" },
 			{
 				name: "description",
-				content: "How DevLinks collects, uses, and protects your data.",
+				content: "How plaqo collects, uses, and protects your data.",
 			},
 		],
 	}),
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/privacy")({
 });
 
 const EFFECTIVE_DATE = "September 15, 2026";
-const CONTACT_EMAIL = "support@devlinks.app";
+const CONTACT_EMAIL = "support@plaqo.dev";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
 	return (
@@ -47,17 +47,17 @@ function PrivacyPage() {
 				</h1>
 
 				<p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
-					Effective {EFFECTIVE_DATE}. This describes what DevLinks collects,
+					Effective {EFFECTIVE_DATE}. This describes what plaqo collects,
 					why, and what control you have over it.
 				</p>
 
 				<div className="mt-16">
 					<Section title="Who this is">
 						<p>
-							DevLinks (devlinks.app) is a developer profile and link-in-bio
+							plaqo (plaqo.dev) is a developer profile and link-in-bio
 							tool operated by Francis Castillo Cruz, an individual developer —
-							not a registered company. This policy covers the DevLinks
-							dashboard, public profile pages (devlinks.app/@username), and the
+							not a registered company. This policy covers the plaqo
+							dashboard, public profile pages (plaqo.dev/username), and the
 							marketing site.
 						</p>
 						<p>
@@ -89,13 +89,13 @@ function PrivacyPage() {
 							projects, code snippets, articles, talks, support/donation links,
 							and theme settings (including custom CSS, on the Pro plan). Your
 							profile page is public by design: everything here is meant to be
-							visible to anyone who visits your DevLinks URL.
+							visible to anyone who visits your plaqo URL.
 						</p>
 						<p>
 							<strong className="text-foreground">
 								Connected accounts (integrations).
 							</strong>{" "}
-							DevLinks can display live stats from other services on your
+							plaqo can display live stats from other services on your
 							profile. Most integrations (GitHub, GitLab, Dev.to, Medium, Stack
 							Overflow, WakaTime, LeetCode, npm, Bluesky, Mastodon, Docker Hub,
 							YouTube, Hugging Face) only need the public username you type in —
@@ -138,7 +138,7 @@ function PrivacyPage() {
 							<strong className="text-foreground">
 								Profile visit analytics.
 							</strong>{" "}
-							When someone views a public DevLinks profile or clicks a link on
+							When someone views a public plaqo profile or clicks a link on
 							one, we log: a hashed version of the visitor's IP address (we
 							never store the raw IP — it's run through SHA-256 with a salt that
 							rotates daily, so it can't be reversed or matched across days), a
@@ -157,7 +157,7 @@ function PrivacyPage() {
 						</p>
 						<p>
 							<strong className="text-foreground">Product analytics.</strong> We
-							use PostHog to understand how people use DevLinks (which pages get
+							use PostHog to understand how people use plaqo (which pages get
 							visited, which features get used). PostHog only builds a full
 							identity profile for signed-in users; anonymous visitors are not
 							persistently tracked across sessions.
@@ -167,7 +167,7 @@ function PrivacyPage() {
 					<Section title="How we use your information">
 						<ul className="list-disc space-y-2 pl-5">
 							<li>
-								To create and run your DevLinks account and public profile.
+								To create and run your plaqo account and public profile.
 							</li>
 							<li>To fetch and display data from services you've connected.</li>
 							<li>To process Pro subscription payments.</li>
@@ -177,7 +177,7 @@ function PrivacyPage() {
 								unauthorized access.
 							</li>
 							<li>
-								To understand usage patterns and improve DevLinks (product
+								To understand usage patterns and improve plaqo (product
 								analytics).
 							</li>
 							<li>To comply with legal obligations.</li>
@@ -188,7 +188,7 @@ function PrivacyPage() {
 					<Section title="Who we share information with">
 						<p>
 							We don't sell or rent your data. We share it only with the service
-							providers that make DevLinks work, each only for the purpose
+							providers that make plaqo work, each only for the purpose
 							below:
 						</p>
 						<ul className="list-disc space-y-2 pl-5">
@@ -236,15 +236,15 @@ function PrivacyPage() {
 						</ul>
 						<p>
 							We may also disclose information if required by law, or to protect
-							the rights, property, or safety of DevLinks, our users, or the
+							the rights, property, or safety of plaqo, our users, or the
 							public.
 						</p>
 					</Section>
 
 					<Section title="Where your data lives">
 						<p>
-							DevLinks and the providers listed above operate infrastructure in
-							the United States. If you're accessing DevLinks from outside the
+							plaqo and the providers listed above operate infrastructure in
+							the United States. If you're accessing plaqo from outside the
 							US, your information will be processed there.{" "}
 							<span className="italic">
 								[We haven't yet confirmed each provider's specific
@@ -319,7 +319,7 @@ function PrivacyPage() {
 							Product analytics (PostHog) is different: it only runs if you
 							accept it in the cookie banner shown on your first visit. Nothing
 							is captured before you choose, and you can change your mind at any
-							time by clearing your browser's site data for devlinks.app. We
+							time by clearing your browser's site data for plaqo.dev. We
 							don't use advertising or cross-site tracking cookies at all.
 						</p>
 					</Section>
@@ -337,7 +337,7 @@ function PrivacyPage() {
 
 					<Section title="Children's privacy">
 						<p>
-							DevLinks is not directed at children under 13, and we don't
+							plaqo is not directed at children under 13, and we don't
 							knowingly collect data from them. If you believe a child has
 							created an account, email us and we'll delete it.
 						</p>

@@ -6,7 +6,7 @@ import { fetchGithub } from "@/lib/integrations/github.server";
 import type { GithubPayload } from "@/lib/integrations/types";
 import { consumeRateLimit } from "@/lib/rate-limit.server";
 
-const UA = "DevLinks-GithubGrader/1.0";
+const UA = "plaqo-GithubGrader/1.0";
 
 export type GithubGraderResult = {
 	username: string;

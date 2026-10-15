@@ -36,7 +36,7 @@ export const sendContactMessage = createServerFn({ method: "POST" })
 			throw new Error("Too many messages. Please try again later.");
 		}
 
-		const to = process.env.CONTACT_EMAIL || "support@devlinks.app";
+		const to = process.env.CONTACT_EMAIL || "support@plaqo.dev";
 		const name = escapeHtml(data.name);
 		const email = escapeHtml(data.email);
 		const message = escapeHtml(data.message);

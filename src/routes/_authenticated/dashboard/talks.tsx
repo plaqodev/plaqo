@@ -42,11 +42,11 @@ import { zodField } from "@/lib/schemas/field";
 export const Route = createFileRoute("/_authenticated/dashboard/talks")({
 	head: () => ({
 		meta: [
-			{ title: "Talks & slides — DevLinks" },
+			{ title: "Talks & slides — plaqo" },
 			{
 				name: "description",
 				content:
-					"Add the conference talks, meetups and slide decks you want on your DevLinks profile.",
+					"Add the conference talks, meetups and slide decks you want on your plaqo profile.",
 			},
 		],
 	}),

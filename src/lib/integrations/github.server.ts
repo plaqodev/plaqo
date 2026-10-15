@@ -1,6 +1,6 @@
 import type { FetchResult, GithubPayload } from "./types";
 
-const UA = "DevLinks-Integrations/1.0";
+const UA = "plaqo-Integrations/1.0";
 
 // Each pinned slug is interpolated straight into an api.github.com request
 // path, so a value like "../rate_limit" or one containing a query string

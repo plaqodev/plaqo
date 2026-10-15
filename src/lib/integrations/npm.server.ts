@@ -10,7 +10,7 @@ export async function fetchNpm(input: {
 		{
 			headers: {
 				Accept: "application/json",
-				"User-Agent": "DevLinks-Integrations/1.0",
+				"User-Agent": "plaqo-Integrations/1.0",
 			},
 		},
 	);

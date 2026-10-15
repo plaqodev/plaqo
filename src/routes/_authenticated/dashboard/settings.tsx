@@ -20,7 +20,7 @@ import { useProfileCore, useWipeProfileData } from "@/lib/queries/profile-data";
 import { passwordSchema } from "@/lib/schemas/auth";
 
 export const Route = createFileRoute("/_authenticated/dashboard/settings")({
-	head: () => ({ meta: [{ title: "Settings — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Settings — plaqo" }] }),
 	component: SettingsPage,
 });
 
@@ -144,7 +144,7 @@ function SettingsPage() {
 					<SectionIntro
 						label="Security"
 						title="Change password"
-						description="Update the password you use to sign in to DevLinks."
+						description="Update the password you use to sign in to plaqo."
 					/>
 
 					<form onSubmit={handleChangePassword} className="mt-7 max-w-2xl">
@@ -197,7 +197,7 @@ function SettingsPage() {
 						description={
 							isPro
 								? "View invoices, update your payment method, or cancel your subscription."
-								: "Unlimited links, projects and snippets, analytics, custom CSS, and no DevLinks branding — $5/month."
+								: "Unlimited links, projects and snippets, analytics, custom CSS, and no plaqo branding — $5/month."
 						}
 					/>
 
@@ -229,7 +229,7 @@ function SettingsPage() {
 					<SectionIntro
 						label="Session"
 						title="Sign out"
-						description="End your current DevLinks session on this device."
+						description="End your current plaqo session on this device."
 					/>
 
 					<button

@@ -20,7 +20,7 @@ type HfOverview = {
 	numLikes?: number;
 };
 
-const UA = "DevLinks-Integrations/1.0";
+const UA = "plaqo-Integrations/1.0";
 
 export async function fetchHuggingface(input: {
 	handle: string;

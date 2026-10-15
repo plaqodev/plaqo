@@ -22,7 +22,7 @@ export const INTEGRATION_SEO: Partial<Record<Provider, IntegrationSeoContent>> =
 			],
 		},
 		gitlab: {
-			tagline: "Public GitLab projects on your DevLinks profile.",
+			tagline: "Public GitLab projects on your plaqo profile.",
 			description:
 				"For work that lives on GitLab instead of (or alongside) GitHub, sync your public projects the same way.",
 			syncs: [
@@ -34,7 +34,7 @@ export const INTEGRATION_SEO: Partial<Record<Provider, IntegrationSeoContent>> =
 		devto: {
 			tagline: "Your Dev.to articles, kept up to date.",
 			description:
-				"Every article you publish on Dev.to shows up on your DevLinks profile without you posting it twice.",
+				"Every article you publish on Dev.to shows up on your plaqo profile without you posting it twice.",
 			syncs: [
 				"Published articles with reactions and read time",
 				"Cover images and tags",
@@ -44,7 +44,7 @@ export const INTEGRATION_SEO: Partial<Record<Provider, IntegrationSeoContent>> =
 		medium: {
 			tagline: "Your Medium posts, pulled in automatically.",
 			description:
-				"DevLinks reads your public Medium RSS feed so new posts appear on your profile without any manual step.",
+				"plaqo reads your public Medium RSS feed so new posts appear on your profile without any manual step.",
 			syncs: ["Latest posts via your public RSS feed", "Cover images and publish dates"],
 		},
 		stackoverflow: {
@@ -60,7 +60,7 @@ export const INTEGRATION_SEO: Partial<Record<Provider, IntegrationSeoContent>> =
 		wakatime: {
 			tagline: "How you actually spend your coding time.",
 			description:
-				"WakaTime tracks time by language and editor — DevLinks surfaces it as real, ongoing proof of active work.",
+				"WakaTime tracks time by language and editor — plaqo surfaces it as real, ongoing proof of active work.",
 			syncs: [
 				"Coding time by language for your selected range",
 				"Daily average and top editors",
@@ -120,7 +120,7 @@ export const INTEGRATION_SEO: Partial<Record<Provider, IntegrationSeoContent>> =
 		huggingface: {
 			tagline: "Models, datasets, and Spaces you've published.",
 			description:
-				"For ML/AI work, Hugging Face activity is often the most relevant proof of work you have — DevLinks surfaces it directly.",
+				"For ML/AI work, Hugging Face activity is often the most relevant proof of work you have — plaqo surfaces it directly.",
 			syncs: [
 				"Models, datasets, and Spaces counts",
 				"Top models with likes and downloads",

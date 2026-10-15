@@ -15,7 +15,7 @@ import { emailSchema } from "@/lib/schemas/auth";
 import { zodField } from "@/lib/schemas/field";
 
 export const Route = createFileRoute("/forgot-password")({
-	head: () => ({ meta: [{ title: "Reset password — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Reset password — plaqo" }] }),
 	component: ForgotPage,
 });
 

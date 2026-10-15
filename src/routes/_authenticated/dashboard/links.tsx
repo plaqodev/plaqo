@@ -64,7 +64,7 @@ import { type LinkItem, linkSchema } from "@/lib/schemas";
 import { zodField } from "@/lib/schemas/field";
 
 export const Route = createFileRoute("/_authenticated/dashboard/links")({
-	head: () => ({ meta: [{ title: "Links — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Links — plaqo" }] }),
 	component: LinksPage,
 });
 

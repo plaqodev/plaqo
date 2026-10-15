@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const FROM = process.env.EMAIL_FROM ?? "no-reply@devlinks.app";
+const FROM = process.env.EMAIL_FROM ?? "no-reply@plaqo.dev";
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 const client = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;

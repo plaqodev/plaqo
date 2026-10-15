@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
 				{
 					"@type": "Organization",
 					"@id": orgId,
-					name: "DevLinks",
+					name: "plaqo",
 					url: absoluteUrl("/"),
 					logo: absoluteUrl("/android-chrome-512.png"),
 					sameAs: ["https://github.com/ingfranciscastillo"],
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")({
 				{
 					"@type": "WebSite",
 					"@id": absoluteUrl("/#website"),
-					name: "DevLinks",
+					name: "plaqo",
 					url: absoluteUrl("/"),
 					publisher: { "@id": orgId },
 					potentialAction: {
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/")({
 				{
 					"@type": "SoftwareApplication",
 					"@id": absoluteUrl("/#software"),
-					name: "DevLinks",
+					name: "plaqo",
 					url: absoluteUrl("/"),
 					applicationCategory: "DeveloperApplication",
 					operatingSystem: "Web",
@@ -89,7 +89,7 @@ export const Route = createFileRoute("/")({
 
 		return {
 			meta: [
-				{ title: "DevLinks — The link-in-bio built for developers" },
+				{ title: "plaqo — The link-in-bio built for developers" },
 				{
 					name: "description",
 					content:
@@ -97,7 +97,7 @@ export const Route = createFileRoute("/")({
 				},
 				{
 					property: "og:title",
-					content: "DevLinks — The link-in-bio for developers",
+					content: "plaqo — The link-in-bio for developers",
 				},
 				{
 					property: "og:description",

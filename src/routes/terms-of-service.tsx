@@ -6,10 +6,10 @@ import { Header } from "@/components/site/Header";
 export const Route = createFileRoute("/terms-of-service")({
 	head: () => ({
 		meta: [
-			{ title: "Terms of Service — DevLinks" },
+			{ title: "Terms of Service — plaqo" },
 			{
 				name: "description",
-				content: "The terms that govern using DevLinks.",
+				content: "The terms that govern using plaqo.",
 			},
 		],
 	}),
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/terms-of-service")({
 });
 
 const EFFECTIVE_DATE = "September 15, 2026";
-const CONTACT_EMAIL = "support@devlinks.app";
+const CONTACT_EMAIL = "support@plaqo.dev";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
 	return (
@@ -47,7 +47,7 @@ function TermsPage() {
 				</h1>
 
 				<p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
-					Effective {EFFECTIVE_DATE}. By creating an account or using DevLinks,
+					Effective {EFFECTIVE_DATE}. By creating an account or using plaqo,
 					you agree to these terms. See also our{" "}
 					<Link
 						to="/privacy"
@@ -61,17 +61,17 @@ function TermsPage() {
 				<div className="mt-16">
 					<Section title="Who this is">
 						<p>
-							DevLinks (devlinks.app) is operated by Francis Castillo Cruz, an
+							plaqo (plaqo.dev) is operated by Francis Castillo Cruz, an
 							individual developer — not a registered company. These terms form
 							an agreement between you and Francis Castillo Cruz regarding your
-							use of DevLinks: the dashboard, public profile pages
-							(devlinks.app/@username), and the marketing site.
+							use of plaqo: the dashboard, public profile pages
+							(plaqo.dev/username), and the marketing site.
 						</p>
 					</Section>
 
 					<Section title="The service">
 						<p>
-							DevLinks lets you build a public developer profile — links,
+							plaqo lets you build a public developer profile — links,
 							projects, code snippets, articles, talks, and live stats synced
 							from services like GitHub, Dev.to, and others you connect —
 							published at a public URL you choose. Some features (see{" "}
@@ -88,7 +88,7 @@ function TermsPage() {
 					<Section title="Your account">
 						<ul className="list-disc space-y-2 pl-5">
 							<li>
-								You must be at least 13 years old to create a DevLinks account.
+								You must be at least 13 years old to create a plaqo account.
 							</li>
 							<li>
 								You're responsible for the security of your account — whatever
@@ -109,11 +109,11 @@ function TermsPage() {
 
 					<Section title="Your content">
 						<p>
-							You own everything you post to DevLinks — your bio, links,
+							You own everything you post to plaqo — your bio, links,
 							projects, snippets, articles, and anything else you add. By
 							posting it, you give us the license we need to store it and
 							display it publicly at your profile URL, which is exactly what
-							DevLinks is for.
+							plaqo is for.
 						</p>
 						<p>
 							Your profile page is public by design. Don't post anything you
@@ -138,7 +138,7 @@ function TermsPage() {
 							</li>
 							<li>
 								Is spam, or exists mainly to manipulate search rankings or abuse
-								another service's API through DevLinks.
+								another service's API through plaqo.
 							</li>
 						</ul>
 						<p>
@@ -152,10 +152,10 @@ function TermsPage() {
 						<ul className="list-disc space-y-2 pl-5">
 							<li>
 								Don't try to break, overload, or gain unauthorized access to
-								DevLinks or another user's account.
+								plaqo or another user's account.
 							</li>
 							<li>
-								Don't scrape or bulk-extract data from DevLinks profiles beyond
+								Don't scrape or bulk-extract data from plaqo profiles beyond
 								what a normal visitor sees in a browser.
 							</li>
 							<li>
@@ -164,7 +164,7 @@ function TermsPage() {
 								displaying your own public content on your own profile.
 							</li>
 							<li>
-								Don't reverse-engineer, decompile, or resell access to DevLinks
+								Don't reverse-engineer, decompile, or resell access to plaqo
 								itself.
 							</li>
 						</ul>
@@ -172,7 +172,7 @@ function TermsPage() {
 
 					<Section title="Plans and billing">
 						<p>
-							DevLinks offers a Free plan and a paid Pro plan ($5/month at the
+							plaqo offers a Free plan and a paid Pro plan ($5/month at the
 							time of writing — see{" "}
 							<a
 								href="/#pricing"
@@ -203,7 +203,7 @@ function TermsPage() {
 
 					<Section title="Third-party integrations">
 						<p>
-							DevLinks displays data from services you connect — GitHub, GitLab,
+							plaqo displays data from services you connect — GitHub, GitLab,
 							Dev.to, Product Hunt, and others. We don't control those services,
 							their availability, or the accuracy of the data they return, and
 							connecting one is also subject to that service's own terms. If a
@@ -214,7 +214,7 @@ function TermsPage() {
 
 					<Section title="Intellectual property">
 						<p>
-							The DevLinks name, design, and software are ours. These terms
+							The plaqo name, design, and software are ours. These terms
 							don't grant you any rights to them beyond using the service as
 							intended. Your content remains yours, as described above.
 						</p>
@@ -222,7 +222,7 @@ function TermsPage() {
 
 					<Section title="Termination">
 						<p>
-							You can stop using DevLinks at any time. To request deletion of
+							You can stop using plaqo at any time. To request deletion of
 							your account and data, email{" "}
 							<a
 								href={`mailto:${CONTACT_EMAIL}`}
@@ -241,7 +241,7 @@ function TermsPage() {
 
 					<Section title="Disclaimers">
 						<p>
-							DevLinks is provided "as is," without warranties of any kind. We
+							plaqo is provided "as is," without warranties of any kind. We
 							don't guarantee the service will be uninterrupted, error-free, or
 							available at all times.{" "}
 							<span className="italic">
@@ -266,7 +266,7 @@ function TermsPage() {
 						<p>
 							If we make a material change, we'll update the effective date
 							above and, for significant changes, notify you by email.
-							Continuing to use DevLinks after a change takes effect means you
+							Continuing to use plaqo after a change takes effect means you
 							accept the updated terms.
 						</p>
 					</Section>

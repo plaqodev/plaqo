@@ -1,5 +1,6 @@
 import { ArrowRightIcon, ArrowRightUpIcon } from "@solar-icons/react/linear";
 import { motion, useReducedMotion } from "motion/react";
+import { SITE_DOMAIN } from "@/lib/site";
 
 import { ProfilePreview } from "./ProfilePreview";
 
@@ -25,7 +26,7 @@ export function Hero() {
 								ease,
 							}}
 						>
-							DevLinks — Developer Identity Platform
+							plaqo — Developer Identity Platform
 						</motion.p>
 
 						<motion.h1 className="mt-7 max-w-5xl text-balance font-display text-[15vw] leading-[0.88] tracking-[-0.045em] text-foreground sm:text-[6.5rem] md:text-[8rem] lg:text-[9rem]">
@@ -123,8 +124,7 @@ export function Hero() {
 							ease,
 						}}
 					>
-						devlinks.com/
-						<span className="text-foreground">your-handle</span>
+						{SITE_DOMAIN}/<span className="text-foreground">your-handle</span>
 					</motion.p>
 
 					<motion.div

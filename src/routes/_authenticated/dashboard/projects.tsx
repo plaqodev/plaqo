@@ -55,7 +55,7 @@ import { zodField } from "@/lib/schemas/field";
 import { TECHNOLOGY_SUGGESTIONS } from "@/lib/technologies";
 
 export const Route = createFileRoute("/_authenticated/dashboard/projects")({
-	head: () => ({ meta: [{ title: "Projects — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Projects — plaqo" }] }),
 	component: ProjectsPage,
 });
 

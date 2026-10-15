@@ -11,7 +11,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export const Route = createFileRoute("/tools/github-grader/")({
 	head: () => ({
 		meta: [
-			{ title: "GitHub Profile Grader — Free tool by DevLinks" },
+			{ title: "GitHub Profile Grader — Free tool by plaqo" },
 			{
 				name: "description",
 				content:
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/tools/github-grader/")({
 			},
 			{
 				property: "og:title",
-				content: "GitHub Profile Grader — Free tool by DevLinks",
+				content: "GitHub Profile Grader — Free tool by plaqo",
 			},
 			{
 				property: "og:description",

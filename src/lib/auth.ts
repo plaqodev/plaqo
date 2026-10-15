@@ -123,7 +123,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 }
 
 export const auth = betterAuth({
-	appName: "dev-links",
+	appName: "plaqo",
 	secret: process.env.BETTER_AUTH_SECRET,
 	baseURL: process.env.BETTER_AUTH_URL,
 
@@ -141,7 +141,7 @@ export const auth = betterAuth({
 		sendResetPassword: async ({ user, url }) => {
 			await sendEmail({
 				to: user.email,
-				subject: "Reset your dev-links password",
+				subject: "Reset your plaqo password",
 				html: `<p>Hi ${escapeHtml(user.name ?? "")},</p><p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
 				text: `Reset your password: ${url}`,
 			});
@@ -156,8 +156,8 @@ export const auth = betterAuth({
 		sendVerificationEmail: async ({ user, url }) => {
 			await sendEmail({
 				to: user.email,
-				subject: "Verify your dev-links email",
-				html: `<p>Welcome to dev-links, ${escapeHtml(user.name ?? "")}.</p><p>Confirm your email: <a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
+				subject: "Verify your plaqo email",
+				html: `<p>Welcome to plaqo, ${escapeHtml(user.name ?? "")}.</p><p>Confirm your email: <a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
 				text: `Verify your email: ${url}`,
 			});
 		},

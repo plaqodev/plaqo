@@ -16,7 +16,7 @@ export const Route = createFileRoute("/compare/$slug")({
 	},
 	head: ({ loaderData, params }) => {
 		if (!loaderData) return {};
-		// headline is already "DevLinks vs. X" — appending "— DevLinks" duplicated
+		// headline is already "plaqo vs. X" — appending "— plaqo" duplicated
 		// the brand name in the title tag.
 		const title = loaderData.headline;
 		return {
@@ -86,7 +86,7 @@ function ComparePage() {
 				>
 					<div className="grid grid-cols-[minmax(0,1fr)_1fr_1fr] gap-4 border-b border-border py-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
 						<span>Feature</span>
-						<span className="text-foreground">DevLinks</span>
+						<span className="text-foreground">plaqo</span>
 						<span>{comparison.competitor}</span>
 					</div>
 
@@ -115,7 +115,7 @@ function ComparePage() {
 					</div>
 					<div>
 						<h2 className="font-display text-xl tracking-tight">
-							When DevLinks fits better
+							When plaqo fits better
 						</h2>
 						<p className="mt-3 text-sm leading-relaxed text-muted-foreground">
 							{comparison.whenDevlinksFits}

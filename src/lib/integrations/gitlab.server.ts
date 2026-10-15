@@ -27,7 +27,7 @@ export async function fetchGitlab(input: {
 
 	const headers = {
 		Accept: "application/json",
-		"User-Agent": "DevLinks-Integrations/1.0",
+		"User-Agent": "plaqo-Integrations/1.0",
 	};
 	const userRes = await fetch(
 		`https://gitlab.com/api/v4/users?username=${encodeURIComponent(handle)}`,

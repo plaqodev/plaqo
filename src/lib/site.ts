@@ -5,6 +5,13 @@ const rawSiteUrl =
 
 export const SITE_URL = rawSiteUrl.replace(/\/$/, "");
 
+export const SITE_NAME = "plaqo";
+
+// The public, human-facing address (profile URL prefixes, copy). Fixed rather
+// than derived from SITE_URL so localhost/preview deploys still show the real
+// domain people will share.
+export const SITE_DOMAIN = "plaqo.dev";
+
 export function absoluteUrl(path: string): string {
 	// In the browser, use the real origin instead of SITE_URL — process.env
 	// isn't populated client-side (only import.meta.env.VITE_* is inlined),

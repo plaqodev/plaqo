@@ -142,7 +142,7 @@ type DiscoveryFormValues = {
 };
 
 export const Route = createFileRoute("/_authenticated/dashboard/profile")({
-	head: () => ({ meta: [{ title: "Profile — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Profile — plaqo" }] }),
 	component: ProfilePage,
 });
 
@@ -161,7 +161,7 @@ function ProfilePage() {
 				</PageTitle>
 
 				<p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-					The information people see when they visit your public DevLinks page.
+					The information people see when they visit your public plaqo page.
 				</p>
 			</header>
 
@@ -324,7 +324,7 @@ function ProfileForm({ core }: { core: ProfileCore }) {
 					</p>
 
 					<p className="mt-2 text-sm text-muted-foreground">
-						How you are identified across DevLinks.
+						How you are identified across plaqo.
 					</p>
 				</div>
 

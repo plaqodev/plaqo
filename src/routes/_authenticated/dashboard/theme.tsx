@@ -48,7 +48,7 @@ import { templates } from "@/lib/theme-templates";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard/theme")({
-	head: () => ({ meta: [{ title: "Theme — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Theme — plaqo" }] }),
 	component: ThemePage,
 });
 

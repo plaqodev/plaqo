@@ -358,7 +358,7 @@ export const autoConnectGithub = createServerFn({ method: "POST" })
 				const res = await fetch("https://api.github.com/user", {
 					headers: {
 						Authorization: `Bearer ${accessToken}`,
-						"User-Agent": "DevLinks",
+						"User-Agent": "plaqo",
 						Accept: "application/vnd.github+json",
 					},
 				});

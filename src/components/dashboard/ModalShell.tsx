@@ -55,7 +55,7 @@ export function ModalShell({
 				<div className="flex shrink-0 items-start justify-between gap-6 border-b border-border p-6 pb-4 sm:p-7 sm:pb-4">
 					<div>
 						<p className="font-mono text-[9px] uppercase tracking-[0.14em] text-brand">
-							DevLinks
+							plaqo
 						</p>
 
 						<h2

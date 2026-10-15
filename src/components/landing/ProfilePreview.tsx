@@ -6,8 +6,8 @@ import {
 } from "@solar-icons/react/linear";
 import { motion, useReducedMotion } from "motion/react";
 import type { SVGProps } from "react";
-
 import { GithubIcon } from "@/components/brand-icons";
+import { SITE_DOMAIN } from "@/lib/site";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -83,7 +83,7 @@ export function ProfilePreview() {
 				</div>
 
 				<span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-					devlinks.com/francis
+					{SITE_DOMAIN}/francis
 				</span>
 
 				<span className="w-8" aria-hidden="true" />

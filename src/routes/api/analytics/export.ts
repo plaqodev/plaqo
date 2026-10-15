@@ -94,7 +94,7 @@ async function handleExport(request: Request) {
 		return new Response(csv, {
 			headers: {
 				"Content-Type": "text/csv; charset=utf-8",
-				"Content-Disposition": `attachment; filename="devlinks-views-${days}d.csv"`,
+				"Content-Disposition": `attachment; filename="plaqo-views-${days}d.csv"`,
 			},
 		});
 	}
@@ -148,7 +148,7 @@ async function handleExport(request: Request) {
 		return new Response(csv, {
 			headers: {
 				"Content-Type": "text/csv; charset=utf-8",
-				"Content-Disposition": `attachment; filename="devlinks-clicks-${days}d.csv"`,
+				"Content-Disposition": `attachment; filename="plaqo-clicks-${days}d.csv"`,
 			},
 		});
 	}

@@ -8,11 +8,11 @@ import { absoluteUrl } from "@/lib/site";
 export const Route = createFileRoute("/blog/")({
 	head: () => ({
 		meta: [
-			{ title: "Blog — DevLinks" },
+			{ title: "Blog — plaqo" },
 			{
 				name: "description",
 				content:
-					"Notes on building DevLinks, presenting a developer profile well, and staying visible in a job search.",
+					"Notes on building plaqo, presenting a developer profile well, and staying visible in a job search.",
 			},
 		],
 		links: [{ rel: "canonical", href: absoluteUrl("/blog") }],
@@ -33,7 +33,7 @@ function BlogIndex() {
 				</p>
 
 				<h1 className="mt-6 max-w-2xl font-display text-5xl leading-[0.95] tracking-[-0.04em] sm:text-6xl">
-					Notes on building DevLinks.
+					Notes on building plaqo.
 				</h1>
 
 				<div className="mt-16 border-t border-border">

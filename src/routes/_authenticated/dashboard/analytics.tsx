@@ -31,7 +31,7 @@ import { startProCheckout } from "@/lib/billing";
 import { useMyAnalytics } from "@/lib/queries/analytics";
 
 export const Route = createFileRoute("/_authenticated/dashboard/analytics")({
-	head: () => ({ meta: [{ title: "Analytics — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Analytics — plaqo" }] }),
 	component: AnalyticsPage,
 });
 
@@ -67,7 +67,7 @@ function AnalyticsPage() {
 
 						<p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
 							Understand how people discover and interact with your public
-							DevLinks page over the last {days} days.
+							plaqo page over the last {days} days.
 						</p>
 					</div>
 

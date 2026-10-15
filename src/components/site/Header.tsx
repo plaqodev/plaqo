@@ -11,6 +11,7 @@ import { GithubIcon } from "@/components/brand-icons";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
+import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 
 const nav = [
@@ -50,9 +51,7 @@ export function Header() {
 					}}
 				>
 					<Link to="/" className="group flex w-fit items-center gap-2.5">
-						<span className="font-display text-xl leading-none tracking-[-0.03em] text-foreground">
-							DevLinks
-						</span>
+						<Logo className="text-foreground" />
 
 						<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground transition-colors group-hover:text-brand">
 							01

@@ -44,7 +44,7 @@ import { type SnippetItem, snippetSchema } from "@/lib/schemas";
 import { zodField } from "@/lib/schemas/field";
 
 export const Route = createFileRoute("/_authenticated/dashboard/snippets")({
-	head: () => ({ meta: [{ title: "Snippets — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Snippets — plaqo" }] }),
 	component: SnippetsPage,
 });
 

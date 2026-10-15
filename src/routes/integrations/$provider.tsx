@@ -22,7 +22,7 @@ export const Route = createFileRoute("/integrations/$provider")({
 	},
 	head: ({ loaderData, params }) => {
 		if (!loaderData) return {};
-		const title = `${loaderData.label} integration — DevLinks`;
+		const title = `${loaderData.label} integration — plaqo`;
 		return {
 			meta: [
 				{ title },
@@ -78,7 +78,7 @@ function IntegrationPage() {
 					</p>
 
 					<h1 className="mt-6 max-w-2xl font-display text-4xl leading-[1.02] tracking-[-0.03em] sm:text-5xl">
-						{label} on your DevLinks profile.
+						{label} on your plaqo profile.
 					</h1>
 
 					<p className="mt-6 max-w-lg text-[15px] leading-relaxed text-muted-foreground">

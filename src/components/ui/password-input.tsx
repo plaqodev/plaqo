@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 // InputGroup (no manual absolute/inset-y-0 math) so the toggle button is
 // vertically centered by flexbox, same pattern the username field in
-// signup.tsx already uses for its "devlinks.com/" prefix addon.
+// signup.tsx already uses for its "plaqo.dev/" prefix addon.
 function PasswordInput({
 	className,
 	...props

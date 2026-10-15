@@ -1,11 +1,11 @@
 {
-	"name": "DevLinks",
-	"short_name": "DevLinks",
+	"name": "plaqo",
+	"short_name": "plaqo",
 	"description": "The link-in-bio built for developers.",
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "#0a0a0a",
-	"theme_color": "#0a0a0a",
+	"background_color": "#F4F1EB",
+	"theme_color": "#F4F1EB",
 	"icons": [
 		{
 			"src": "/android-chrome-192.png",

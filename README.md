@@ -2,10 +2,10 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="public/favicon-mark-dark-theme.svg">
     <source media="(prefers-color-scheme: light)" srcset="public/symbol-color-on-paper.svg">
-    <img src="public/symbol-color-on-paper.svg" alt="DevLinks logo" width="112" />
+    <img src="public/symbol-color-on-paper.svg" alt="plaqo logo" width="112" />
   </picture>
 
-  # DevLinks
+  # plaqo
 
   *Developer identity, in one address.*
 </div>
@@ -35,4 +35,4 @@ A developer profile for your work, writing, projects, and everything you want pe
 
 ## License
 
-DevLinks source is available under the [Business Source License 1.1](LICENSE). You're free to read, self-host, and modify it for personal or internal use; you may not offer it (or a substantially similar service) as a hosted product to third parties. It converts to Apache 2.0 on 2030-09-15. For a commercial/hosting license, contact franciscastillodev@proton.me.
+plaqo source is available under the [Business Source License 1.1](LICENSE). You're free to read, self-host, and modify it for personal or internal use; you may not offer it (or a substantially similar service) as a hosted product to third parties. It converts to Apache 2.0 on 2030-09-15. For a commercial/hosting license, contact franciscastillodev@proton.me.

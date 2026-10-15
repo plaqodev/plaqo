@@ -89,21 +89,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		meta: [
 			{ charSet: "utf-8" },
 			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "DevLinks — The link-in-bio built for developers" },
+			{ title: "plaqo — The link-in-bio built for developers" },
 			{
 				name: "description",
 				content:
 					"One page for your repos, snippets, articles and projects. Auto-synced with GitHub, Dev.to, Medium and Stack Overflow.",
 			},
-			{ name: "author", content: "DevLinks" },
+			{ name: "author", content: "plaqo" },
 			{ name: "robots", content: "index, follow" },
-			{ property: "og:site_name", content: "DevLinks" },
+			{ property: "og:site_name", content: "plaqo" },
 			{ property: "og:type", content: "website" },
 			{ property: "og:image", content: absoluteUrl("/og-image-1200x630.png") },
 			{ property: "og:image:width", content: "1200" },
 			{ property: "og:image:height", content: "630" },
 			{ name: "twitter:card", content: "summary_large_image" },
-			{ name: "twitter:site", content: "@devlinks" },
+			{ name: "twitter:site", content: "@plaqodev" },
 			{
 				name: "twitter:image",
 				content: absoluteUrl("/og-image-1200x630.png"),

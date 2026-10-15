@@ -33,11 +33,11 @@ import {
 export const Route = createFileRoute("/_authenticated/dashboard/integrations")({
 	head: () => ({
 		meta: [
-			{ title: "Integrations — DevLinks" },
+			{ title: "Integrations — plaqo" },
 			{
 				name: "description",
 				content:
-					"Connect GitHub, GitLab, Dev.to, Medium, Stack Overflow, WakaTime, LeetCode, npm, Bluesky, Mastodon, Docker Hub, YouTube, Hugging Face and Product Hunt to your DevLinks profile.",
+					"Connect GitHub, GitLab, Dev.to, Medium, Stack Overflow, WakaTime, LeetCode, npm, Bluesky, Mastodon, Docker Hub, YouTube, Hugging Face and Product Hunt to your plaqo profile.",
 			},
 		],
 	}),
@@ -180,7 +180,7 @@ function IntegrationsPage() {
 						</PageTitle>
 
 						<p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-							Connect the services you use and keep your DevLinks profile
+							Connect the services you use and keep your plaqo profile
 							updated automatically.
 						</p>
 					</div>

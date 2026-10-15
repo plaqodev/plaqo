@@ -3,6 +3,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { profileInput } from "@/lib/api/profile-data.schemas";
 import { authClient } from "@/lib/auth-client";
+import { SITE_DOMAIN } from "@/lib/site";
 
 export type UsernameStatus = "idle" | "checking" | "available" | "taken";
 
@@ -89,7 +90,7 @@ export function UsernameField({
 
 			<div className="mt-2 flex h-11 items-center border-b border-border transition-colors focus-within:border-brand">
 				<span className="shrink-0 font-mono text-[11px] text-muted-foreground">
-					devlinks.com/
+					{SITE_DOMAIN}/
 				</span>
 
 				<Input

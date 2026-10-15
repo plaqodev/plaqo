@@ -19,7 +19,7 @@ export const Route = createFileRoute("/reset-password")({
 	validateSearch: (s: Record<string, unknown>) => ({
 		token: typeof s.token === "string" ? s.token : undefined,
 	}),
-	head: () => ({ meta: [{ title: "Set new password — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Set new password — plaqo" }] }),
 	component: ResetPage,
 });
 
@@ -76,7 +76,7 @@ function ResetPage() {
 	return (
 		<AuthShell
 			title="Set new password."
-			subtitle="Choose a new password for your DevLinks account."
+			subtitle="Choose a new password for your plaqo account."
 		>
 			<form
 				onSubmit={(e) => {

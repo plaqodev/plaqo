@@ -31,12 +31,13 @@ import {
 	useState,
 } from "react";
 import toast from "react-hot-toast";
-
+import { Logo } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { authClient } from "@/lib/auth-client";
 import { startProCheckout } from "@/lib/billing";
 import { PLAN_LIMITS } from "@/lib/plan-limits";
 import { useProfileCore } from "@/lib/queries/profile-data";
+import { SITE_DOMAIN } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 type NavIcon = ComponentType<SVGProps<SVGSVGElement>>;
@@ -131,9 +132,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 				>
 					<div className="flex h-16 items-center border-b border-border px-6">
 						<Link to="/" className="flex items-center gap-2.5">
-							<span className="font-display text-xl leading-none tracking-[-0.03em]">
-								DevLinks
-							</span>
+							<Logo />
 
 							<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
 								01
@@ -161,9 +160,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 										className="flex items-center gap-2.5"
 										onClick={requestClose}
 									>
-										<span className="font-display text-xl leading-none tracking-[-0.03em]">
-											DevLinks
-										</span>
+										<Logo />
 
 										<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
 											01
@@ -218,7 +215,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 								className="group flex min-w-0 items-center gap-2"
 							>
 								<span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-									devlinks.com/
+									{SITE_DOMAIN}/
 								</span>
 
 								<span className="truncate font-mono text-[10px] uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-brand">

@@ -22,11 +22,11 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export const Route = createFileRoute("/contact")({
 	head: () => ({
 		meta: [
-			{ title: "Contact — DevLinks" },
+			{ title: "Contact — plaqo" },
 			{
 				name: "description",
 				content:
-					"Get in touch with the DevLinks team — questions, bugs, or feedback.",
+					"Get in touch with the plaqo team — questions, bugs, or feedback.",
 			},
 		],
 	}),

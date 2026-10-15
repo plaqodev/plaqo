@@ -10,7 +10,7 @@ import { SectionHeader } from "./Features";
 
 export const faqs = [
 	{
-		q: "Is DevLinks really free?",
+		q: "Is plaqo really free?",
 		a: "Yes. The Free plan covers a public profile, GitHub sync, up to 5 links, 5 projects and 5 snippets. Forever.",
 	},
 	{

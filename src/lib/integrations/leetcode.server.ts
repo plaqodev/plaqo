@@ -20,7 +20,7 @@ export async function fetchLeetcode(input: {
 			"Content-Type": "application/json",
 			Accept: "application/json",
 			Referer: `https://leetcode.com/${handle}/`,
-			"User-Agent": "DevLinks-Integrations/1.0",
+			"User-Agent": "plaqo-Integrations/1.0",
 		},
 		body: JSON.stringify({ query: QUERY, variables: { username: handle } }),
 	});

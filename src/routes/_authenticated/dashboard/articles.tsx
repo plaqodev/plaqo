@@ -41,7 +41,7 @@ import { type ArticleItem, articleSchema } from "@/lib/schemas";
 import { zodField } from "@/lib/schemas/field";
 
 export const Route = createFileRoute("/_authenticated/dashboard/articles")({
-	head: () => ({ meta: [{ title: "Articles — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Articles — plaqo" }] }),
 	component: ArticlesPage,
 });
 

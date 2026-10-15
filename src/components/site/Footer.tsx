@@ -2,6 +2,8 @@ import { ArrowRightUpIcon } from "@solar-icons/react/linear";
 import { Link } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
 
+import { Logo } from "./Logo";
+
 const ease = [0.16, 1, 0.3, 1] as const;
 
 export function Footer() {
@@ -20,8 +22,12 @@ export function Footer() {
 							ease,
 						}}
 					>
-						<Link to="/" className="font-display text-2xl tracking-[-0.03em]">
-							DevLinks
+						<Link to="/" className="inline-flex" aria-label="plaqo home">
+							<Logo
+								className="gap-2.5"
+								markClassName="h-6 w-6"
+								textClassName="text-2xl"
+							/>
 						</Link>
 
 						<p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -110,7 +116,7 @@ export function Footer() {
 					}}
 				>
 					<p className="text-xs text-muted-foreground">
-						© {new Date().getFullYear()} DevLinks. Built for developers.
+						© {new Date().getFullYear()} plaqo. Built for developers.
 					</p>
 
 					<div className="flex items-center gap-6">

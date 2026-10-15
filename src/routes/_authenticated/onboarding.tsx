@@ -25,6 +25,7 @@ import { autoConnectGithub } from "@/lib/api/integrations/account.functions";
 import { profileInput } from "@/lib/api/profile-data.schemas";
 import { useUpdateProfile } from "@/lib/queries/profile-data";
 import { zodField } from "@/lib/schemas/field";
+import { SITE_DOMAIN } from "@/lib/site";
 import { slugifyUsername } from "@/lib/user";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
 			throw redirect({ to: "/dashboard" });
 		}
 	},
-	head: () => ({ meta: [{ title: "Claim your username — DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Claim your username — plaqo" }] }),
 	component: OnboardingPage,
 });
 
@@ -88,7 +89,7 @@ function OnboardingPage() {
 	return (
 		<AuthShell
 			title="Claim your address."
-			subtitle="This is the URL people will use to find you — devlinks.com/your-username. You can change it later."
+			subtitle={`This is the URL people will use to find you — ${SITE_DOMAIN}/your-username. You can change it later.`}
 		>
 			<form
 				onSubmit={(e) => {

@@ -13,7 +13,7 @@ const rows = [
 	["Basic themes", "Included", "Included"],
 	["Analytics", "—", "Included"],
 	["Custom CSS", "—", "Included"],
-	["Remove DevLinks branding", "—", "Included"],
+	["Remove plaqo branding", "—", "Included"],
 	["Priority support", "—", "Included"],
 ];
 

@@ -19,7 +19,7 @@ export async function fetchMedium(input: { handle: string }): Promise<FetchResul
   const handle = input.handle.trim().replace(/^@/, "");
   if (!handle) throw new Error("Empty Medium handle");
   const res = await fetch(`https://medium.com/feed/@${encodeURIComponent(handle)}`, {
-    headers: { Accept: "application/rss+xml, text/xml", "User-Agent": "DevLinks-Integrations/1.0" },
+    headers: { Accept: "application/rss+xml, text/xml", "User-Agent": "plaqo-Integrations/1.0" },
   });
   if (!res.ok) throw new Error(`Medium ${res.status}`);
   const xml = await res.text();

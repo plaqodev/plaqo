@@ -13,13 +13,13 @@ export interface BlogPostMeta {
 
 export const BLOG_POSTS: BlogPostMeta[] = [
 	{
-		slug: "why-i-built-devlinks",
+		slug: "why-i-built-plaqo",
 		title: "Why I built a link-in-bio just for developers",
 		description:
-			"Generic link-in-bio tools treat a GitHub profile like a Spotify playlist. DevLinks starts from GitHub instead of a blank page.",
+			"Generic link-in-bio tools treat a GitHub profile like a Spotify playlist. plaqo starts from GitHub instead of a blank page.",
 		date: "2026-09-16",
 		pillar: "building-in-public",
-		load: () => import("./why-i-built-devlinks.mdx"),
+		load: () => import("./why-i-built-plaqo.mdx"),
 	},
 ];
 

@@ -47,11 +47,11 @@ import { zodField } from "@/lib/schemas/field";
 export const Route = createFileRoute("/_authenticated/dashboard/support")({
 	head: () => ({
 		meta: [
-			{ title: "Support & community — DevLinks" },
+			{ title: "Support & community — plaqo" },
 			{
 				name: "description",
 				content:
-					"Add Buy Me a Coffee, Ko-fi, GitHub Sponsors and your Discord or Slack community to your DevLinks profile.",
+					"Add Buy Me a Coffee, Ko-fi, GitHub Sponsors and your Discord or Slack community to your plaqo profile.",
 			},
 		],
 	}),

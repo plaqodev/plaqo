@@ -85,7 +85,7 @@ import type {
 } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 import type { ProfileData } from "@/lib/schemas";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, SITE_DOMAIN } from "@/lib/site";
 import { SOCIAL_PLATFORMS, type SocialLinks } from "@/lib/social-links";
 import { themeToStyleTag } from "@/lib/theme-config";
 import { hueFromString } from "@/lib/user";
@@ -154,7 +154,7 @@ export const Route = createFileRoute("/$username")({
 	head: ({ params, loaderData }) => {
 		const l = loaderData?.live;
 		const name = l?.name ?? params.username;
-		const desc = l?.bio ?? `${name} on DevLinks`;
+		const desc = l?.bio ?? `${name} on plaqo`;
 		const profileUrl = absoluteUrl(`/${params.username}`);
 
 		const jsonLd = l
@@ -175,13 +175,13 @@ export const Route = createFileRoute("/$username")({
 
 		return {
 			meta: [
-				{ title: `${name} (@${params.username}) — DevLinks` },
+				{ title: `${name} (@${params.username}) — plaqo` },
 				{ name: "description", content: desc },
-				{ property: "og:title", content: `${name} on DevLinks` },
+				{ property: "og:title", content: `${name} on plaqo` },
 				{ property: "og:description", content: desc },
 				{ property: "og:type", content: "profile" },
 				{ property: "og:url", content: profileUrl },
-				{ name: "twitter:title", content: `${name} on DevLinks` },
+				{ name: "twitter:title", content: `${name} on plaqo` },
 				{ name: "twitter:description", content: desc },
 				// Built-in JSON-LD support: renders a correctly-typed
 				// <script type="application/ld+json"> with safe escaping.
@@ -567,7 +567,7 @@ function ProfileHeader({
 							: "text-muted-foreground hover:text-foreground",
 					)}
 				>
-					devlinks.com/
+					{SITE_DOMAIN}/
 					<span
 						className={themed ? undefined : "text-foreground"}
 						style={themed ? { color: "var(--tt-fg)" } : undefined}
@@ -1102,7 +1102,7 @@ function Watermark({
 					)}
 					style={themed ? { color: "var(--tt-fg)" } : undefined}
 				>
-					Made with DevLinks — make yours free
+					Made with plaqo — make yours free
 				</motion.button>
 			</p>
 
@@ -1162,7 +1162,7 @@ function ClaimUsernameModal({
 					)}
 				>
 					<span className="shrink-0 font-mono text-[12px] text-muted-foreground">
-						devlinks.com/
+						{SITE_DOMAIN}/
 					</span>
 
 					<input

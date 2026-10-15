@@ -26,7 +26,7 @@ async function startAuthorize(request: Request) {
 
 	// Random per-attempt state, checked against the same cookie in the
 	// callback — mitigates an attacker linking their own PH account to a
-	// signed-in victim's DevLinks account (OAuth login CSRF).
+	// signed-in victim's plaqo account (OAuth login CSRF).
 	const state = crypto.randomUUID();
 
 	const params = new URLSearchParams({

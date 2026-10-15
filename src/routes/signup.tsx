@@ -7,7 +7,6 @@ import {
 	useNavigate,
 } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-
 import { AuthShell, OAuthRow } from "@/components/auth/authShell";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +32,7 @@ import {
 	usernameSchema,
 } from "@/lib/schemas/auth";
 import { zodField } from "@/lib/schemas/field";
+import { SITE_DOMAIN } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 // Mismo token de easing que el CTA del landing y el modal de claim del
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/signup")({
 			throw redirect({ to: "/dashboard" });
 		}
 	},
-	head: () => ({ meta: [{ title: "Create your DevLinks" }] }),
+	head: () => ({ meta: [{ title: "Create your plaqo" }] }),
 	component: SignupPage,
 });
 
@@ -79,7 +79,7 @@ function SignupPage() {
 
 	return (
 		<AuthShell
-			title="Create your DevLinks."
+			title="Create your plaqo."
 			subtitle="Your one page for everything you ship."
 			footer={
 				<Link
@@ -322,7 +322,7 @@ function SignupUsernameField({
 				<InputGroup className="mt-2 rounded-none border-x-0 border-t-0 border-b-border bg-transparent shadow-none has-[[data-slot=input-group-control]:focus-visible]:border-brand has-[[data-slot=input-group-control]:focus-visible]:ring-0">
 					<InputGroupAddon className="pl-0">
 						<span className="font-mono text-[11px] text-muted-foreground">
-							devlinks.com/
+							{SITE_DOMAIN}/
 						</span>
 					</InputGroupAddon>
 

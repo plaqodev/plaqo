@@ -6,6 +6,7 @@ import {
 	type UsernameAvailability,
 	useUsernameAvailability,
 } from "@/hooks/use-username-availability";
+import { SITE_DOMAIN } from "@/lib/site";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -99,7 +100,7 @@ export function Cta() {
 								}`}
 							>
 								<span className="shrink-0 font-mono text-[12px] text-muted-foreground">
-									devlinks.com/
+									{SITE_DOMAIN}/
 								</span>
 
 								<input

@@ -11,11 +11,11 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export const Route = createFileRoute("/compare/")({
 	head: () => ({
 		meta: [
-			{ title: "DevLinks vs. the alternatives — Comparisons" },
+			{ title: "plaqo vs. the alternatives — Comparisons" },
 			{
 				name: "description",
 				content:
-					"How DevLinks compares to Linktree, Bento, and a GitHub README or DIY portfolio — honestly, feature by feature.",
+					"How plaqo compares to Linktree, Bento, and a GitHub README or DIY portfolio — honestly, feature by feature.",
 			},
 		],
 		links: [{ rel: "canonical", href: absoluteUrl("/compare") }],
@@ -41,7 +41,7 @@ function CompareIndex() {
 					</p>
 
 					<h1 className="mt-6 max-w-2xl font-display text-5xl leading-[0.95] tracking-[-0.04em] sm:text-6xl">
-						How DevLinks compares.
+						How plaqo compares.
 					</h1>
 
 					<p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">

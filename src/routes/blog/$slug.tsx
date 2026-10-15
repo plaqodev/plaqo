@@ -20,7 +20,7 @@ export const Route = createFileRoute("/blog/$slug")({
 	},
 	head: ({ loaderData, params }) => {
 		if (!loaderData) return {};
-		const title = `${loaderData.title} — DevLinks`;
+		const title = `${loaderData.title} — plaqo`;
 		return {
 			meta: [
 				{ title },

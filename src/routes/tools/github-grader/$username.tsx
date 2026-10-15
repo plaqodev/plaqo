@@ -21,7 +21,7 @@ import { absoluteUrl } from "@/lib/site";
 // removes the only friction a share action has (X's intent URL needs no
 // auth/SDK — it just opens the composer with these fields pre-filled).
 function shareGradeUrl(result: GithubGraderResult, pageUrl: string) {
-	const text = `I scored a ${result.report.grade} (${result.report.score}/100) on the DevLinks GitHub Profile Grader — check yours:`;
+	const text = `I scored a ${result.report.grade} (${result.report.score}/100) on the plaqo GitHub Profile Grader — check yours:`;
 	const params = new URLSearchParams({ text, url: pageUrl });
 	return `https://twitter.com/intent/tweet?${params.toString()}`;
 }
@@ -41,8 +41,8 @@ export const Route = createFileRoute("/tools/github-grader/$username")({
 	},
 	head: ({ loaderData, params }) => {
 		if (!loaderData) return {};
-		const title = `${loaderData.username}'s GitHub profile — grade ${loaderData.report.grade} — DevLinks`;
-		const description = `${loaderData.username} scores ${loaderData.report.score}/100 on the DevLinks GitHub Profile Grader — bio, profile README, activity and consistency.`;
+		const title = `${loaderData.username}'s GitHub profile — grade ${loaderData.report.grade} — plaqo`;
+		const description = `${loaderData.username} scores ${loaderData.report.score}/100 on the plaqo GitHub Profile Grader — bio, profile README, activity and consistency.`;
 		return {
 			meta: [
 				{ title },
@@ -240,7 +240,7 @@ function GithubGraderResultPage() {
 
 				<div className="mt-16 border-t border-border pt-10">
 					<h2 className="font-display text-2xl tracking-tight">
-						This is what DevLinks keeps current automatically.
+						This is what plaqo keeps current automatically.
 					</h2>
 					<p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
 						Your bio, pinned work, and activity — synced from GitHub (and
@@ -251,7 +251,7 @@ function GithubGraderResultPage() {
 						href="/#cta"
 						className="group mt-6 inline-flex items-center gap-2 border border-foreground px-5 py-3 font-mono text-[11px] uppercase tracking-[0.08em] text-foreground transition-colors hover:border-brand hover:text-brand"
 					>
-						Claim your DevLinks profile
+						Claim your plaqo profile
 						<ArrowRightIcon
 							size={13}
 							className="transition-transform duration-300 group-hover:translate-x-1"

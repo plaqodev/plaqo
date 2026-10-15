@@ -40,7 +40,7 @@ function httpsUrl(value: unknown): string | null {
 
 const HEADERS = {
 	Accept: "application/json",
-	"User-Agent": "DevLinks-Integrations/1.0",
+	"User-Agent": "plaqo-Integrations/1.0",
 };
 
 export async function fetchMastodon(input: {

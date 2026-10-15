@@ -12,11 +12,11 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export const Route = createFileRoute("/integrations/")({
 	head: () => ({
 		meta: [
-			{ title: "Integrations — DevLinks" },
+			{ title: "Integrations — plaqo" },
 			{
 				name: "description",
 				content:
-					"Everything DevLinks syncs automatically: GitHub, Dev.to, Medium, Stack Overflow, LeetCode, and more.",
+					"Everything plaqo syncs automatically: GitHub, Dev.to, Medium, Stack Overflow, LeetCode, and more.",
 			},
 		],
 		links: [{ rel: "canonical", href: absoluteUrl("/integrations") }],
@@ -53,7 +53,7 @@ function IntegrationsIndex() {
 					</h1>
 
 					<p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
-						No manual re-entry. Connect an account once and DevLinks keeps
+						No manual re-entry. Connect an account once and plaqo keeps
 						that part of your profile current in the background.
 					</p>
 				</motion.div>
