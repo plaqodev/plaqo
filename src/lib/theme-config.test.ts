@@ -65,3 +65,30 @@ describe("built-in templates", () => {
 		expect(failing).toEqual([]);
 	});
 });
+
+describe("theme effects reach every profile card", () => {
+	const css = (patch: Partial<typeof defaultThemeV2>) =>
+		themeToStyleTag({ ...defaultThemeV2, ...patch }, ".tt-scope");
+
+	it("gives blocks (.tt-panel) the theme radius and shadow", () => {
+		expect(css({})).toMatch(
+			/\.tt-scope \.tt-panel \{[^}]*border-radius: var\(--tt-radius\)[^}]*box-shadow: var\(--tt-shadow\)/,
+		);
+	});
+
+	it("applies glass to blocks as well as links", () => {
+		const out = css({ glass: true });
+		expect(out).toContain(".tt-scope .tt-card, .tt-scope .tt-panel {");
+		expect(out).toMatch(/backdrop-filter: blur\(14px\)/);
+		expect(css({ glass: false })).not.toMatch(/backdrop-filter: blur\(14px\)/);
+	});
+
+	it("moves only clickable cards on hover", () => {
+		const out = css({ hover: "lift" });
+		expect(out).toContain(
+			".tt-scope .tt-card:hover, .tt-scope a.tt-panel:hover {",
+		);
+		expect(out).not.toContain(".tt-scope .tt-panel:hover");
+		expect(css({ hover: "none" })).not.toContain(":hover { transform");
+	});
+});

@@ -452,8 +452,10 @@ export function themeToStyleTag(
 	const body = Object.entries(vars)
 		.map(([k, v]) => `  ${k}: ${v};`)
 		.join("\n");
+	// .tt-panel's background is !important (see `panel` below), so glass has
+	// to match it to win on the profile's blocks.
 	const glass = t.glass
-		? `${scope} .tt-card { background: ${withAlpha(t.surface, 0.55)}; backdrop-filter: blur(14px) saturate(140%); border-color: ${withAlpha(t.fg, 0.1)}; }`
+		? `${scope} .tt-card, ${scope} .tt-panel { background: ${withAlpha(t.surface, 0.55)} !important; backdrop-filter: blur(14px) saturate(140%); border-color: ${withAlpha(t.fg, 0.1)} !important; }`
 		: "";
 	const hover = hoverCss(t.hover, scope);
 	const btn = buttonCss(t, scope);
@@ -475,7 +477,11 @@ export function themeToStyleTag(
 	const muted = `${scope} .tt-muted { color: var(--tt-muted) !important; }`;
 	const surface = `${scope} .tt-surface { background: var(--tt-surface) !important; }`;
 	const borderC = `${scope} .tt-border-c { border-color: var(--tt-border) !important; }`;
-	const panel = `${scope} .tt-panel { background: var(--tt-surface) !important; border-color: var(--tt-border) !important; }`;
+	// Every profile block's card is a .tt-panel (links are .tt-card), so the
+	// theme's radius and shadow go here too — otherwise they only reached the
+	// links. Two-class selector: beats the blocks' own rounded-*/shadow utilities
+	// without !important. Padding stays per block: their layouts are tuned.
+	const panel = `${scope} .tt-panel { background: var(--tt-surface) !important; border-color: var(--tt-border) !important; border-radius: var(--tt-radius); box-shadow: var(--tt-shadow); transition: transform .18s ease, box-shadow .18s ease, background .18s ease, opacity .18s ease; }`;
 
 	// Los snippets se resaltan server-side con el tema "css-variables" de
 	// Shiki (ver src/lib/highlight.server.ts) — cada token ya trae un
@@ -500,16 +506,20 @@ export function themeToStyleTag(
 	return css.replace(/</g, "\\3c ");
 }
 
+// Hover moves only what can be clicked: link cards (.tt-card) and blocks
+// whose card is itself a link (a.tt-panel — repos, videos, shots…). Static
+// containers like the contribution graph stay put.
 function hoverCss(kind: ThemeV2["hover"], scope: string): string {
+	const target = `${scope} .tt-card:hover, ${scope} a.tt-panel:hover`;
 	switch (kind) {
 		case "lift":
-			return `${scope} .tt-card:hover { transform: translateY(-2px); box-shadow: var(--tt-shadow), 0 8px 20px rgba(0,0,0,.2); }`;
+			return `${target} { transform: translateY(-2px); box-shadow: var(--tt-shadow), 0 8px 20px rgba(0,0,0,.2); }`;
 		case "glow":
-			return `${scope} .tt-card:hover { box-shadow: 0 0 0 1px var(--tt-accent), 0 0 24px color-mix(in oklab, var(--tt-accent) 40%, transparent); }`;
+			return `${target} { box-shadow: 0 0 0 1px var(--tt-accent), 0 0 24px color-mix(in oklab, var(--tt-accent) 40%, transparent); }`;
 		case "scale":
-			return `${scope} .tt-card:hover { transform: scale(1.02); }`;
+			return `${target} { transform: scale(1.02); }`;
 		case "shift":
-			return `${scope} .tt-card:hover { transform: translateX(4px); }`;
+			return `${target} { transform: translateX(4px); }`;
 		default:
 			return "";
 	}

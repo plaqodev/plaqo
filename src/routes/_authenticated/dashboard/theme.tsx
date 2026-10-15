@@ -576,10 +576,10 @@ function TypePane({
 	);
 }
 
-// Con cada fuente nueva la grilla crece — colapsada por defecto para que
-// picker no empuje el resto del panel fuera de vista. Si el valor activo
-// cae fuera de las primeras N, se muestra igual expandido para no esconder
-// la selección actual.
+// Con cada fuente nueva la grilla crece — siempre arranca colapsada para que
+// el picker no empuje el resto del panel fuera de vista. Si el valor activo
+// cae fuera de las primeras N, ocupa el último lugar visible: la selección
+// actual se ve sin tener que expandir la lista entera.
 const FONT_PICKER_COLLAPSED_COUNT = 6;
 
 function FontPicker({
@@ -597,21 +597,14 @@ function FontPicker({
 		categories.includes(font.category),
 	);
 	const hiddenCount = options.length - FONT_PICKER_COLLAPSED_COUNT;
-	// Solo determina el estado INICIAL — si el valor guardado cae fuera de las
-	// primeras N, arranca expandido para no esconder la selección activa al
-	// cargar. Después el toggle manda: colapsar sigue posible aunque eso
-	// oculte el botón resaltado (es una elección explícita del usuario).
-	const [expanded, setExpanded] = useState(
-		() =>
-			hiddenCount > 0 &&
-			options
-				.slice(FONT_PICKER_COLLAPSED_COUNT)
-				.some((font) => font.value === value),
-	);
-	const visible =
-		expanded || hiddenCount <= 0
-			? options
-			: options.slice(0, FONT_PICKER_COLLAPSED_COUNT);
+	const [expanded, setExpanded] = useState(false);
+
+	const collapsed = options.slice(0, FONT_PICKER_COLLAPSED_COUNT);
+	const active = options.find((font) => font.value === value);
+	if (active && !collapsed.includes(active)) {
+		collapsed[collapsed.length - 1] = active;
+	}
+	const visible = expanded || hiddenCount <= 0 ? options : collapsed;
 
 	return (
 		<Row label={label}>

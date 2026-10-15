@@ -1,7 +1,8 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { StarIcon } from "@solar-icons/react/linear";
 import { GitFork } from "lucide-react";
-import { formatCount } from "@/lib/format";
+import { type PointerEvent, useState } from "react";
+import { formatCount, formatDate } from "@/lib/format";
 import type { GithubPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -183,6 +184,23 @@ function Heatmap({
 }) {
 	const weeks = buildWeeks(heatmap);
 	const mutedClass = themed ? "tt-muted" : "text-muted-foreground";
+	// The day under the pointer. One delegated handler on the grid reads the
+	// cell's data attributes — no per-cell handlers across ~365 days.
+	const [active, setActive] = useState<{ date: string; count: number } | null>(
+		null,
+	);
+
+	function onPointerOver(event: PointerEvent<HTMLDivElement>) {
+		const cell = (event.target as HTMLElement).closest<HTMLElement>(
+			"[data-date]",
+		);
+		if (!cell?.dataset.date) return;
+		setActive({
+			date: cell.dataset.date,
+			count: Number(cell.dataset.count ?? 0),
+		});
+	}
+
 	return (
 		<div>
 			<div
@@ -191,15 +209,22 @@ function Heatmap({
 					themed ? "tt-panel" : "border-hairline bg-surface",
 				)}
 			>
-				<div className="flex gap-0.75">
+				<div
+					className="flex gap-0.75"
+					onPointerOver={onPointerOver}
+					onPointerLeave={() => setActive(null)}
+				>
 					{weeks.map((week) => (
 						<div key={week[0].date} className="flex flex-col gap-0.75">
 							{week.map((c) => (
 								<span
 									key={c.date}
-									title={`${c.count} contribution${c.count === 1 ? "" : "s"} on ${c.date}`}
+									data-date={c.date}
+									data-count={c.count}
 									className={cx(
-										"h-2.5 w-2.5 rounded-[2px]",
+										"h-2.5 w-2.5 rounded-[2px] transition-transform duration-150 ease-out",
+										active?.date === c.date &&
+											"relative z-10 ring-1 ring-current motion-safe:scale-150",
 										!themed &&
 											(LEDGER_LEVEL_COLORS[c.level] ?? LEDGER_LEVEL_COLORS[0]),
 									)}
@@ -225,7 +250,9 @@ function Heatmap({
 						mutedClass,
 					)}
 				>
-					{formatCount(total)} contributions / last year
+					{active
+						? `${formatCount(active.count)} contribution${active.count === 1 ? "" : "s"} on ${formatDate(active.date)}`
+						: `${formatCount(total)} contributions / last year`}
 				</p>
 
 				<div className="flex shrink-0 items-center gap-1.5">
