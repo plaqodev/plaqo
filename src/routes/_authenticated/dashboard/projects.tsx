@@ -52,7 +52,11 @@ import {
 } from "@/lib/queries/profile-data";
 import { type ProjectItem, projectSchema } from "@/lib/schemas";
 import { zodField } from "@/lib/schemas/field";
-import { TECHNOLOGY_SUGGESTIONS } from "@/lib/technologies";
+import {
+	canonicalTech,
+	canonicalTechList,
+	TECHNOLOGY_SUGGESTIONS,
+} from "@/lib/technologies";
 
 export const Route = createFileRoute("/_authenticated/dashboard/projects")({
 	head: () => ({ meta: [{ title: "Projects — plaqo" }] }),
@@ -282,7 +286,7 @@ function ProjectRow({
 				</p>
 
 				<div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 sm:hidden">
-					{project.tech.map((technology) => (
+					{canonicalTechList(project.tech).map((technology) => (
 						<span
 							key={technology}
 							className="font-mono text-[9px] uppercase tracking-[0.04em] text-muted-foreground"
@@ -294,7 +298,7 @@ function ProjectRow({
 			</div>
 
 			<div className="hidden flex-wrap gap-x-3 gap-y-1 sm:flex">
-				{project.tech.map((technology) => (
+				{canonicalTechList(project.tech).map((technology) => (
 					<span
 						key={technology}
 						className="font-mono text-[9px] uppercase tracking-[0.04em] text-muted-foreground"
@@ -432,7 +436,7 @@ function ProjectDialog({
 		current: string[],
 		onChange: (next: string[]) => void,
 	) {
-		const value = raw.trim();
+		const value = canonicalTech(raw);
 		if (!value) return;
 		if (
 			current.length >= 20 ||

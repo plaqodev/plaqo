@@ -87,6 +87,7 @@ import { sanitizeHref } from "@/lib/safe-url";
 import type { ProfileData } from "@/lib/schemas";
 import { absoluteUrl, SITE_DOMAIN } from "@/lib/site";
 import { SOCIAL_PLATFORMS, type SocialLinks } from "@/lib/social-links";
+import { canonicalTechList } from "@/lib/technologies";
 import { themeToStyleTag } from "@/lib/theme-config";
 import { hueFromString } from "@/lib/user";
 
@@ -904,7 +905,10 @@ function ProjectsSection({
 					<div
 						key={p.id}
 						className={cx(
-							"rounded-xl border p-4",
+							// flex-col + mt-auto on the links row keeps GitHub /
+							// Live demo pinned to the bottom, so cards in the same
+							// grid row line their links up regardless of copy length.
+							"flex flex-col rounded-xl border p-4",
 							themed ? "tt-panel" : "border-hairline bg-surface",
 						)}
 					>
@@ -921,7 +925,7 @@ function ProjectsSection({
 							{p.description}
 						</p>
 						<div className="mt-3 flex flex-wrap gap-1.5">
-							{p.tech.map((t) => (
+							{canonicalTechList(p.tech).map((t) => (
 								<span
 									key={t}
 									className={cx(
@@ -937,7 +941,7 @@ function ProjectsSection({
 						</div>
 						<div
 							className={cx(
-								"mt-3 flex gap-3 text-xs",
+								"mt-auto flex gap-3 pt-3 text-xs",
 								themed ? "tt-muted" : "text-muted-foreground",
 							)}
 						>

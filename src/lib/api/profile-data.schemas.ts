@@ -5,6 +5,7 @@
 import { z } from "zod";
 import { COMMUNITY_PLATFORMS, LIMITS, SUPPORT_PLATFORMS } from "@/lib/schemas";
 import { SOCIAL_PLATFORM_KEYS } from "@/lib/social-links";
+import { canonicalTechList } from "@/lib/technologies";
 
 // Authoritative server-side scheme allow-list for every URL a visitor can
 // click on a public profile — the sole gate, since this file's validators
@@ -130,7 +131,8 @@ export const projectInput = z.object({
 	tech: z
 		.array(z.string().max(LIMITS.techItem))
 		.max(LIMITS.projectTech)
-		.default([]),
+		.default([])
+		.transform(canonicalTechList),
 	github: optionalUrl,
 	demo: optionalUrl,
 	status: z.enum(["shipped", "wip", "archived"]).default("shipped"),
