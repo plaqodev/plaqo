@@ -1,4 +1,5 @@
 import { SiPinterest } from "@icons-pack/react-simple-icons";
+import { formatCount } from "@/lib/format";
 import type { PinterestPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -34,11 +35,12 @@ export function PinterestBlock({
 						themed ? "hover:opacity-80" : "hover:text-foreground",
 					)}
 				>
-					@{payload.profile.username}
+					@{payload.profile.username} · {formatCount(payload.profile.followers)}{" "}
+					followers
 				</a>
 			</h2>
 			<div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-				{payload.pins.map((p) => (
+				{payload.pins.slice(0, 8).map((p) => (
 					<a
 						key={p.id}
 						href={sanitizeHref(p.url)}

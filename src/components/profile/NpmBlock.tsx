@@ -3,15 +3,12 @@ import {
 	ArrowRightUpIcon,
 	DownloadMinimalisticIcon,
 } from "@solar-icons/react/linear";
+import { formatCount } from "@/lib/format";
 import type { NpmPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
 function cx(...classes: Array<string | false | null | undefined>) {
 	return classes.filter(Boolean).join(" ");
-}
-
-function compact(n: number) {
-	return Intl.NumberFormat("en", { notation: "compact" }).format(n);
 }
 
 export function NpmBlock({
@@ -33,9 +30,18 @@ export function NpmBlock({
 				<span className="flex items-center gap-2">
 					<SiNpm className="h-3.5 w-3.5" /> npm packages
 				</span>
-				<span className="font-mono text-[11px] normal-case tracking-normal">
-					{compact(payload.total_weekly_downloads)} /week
-				</span>
+				<a
+					href={sanitizeHref(payload.url)}
+					target="_blank"
+					rel="noreferrer"
+					className={cx(
+						"font-mono text-[11px] normal-case tracking-normal transition-opacity",
+						themed ? "hover:opacity-80" : "hover:text-foreground",
+					)}
+				>
+					@{payload.username} · {formatCount(payload.total_weekly_downloads)}{" "}
+					/week
+				</a>
 			</h2>
 			{/*
 			  Misma estructura de caja única con divide-y que Dev.to/Medium:
@@ -84,7 +90,7 @@ export function NpmBlock({
 								{p.weekly_downloads != null && (
 									<span className="inline-flex items-center gap-1">
 										<DownloadMinimalisticIcon className="h-3 w-3" />
-										{compact(p.weekly_downloads)}
+										{formatCount(p.weekly_downloads)}
 									</span>
 								)}
 							</div>

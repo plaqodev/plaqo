@@ -5,11 +5,23 @@ import {
 	EyeIcon,
 	HeartIcon,
 } from "@solar-icons/react/linear";
+import { formatCount } from "@/lib/format";
 import type { DevtoPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
 function cx(...classes: Array<string | false | null | undefined>) {
 	return classes.filter(Boolean).join(" ");
+}
+
+// The payload has no username, but every article URL is dev.to/<user>/<slug>.
+function devtoHandle(url: string): string | null {
+	try {
+		const u = new URL(url);
+		if (u.hostname !== "dev.to") return null;
+		return u.pathname.split("/")[1] || null;
+	} catch {
+		return null;
+	}
 }
 
 export function DevtoBlock({
@@ -20,16 +32,31 @@ export function DevtoBlock({
 	themed?: boolean;
 }) {
 	if (payload.articles.length === 0) return null;
+	const handle = devtoHandle(payload.articles[0].url);
 	return (
 		<section>
 			<h2
 				className={cx(
-					"mb-4 flex items-center gap-2 text-sm font-medium uppercase tracking-widest",
+					"mb-4 flex items-center justify-between text-sm font-medium uppercase tracking-widest",
 					themed ? "tt-muted" : "text-muted-foreground",
 				)}
 			>
-				<SiDevdotto className="h-3.5 w-3.5" />
-				Dev.to
+				<span className="flex items-center gap-2">
+					<SiDevdotto className="h-3.5 w-3.5" /> Dev.to
+				</span>
+				{handle && (
+					<a
+						href={`https://dev.to/${handle}`}
+						target="_blank"
+						rel="noreferrer"
+						className={cx(
+							"font-mono text-[11px] normal-case tracking-normal transition-opacity",
+							themed ? "hover:opacity-80" : "hover:text-foreground",
+						)}
+					>
+						@{handle}
+					</a>
+				)}
 			</h2>
 
 			<div
@@ -40,7 +67,7 @@ export function DevtoBlock({
 						: "divide-hairline border-hairline bg-surface",
 				)}
 			>
-				{payload.articles.map((a) => (
+				{payload.articles.slice(0, 6).map((a) => (
 					<a
 						key={a.id}
 						href={sanitizeHref(a.url)}
@@ -61,12 +88,12 @@ export function DevtoBlock({
 							>
 								<span className="inline-flex items-center gap-1">
 									<HeartIcon size={12} className="h-3 w-3" />
-									{a.reactions}
+									{formatCount(a.reactions)}
 								</span>
 								{a.page_views != null && (
 									<span className="inline-flex items-center gap-1">
 										<EyeIcon size={12} className="h-3 w-3" />
-										{a.page_views}
+										{formatCount(a.page_views)}
 									</span>
 								)}
 								<span className="inline-flex items-center gap-1">

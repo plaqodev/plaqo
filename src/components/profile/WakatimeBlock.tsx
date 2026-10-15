@@ -1,5 +1,12 @@
 import { SiWakatime } from "@icons-pack/react-simple-icons";
 import type { WakatimePayload } from "@/lib/integrations/types";
+import { sanitizeHref } from "@/lib/safe-url";
+
+// WakaTime answers with whichever range the user made public ("last_7_days",
+// "last_30_days", "all_time"…), not always 7 days — show what came back.
+function humanRange(range: string) {
+	return range.replaceAll("_", " ");
+}
 
 function cx(...classes: Array<string | false | null | undefined>) {
 	return classes.filter(Boolean).join(" ");
@@ -13,19 +20,33 @@ export function WakatimeBlock({
 	themed?: boolean;
 }) {
 	if (payload.languages.length === 0) return null;
+	const range = humanRange(payload.range);
 	return (
 		<section>
 			<h2
 				className={cx(
-					"mb-4 flex items-center gap-2 text-sm font-medium uppercase tracking-widest",
+					"mb-4 flex items-center justify-between text-sm font-medium uppercase tracking-widest",
 					themed ? "tt-muted" : "text-muted-foreground",
 				)}
 			>
-				<SiWakatime className="h-3.5 w-3.5" /> Coding time
+				<span className="flex items-center gap-2">
+					<SiWakatime className="h-3.5 w-3.5" /> WakaTime
+				</span>
+				<a
+					href={sanitizeHref(payload.url)}
+					target="_blank"
+					rel="noreferrer"
+					className={cx(
+						"font-mono text-[11px] normal-case tracking-normal transition-opacity",
+						themed ? "hover:opacity-80" : "hover:text-foreground",
+					)}
+				>
+					{range}
+				</a>
 			</h2>
 			<div
 				className={cx(
-					"rounded-xl border p-5",
+					"rounded-xl border p-4",
 					themed ? "tt-panel" : "border-hairline bg-surface",
 				)}
 			>
@@ -39,7 +60,7 @@ export function WakatimeBlock({
 							themed ? "tt-muted" : "text-muted-foreground",
 						)}
 					>
-						last 7 days · {payload.daily_average_human}/day avg
+						{payload.daily_average_human}/day avg
 					</p>
 				</div>
 				<ul className="mt-4 space-y-2">

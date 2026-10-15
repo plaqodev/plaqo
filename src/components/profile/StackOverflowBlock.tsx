@@ -1,4 +1,6 @@
+import { SiStackoverflow } from "@icons-pack/react-simple-icons";
 import { ArrowRightUpIcon } from "@solar-icons/react/linear";
+import { formatCount } from "@/lib/format";
 import type { StackOverflowPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -19,24 +21,24 @@ export function StackOverflowBlock({
 			<div className="mb-4 flex items-baseline justify-between">
 				<h2
 					className={cx(
-						"text-sm font-medium uppercase tracking-widest",
+						"flex items-center gap-2 text-sm font-medium uppercase tracking-widest",
 						themed ? "tt-muted" : "text-muted-foreground",
 					)}
 				>
-					Stack Overflow
+					<SiStackoverflow className="h-3.5 w-3.5" /> Stack Overflow
 				</h2>
 				<a
 					href={sanitizeHref(user.link)}
 					target="_blank"
 					rel="noreferrer"
 					className={cx(
-						"font-mono text-xs transition-opacity",
+						"font-mono text-[11px] transition-opacity",
 						themed
 							? "tt-muted hover:opacity-100"
 							: "text-muted-foreground hover:text-foreground",
 					)}
 				>
-					{user.display_name} · {user.reputation.toLocaleString()} rep
+					{user.display_name} · {formatCount(user.reputation)} rep
 				</a>
 			</div>
 			<div
@@ -90,7 +92,7 @@ export function StackOverflowBlock({
 											themed ? "tt-muted" : "text-muted-foreground",
 										)}
 									>
-										+{a.score}
+										+{formatCount(a.score)}
 										<ArrowRightUpIcon size={14} className="h-3.5 w-3.5" />
 									</span>
 								</a>
@@ -126,7 +128,7 @@ function Badge({
 				className={themed ? undefined : "text-foreground"}
 				style={themed ? { color: "var(--tt-fg)" } : undefined}
 			>
-				{count}
+				{formatCount(count)}
 			</span>
 			{label}
 		</span>

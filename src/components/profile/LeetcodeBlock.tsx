@@ -1,5 +1,5 @@
 import { SiLeetcode } from "@icons-pack/react-simple-icons";
-import { ArrowRightUpIcon } from "@solar-icons/react/linear";
+import { formatCount } from "@/lib/format";
 import type { LeetcodePayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -40,21 +40,34 @@ export function LeetcodeBlock({
 		<section>
 			<h2
 				className={cx(
-					"mb-4 flex items-center gap-2 text-sm font-medium uppercase tracking-widest",
+					"mb-4 flex items-center justify-between text-sm font-medium uppercase tracking-widest",
 					themed ? "tt-muted" : "text-muted-foreground",
 				)}
 			>
-				<SiLeetcode className="h-3.5 w-3.5" /> LeetCode
+				<span className="flex items-center gap-2">
+					<SiLeetcode className="h-3.5 w-3.5" /> LeetCode
+				</span>
+				<a
+					href={sanitizeHref(payload.url)}
+					target="_blank"
+					rel="noreferrer"
+					className={cx(
+						"font-mono text-[11px] normal-case tracking-normal transition-opacity",
+						themed ? "hover:opacity-80" : "hover:text-foreground",
+					)}
+				>
+					@{payload.username}
+				</a>
 			</h2>
 			<div
 				className={cx(
-					"rounded-xl border p-5",
+					"rounded-xl border p-4",
 					themed ? "tt-panel" : "border-hairline bg-surface",
 				)}
 			>
 				<div className="flex items-baseline justify-between">
 					<p className="text-2xl font-semibold tracking-tight">
-						{payload.solved.all}
+						{formatCount(payload.solved.all)}
 						<span
 							className={cx(
 								"ml-1 text-sm font-normal",
@@ -71,7 +84,7 @@ export function LeetcodeBlock({
 								themed ? "tt-muted" : "text-muted-foreground",
 							)}
 						>
-							Rank #{payload.ranking.toLocaleString()}
+							Rank #{formatCount(payload.ranking)}
 						</p>
 					)}
 				</div>
@@ -101,19 +114,6 @@ export function LeetcodeBlock({
 						</li>
 					))}
 				</ul>
-				<a
-					href={sanitizeHref(payload.url)}
-					target="_blank"
-					rel="noreferrer"
-					className={cx(
-						"mt-4 inline-flex items-center gap-1 text-xs transition-opacity",
-						themed
-							? "tt-muted hover:opacity-80"
-							: "text-muted-foreground hover:text-foreground",
-					)}
-				>
-					View profile <ArrowRightUpIcon className="h-3 w-3" />
-				</a>
 			</div>
 		</section>
 	);

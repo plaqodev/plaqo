@@ -1,6 +1,7 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { StarIcon } from "@solar-icons/react/linear";
 import { GitFork } from "lucide-react";
+import { formatCount } from "@/lib/format";
 import type { GithubPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -33,13 +34,14 @@ export function GithubBlock({
 					target="_blank"
 					rel="noreferrer"
 					className={cx(
-						"font-mono text-xs transition-opacity",
+						"font-mono text-[11px] transition-opacity",
 						themed
 							? "tt-muted hover:opacity-100"
 							: "text-muted-foreground hover:text-foreground",
 					)}
 				>
-					@{payload.profile.login} · {payload.profile.followers} followers
+					@{payload.profile.login} · {formatCount(payload.profile.followers)}{" "}
+					followers
 				</a>
 			</div>
 
@@ -70,7 +72,7 @@ export function GithubBlock({
 						)}
 					>
 						<div className="flex items-center justify-between">
-							<p className="truncate text-sm font-medium">{r.name}</p>
+							<p className="truncate font-mono text-sm font-medium">{r.name}</p>
 							{r.language && (
 								<span
 									className={cx(
@@ -100,11 +102,11 @@ export function GithubBlock({
 						>
 							<span className="inline-flex items-center gap-1">
 								<StarIcon className="h-3 w-3" />
-								{r.stars}
+								{formatCount(r.stars)}
 							</span>
 							<span className="inline-flex items-center gap-1">
 								<GitFork className="h-3 w-3" />
-								{r.forks}
+								{formatCount(r.forks)}
 							</span>
 						</div>
 					</a>
@@ -223,7 +225,7 @@ function Heatmap({
 						mutedClass,
 					)}
 				>
-					{total.toLocaleString()} contributions / last year
+					{formatCount(total)} contributions / last year
 				</p>
 
 				<div className="flex shrink-0 items-center gap-1.5">

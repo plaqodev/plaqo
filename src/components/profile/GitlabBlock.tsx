@@ -1,6 +1,7 @@
 import { SiGitlab } from "@icons-pack/react-simple-icons";
 import { ArrowRightUpIcon, StarIcon } from "@solar-icons/react/linear";
 import { GitFork } from "lucide-react";
+import { formatCount } from "@/lib/format";
 import type { GitlabPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -39,7 +40,7 @@ export function GitlabBlock({
 					@{payload.profile.username}
 				</a>
 			</h2>
-			<div className="grid gap-2 sm:grid-cols-2">
+			<div className="grid gap-3 sm:grid-cols-2">
 				{payload.repos.slice(0, 6).map((r) => (
 					<a
 						key={r.url}
@@ -47,7 +48,7 @@ export function GitlabBlock({
 						target="_blank"
 						rel="noreferrer"
 						className={cx(
-							"rounded-xl border p-4 transition-colors",
+							"flex flex-col rounded-xl border p-4 transition-colors",
 							themed
 								? "tt-panel hover:opacity-90"
 								: "border-hairline bg-surface hover:bg-surface-elevated",
@@ -74,17 +75,17 @@ export function GitlabBlock({
 						)}
 						<div
 							className={cx(
-								"mt-2 flex items-center gap-3 text-[11px]",
+								"mt-auto flex items-center gap-3 pt-3 text-[11px]",
 								themed ? "tt-muted" : "text-muted-foreground",
 							)}
 						>
 							<span className="inline-flex items-center gap-1">
 								<StarIcon className="h-3 w-3" />
-								{r.stars}
+								{formatCount(r.stars)}
 							</span>
 							<span className="inline-flex items-center gap-1">
 								<GitFork className="h-3 w-3" />
-								{r.forks}
+								{formatCount(r.forks)}
 							</span>
 						</div>
 					</a>

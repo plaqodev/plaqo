@@ -1,14 +1,11 @@
 import { SiHuggingface } from "@icons-pack/react-simple-icons";
 import { ArrowRightUpIcon, HeartIcon } from "@solar-icons/react/linear";
+import { formatCount } from "@/lib/format";
 import type { HuggingfacePayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
 function cx(...classes: Array<string | false | null | undefined>) {
 	return classes.filter(Boolean).join(" ");
-}
-
-function compact(n: number) {
-	return Intl.NumberFormat("en", { notation: "compact" }).format(n);
 }
 
 export function HuggingfaceBlock({
@@ -39,7 +36,8 @@ export function HuggingfaceBlock({
 						themed ? "hover:opacity-80" : "hover:text-foreground",
 					)}
 				>
-					{compact(payload.profile.followers)} followers
+					@{payload.profile.username} · {formatCount(payload.profile.followers)}{" "}
+					followers
 				</a>
 			</h2>
 			<div
@@ -50,7 +48,7 @@ export function HuggingfaceBlock({
 						: "divide-hairline border-hairline bg-surface",
 				)}
 			>
-				{payload.models.map((m) => (
+				{payload.models.slice(0, 6).map((m) => (
 					<a
 						key={m.id}
 						href={sanitizeHref(m.url)}
@@ -72,9 +70,9 @@ export function HuggingfaceBlock({
 								{m.pipeline_tag && <span>{m.pipeline_tag}</span>}
 								<span className="inline-flex items-center gap-1">
 									<HeartIcon className="h-3 w-3" />
-									{compact(m.likes)}
+									{formatCount(m.likes)}
 								</span>
-								<span>{compact(m.downloads)} downloads</span>
+								<span>{formatCount(m.downloads)} downloads</span>
 							</div>
 						</div>
 						<ArrowRightUpIcon

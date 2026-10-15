@@ -1,4 +1,5 @@
 import { SiYoutube } from "@icons-pack/react-simple-icons";
+import { formatDate } from "@/lib/format";
 import type { YoutubePayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -23,14 +24,14 @@ export function YoutubeBlock({
 				)}
 			>
 				<span className="flex items-center gap-2">
-					<SiYoutube className="h-3.5 w-3.5" /> Videos & talks
+					<SiYoutube className="h-3.5 w-3.5" /> YouTube
 				</span>
 				<a
 					href={sanitizeHref(payload.channel.url)}
 					target="_blank"
 					rel="noreferrer"
 					className={cx(
-						"text-[11px] normal-case tracking-normal transition-opacity",
+						"font-mono text-[11px] normal-case tracking-normal transition-opacity",
 						themed ? "hover:opacity-80" : "hover:text-foreground",
 					)}
 				>
@@ -45,7 +46,7 @@ export function YoutubeBlock({
 						target="_blank"
 						rel="noreferrer"
 						className={cx(
-							"overflow-hidden rounded-xl border transition-colors",
+							"flex flex-col overflow-hidden rounded-xl border transition-colors",
 							themed
 								? "tt-panel hover:opacity-90"
 								: "border-hairline bg-surface hover:bg-surface-elevated",
@@ -54,21 +55,21 @@ export function YoutubeBlock({
 						{v.thumbnail && (
 							<img
 								src={v.thumbnail}
-								alt={v.title}
+								alt=""
 								loading="lazy"
 								className="aspect-video w-full object-cover"
 							/>
 						)}
-						<div className="p-4">
+						<div className="flex flex-1 flex-col p-4">
 							<p className="line-clamp-2 text-sm font-medium">{v.title}</p>
 							{v.published_at && (
 								<p
 									className={cx(
-										"mt-1 text-[11px]",
+										"mt-auto pt-3 text-[11px]",
 										themed ? "tt-muted" : "text-muted-foreground",
 									)}
 								>
-									{new Date(v.published_at).toLocaleDateString()}
+									{formatDate(v.published_at)}
 								</p>
 							)}
 						</div>

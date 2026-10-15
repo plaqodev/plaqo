@@ -1,5 +1,6 @@
 import { SiMastodon } from "@icons-pack/react-simple-icons";
 import { HeartIcon, RepeatIcon } from "@solar-icons/react/linear";
+import { formatCount, formatDate } from "@/lib/format";
 import type { MastodonPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -35,11 +36,12 @@ export function MastodonBlock({
 						themed ? "hover:opacity-80" : "hover:text-foreground",
 					)}
 				>
-					{payload.profile.acct}
+					@{payload.profile.acct.replace(/^@/, "")} ·{" "}
+					{formatCount(payload.profile.followers)} followers
 				</a>
 			</h2>
 			<div className="grid gap-2">
-				{payload.posts.slice(0, 5).map((p) => (
+				{payload.posts.slice(0, 6).map((p) => (
 					<a
 						key={p.url}
 						href={sanitizeHref(p.url)}
@@ -61,15 +63,13 @@ export function MastodonBlock({
 						>
 							<span className="inline-flex items-center gap-1">
 								<HeartIcon className="h-3 w-3" />
-								{p.favourites}
+								{formatCount(p.favourites)}
 							</span>
 							<span className="inline-flex items-center gap-1">
 								<RepeatIcon className="h-3 w-3" />
-								{p.reblogs}
+								{formatCount(p.reblogs)}
 							</span>
-							{p.created_at && (
-								<span>{new Date(p.created_at).toLocaleDateString()}</span>
-							)}
+							{p.created_at && <span>{formatDate(p.created_at)}</span>}
 						</div>
 					</a>
 				))}

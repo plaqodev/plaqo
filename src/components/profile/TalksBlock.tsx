@@ -3,6 +3,7 @@ import {
 	MicrophoneLargeIcon,
 	PlayIcon,
 } from "@solar-icons/react/linear";
+import { formatDate } from "@/lib/format";
 import { sanitizeHref } from "@/lib/safe-url";
 
 function cx(...classes: Array<string | false | null | undefined>) {
@@ -61,7 +62,7 @@ export function TalksBlock({
 										themed ? "tt-muted" : "text-muted-foreground",
 									)}
 								>
-									{new Date(t.date).toLocaleDateString()}
+									{formatDate(t.date)}
 								</span>
 							)}
 						</div>

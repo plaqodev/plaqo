@@ -1,5 +1,6 @@
 import { SiBluesky } from "@icons-pack/react-simple-icons";
 import { HeartIcon, RepeatIcon } from "@solar-icons/react/linear";
+import { formatCount, formatDate } from "@/lib/format";
 import type { BlueskyPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -35,11 +36,12 @@ export function BlueskyBlock({
 						themed ? "hover:opacity-80" : "hover:text-foreground",
 					)}
 				>
-					{payload.profile.followers.toLocaleString()} followers
+					@{payload.profile.handle} · {formatCount(payload.profile.followers)}{" "}
+					followers
 				</a>
 			</h2>
 			<div className="grid gap-2">
-				{payload.posts.slice(0, 5).map((p) => (
+				{payload.posts.slice(0, 6).map((p) => (
 					<a
 						key={p.url}
 						href={sanitizeHref(p.url)}
@@ -61,15 +63,13 @@ export function BlueskyBlock({
 						>
 							<span className="inline-flex items-center gap-1">
 								<HeartIcon className="h-3 w-3" />
-								{p.likes}
+								{formatCount(p.likes)}
 							</span>
 							<span className="inline-flex items-center gap-1">
 								<RepeatIcon className="h-3 w-3" />
-								{p.reposts}
+								{formatCount(p.reposts)}
 							</span>
-							{p.created_at && (
-								<span>{new Date(p.created_at).toLocaleDateString()}</span>
-							)}
+							{p.created_at && <span>{formatDate(p.created_at)}</span>}
 						</div>
 					</a>
 				))}

@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { buildWeeks } from "@/components/profile/GithubBlock";
 import type { PublicProfile } from "@/lib/api/public-profile.functions";
 import { COUNTRY_NAME_BY_CODE } from "@/lib/countries";
+import { formatCount, formatDate } from "@/lib/format";
 import type { GithubPayload, NpmPayload } from "@/lib/integrations/types";
 import { SITE_DOMAIN } from "@/lib/site";
 import { canonicalTechList } from "@/lib/technologies";
@@ -144,10 +145,7 @@ export function ProfilePreview({ profile }: { profile: Profile }) {
 							{article.title}
 						</p>
 						<p className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-							{new Date(article.date).toLocaleDateString("en-US", {
-								month: "short",
-								year: "numeric",
-							})}
+							{formatDate(article.date)}
 						</p>
 					</Piece>
 				)}
@@ -166,7 +164,7 @@ export function ProfilePreview({ profile }: { profile: Profile }) {
 						<p className="mt-2 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
 							v{pkg.version}
 							{pkg.weekly_downloads != null &&
-								`  ·  ${pkg.weekly_downloads.toLocaleString("en-US")} / week`}
+								`  ·  ${formatCount(pkg.weekly_downloads)} / week`}
 						</p>
 					</Piece>
 				)}
@@ -296,10 +294,9 @@ function GithubPiece({ github }: { github: GithubPayload }) {
 				))}
 			</div>
 			<p className="mt-3 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-				{github.totals.contributions.toLocaleString("en-US")} contributions /
-				last year
+				{formatCount(github.totals.contributions)} contributions / last year
 				{"  ·  "}
-				{github.profile.followers.toLocaleString("en-US")} followers
+				{formatCount(github.profile.followers)} followers
 			</p>
 			{repos.length > 0 && (
 				<div className="mt-4 grid gap-px bg-border sm:grid-cols-3">

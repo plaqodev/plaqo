@@ -64,6 +64,7 @@ import {
 } from "@/lib/api/public-profile.functions";
 import { authClient } from "@/lib/auth-client";
 import { COUNTRY_NAME_BY_CODE } from "@/lib/countries";
+import { formatDate } from "@/lib/format";
 import { iconForUrl } from "@/lib/icons";
 import type {
 	BlueskyPayload,
@@ -107,6 +108,17 @@ function cx(...classes: Array<string | false | null | undefined>) {
 // clickeable al instante, sin delay de entrada).
 const sectionEase = [0.16, 1, 0.3, 1] as const;
 
+// Reveal trigger in fixed pixels: a section appears once its top edge is
+// 64px inside the viewport, whatever its height. A fractional `amount`
+// measures against the section's own height, so tall blocks (YouTube,
+// Medium, Dev.to: 800–1000px) needed ~250px on screen before showing and
+// left a blank gap at the bottom of the viewport.
+const REVEAL_VIEWPORT = {
+	once: true,
+	amount: "some",
+	margin: "0px 0px -64px 0px",
+} as const;
+
 function RevealSection({ children }: { children: ReactNode }) {
 	const reduceMotion = useReducedMotion();
 
@@ -114,27 +126,7 @@ function RevealSection({ children }: { children: ReactNode }) {
 		<motion.div
 			initial={reduceMotion ? false : { opacity: 0, y: 16 }}
 			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true, amount: 0.2 }}
-			transition={{ duration: reduceMotion ? 0.01 : 0.5, ease: sectionEase }}
-		>
-			{children}
-		</motion.div>
-	);
-}
-
-// `amount` mide contra la altura del propio target, no del viewport — un
-// wrapper único alrededor de todo el stack de integraciones (potencialmente
-// muy alto, un bloque por proveedor) empujaba el punto de disparo lejos y
-// obligaba a scrollear de más antes de ver el primero. Cada bloque revela
-// por separado con margin negativo para adelantar el trigger.
-function IntegrationReveal({ children }: { children: ReactNode }) {
-	const reduceMotion = useReducedMotion();
-
-	return (
-		<motion.div
-			initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true, amount: 0.2, margin: "0px 0px -10% 0px" }}
+			viewport={REVEAL_VIEWPORT}
 			transition={{ duration: reduceMotion ? 0.01 : 0.5, ease: sectionEase }}
 		>
 			{children}
@@ -399,84 +391,84 @@ function IntegrationBlocks({
 	return (
 		<div className="space-y-10">
 			{gh && (
-				<IntegrationReveal>
+				<RevealSection>
 					<GithubBlock payload={gh} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{gitlab && (
-				<IntegrationReveal>
+				<RevealSection>
 					<GitlabBlock payload={gitlab} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{dev && (
-				<IntegrationReveal>
+				<RevealSection>
 					<DevtoBlock payload={dev} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{md && (
-				<IntegrationReveal>
+				<RevealSection>
 					<MediumBlock payload={md} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{so && (
-				<IntegrationReveal>
+				<RevealSection>
 					<StackOverflowBlock payload={so} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{bluesky && (
-				<IntegrationReveal>
+				<RevealSection>
 					<BlueskyBlock payload={bluesky} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{dockerhub && (
-				<IntegrationReveal>
+				<RevealSection>
 					<DockerhubBlock payload={dockerhub} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{leetcode && (
-				<IntegrationReveal>
+				<RevealSection>
 					<LeetcodeBlock payload={leetcode} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{mastodon && (
-				<IntegrationReveal>
+				<RevealSection>
 					<MastodonBlock payload={mastodon} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{npm && (
-				<IntegrationReveal>
+				<RevealSection>
 					<NpmBlock payload={npm} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{wakatime && (
-				<IntegrationReveal>
+				<RevealSection>
 					<WakatimeBlock payload={wakatime} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{youtube && (
-				<IntegrationReveal>
+				<RevealSection>
 					<YoutubeBlock payload={youtube} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{huggingface && (
-				<IntegrationReveal>
+				<RevealSection>
 					<HuggingfaceBlock payload={huggingface} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{producthunt && (
-				<IntegrationReveal>
+				<RevealSection>
 					<ProducthuntBlock payload={producthunt} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{dribbble && (
-				<IntegrationReveal>
+				<RevealSection>
 					<DribbbleBlock payload={dribbble} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 			{pinterest && (
-				<IntegrationReveal>
+				<RevealSection>
 					<PinterestBlock payload={pinterest} themed={themed} />
-				</IntegrationReveal>
+				</RevealSection>
 			)}
 		</div>
 	);
@@ -807,7 +799,7 @@ function SectionTitle({
 			{hint && (
 				<span
 					className={cx(
-						"font-mono text-xs",
+						"font-mono text-[11px]",
 						themed ? "tt-muted" : "text-muted-foreground",
 					)}
 				>
@@ -1049,7 +1041,7 @@ function ArticlesSection({
 								)}
 							>
 								{a.source ? `${a.source} · ` : ""}
-								{new Date(a.date).toLocaleDateString()}
+								{formatDate(a.date)}
 							</p>
 						</div>
 						<ArrowRightUpIcon

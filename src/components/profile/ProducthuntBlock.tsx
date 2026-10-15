@@ -1,5 +1,6 @@
 import { SiProducthunt } from "@icons-pack/react-simple-icons";
 import { AltArrowUpIcon, ChatRoundIcon } from "@solar-icons/react/linear";
+import { formatCount, formatDate } from "@/lib/format";
 import type { ProductHuntPayload } from "@/lib/integrations/types";
 import { sanitizeHref } from "@/lib/safe-url";
 
@@ -35,25 +36,26 @@ export function ProducthuntBlock({
 						themed ? "hover:opacity-80" : "hover:text-foreground",
 					)}
 				>
-					@{payload.profile.username}
+					@{payload.profile.username} · {formatCount(payload.profile.followers)}{" "}
+					followers
 				</a>
 			</h2>
-			<div className="grid gap-2 sm:grid-cols-2">
-				{payload.posts.map((p) => (
+			<div className="grid gap-3 sm:grid-cols-2">
+				{payload.posts.slice(0, 6).map((p) => (
 					<a
 						key={p.id}
 						href={sanitizeHref(p.url)}
 						target="_blank"
 						rel="noreferrer"
 						className={cx(
-							"rounded-xl border p-4 transition-colors",
+							"flex flex-col rounded-xl border p-4 transition-colors",
 							themed
 								? "tt-panel hover:opacity-90"
 								: "border-hairline bg-surface hover:bg-surface-elevated",
 						)}
 					>
 						<div className="flex items-start justify-between gap-2">
-							<p className="truncate font-mono text-sm font-medium">{p.name}</p>
+							<p className="truncate text-sm font-medium">{p.name}</p>
 							<span
 								className={cx(
 									"inline-flex shrink-0 items-center gap-1 text-[11px]",
@@ -61,7 +63,7 @@ export function ProducthuntBlock({
 								)}
 							>
 								<AltArrowUpIcon className="h-3 w-3" />
-								{p.votes}
+								{formatCount(p.votes)}
 							</span>
 						</div>
 						<p
@@ -74,17 +76,15 @@ export function ProducthuntBlock({
 						</p>
 						<div
 							className={cx(
-								"mt-2 flex items-center gap-3 text-[11px]",
+								"mt-auto flex items-center gap-3 pt-3 text-[11px]",
 								themed ? "tt-muted" : "text-muted-foreground",
 							)}
 						>
 							<span className="inline-flex items-center gap-1">
 								<ChatRoundIcon className="h-3 w-3" />
-								{p.comments}
+								{formatCount(p.comments)}
 							</span>
-							{p.created_at && (
-								<span>{new Date(p.created_at).toLocaleDateString()}</span>
-							)}
+							{p.created_at && <span>{formatDate(p.created_at)}</span>}
 						</div>
 					</a>
 				))}
