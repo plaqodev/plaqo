@@ -81,7 +81,7 @@ export function StackOverflowBlock({
 									target="_blank"
 									rel="noreferrer"
 									className={cx(
-										"flex items-center justify-between gap-4 py-2 text-sm transition-opacity",
+										"group flex items-center justify-between gap-4 py-2 text-sm transition-opacity",
 										themed ? "hover:opacity-80" : "hover:text-foreground",
 									)}
 								>
@@ -93,7 +93,15 @@ export function StackOverflowBlock({
 										)}
 									>
 										+{formatCount(a.score)}
-										<ArrowRightUpIcon size={14} className="h-3.5 w-3.5" />
+										<ArrowRightUpIcon
+											size={14}
+											className={cx(
+												"h-3.5 w-3.5 transition-[translate,color] duration-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5",
+												themed
+													? "group-hover:text-(--tt-accent)!"
+													: "group-hover:text-brand",
+											)}
+										/>
 									</span>
 								</a>
 							</li>

@@ -77,7 +77,7 @@ export function MediumBlock({
 						target="_blank"
 						rel="noreferrer"
 						className={cx(
-							"flex items-center justify-between gap-4 p-4 transition-colors",
+							"group flex items-center justify-between gap-4 p-4 transition-colors",
 							themed ? "hover:opacity-90" : "hover:bg-surface-elevated",
 						)}
 					>
@@ -97,8 +97,10 @@ export function MediumBlock({
 						<ArrowRightUpIcon
 							size={16}
 							className={cx(
-								"h-4 w-4 shrink-0",
-								themed ? "tt-muted" : "text-muted-foreground",
+								"h-4 w-4 shrink-0 transition-[translate,color] duration-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5",
+								themed
+									? "tt-muted group-hover:text-(--tt-accent)!"
+									: "text-muted-foreground group-hover:text-brand",
 							)}
 						/>
 					</a>

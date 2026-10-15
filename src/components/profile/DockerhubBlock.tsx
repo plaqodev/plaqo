@@ -51,7 +51,7 @@ export function DockerhubBlock({
 						target="_blank"
 						rel="noreferrer"
 						className={cx(
-							"flex flex-col rounded-xl border p-4 transition-colors",
+							"group flex flex-col rounded-xl border p-4 transition-colors",
 							themed
 								? "tt-panel hover:opacity-90"
 								: "border-hairline bg-surface hover:bg-surface-elevated",
@@ -63,8 +63,10 @@ export function DockerhubBlock({
 							</p>
 							<ArrowRightUpIcon
 								className={cx(
-									"h-4 w-4 shrink-0",
-									themed ? "tt-muted" : "text-muted-foreground",
+									"h-4 w-4 shrink-0 transition-[translate,color] duration-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5",
+									themed
+										? "tt-muted group-hover:text-(--tt-accent)!"
+										: "text-muted-foreground group-hover:text-brand",
 								)}
 							/>
 						</div>
