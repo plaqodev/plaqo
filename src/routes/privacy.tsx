@@ -16,7 +16,7 @@ export const Route = createFileRoute("/privacy")({
 	component: PrivacyPage,
 });
 
-const EFFECTIVE_DATE = "September 15, 2026";
+const EFFECTIVE_DATE = "October 16, 2026";
 const CONTACT_EMAIL = "support@plaqo.dev";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -47,18 +47,17 @@ function PrivacyPage() {
 				</h1>
 
 				<p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground">
-					Effective {EFFECTIVE_DATE}. This describes what plaqo collects,
-					why, and what control you have over it.
+					Effective {EFFECTIVE_DATE}. This describes what plaqo collects, why,
+					and what control you have over it.
 				</p>
 
 				<div className="mt-16">
 					<Section title="Who this is">
 						<p>
-							plaqo (plaqo.dev) is a developer profile and link-in-bio
-							tool operated by Francis Castillo Cruz, an individual developer —
-							not a registered company. This policy covers the plaqo
-							dashboard, public profile pages (plaqo.dev/username), and the
-							marketing site.
+							plaqo (plaqo.dev) is a developer profile and link-in-bio tool
+							operated by Francis Castillo Cruz, an individual developer — not a
+							registered company. This policy covers the plaqo dashboard, public
+							profile pages (plaqo.dev/username), and the marketing site.
 						</p>
 						<p>
 							For anything in this policy, or to exercise any of the rights
@@ -83,6 +82,19 @@ function PrivacyPage() {
 							profile address.
 						</p>
 						<p>
+							When you sign in with GitHub or Google, we also store the access
+							token that provider gives us, encrypted. We use the GitHub token
+							only to connect your GitHub account to your profile when you sign
+							up, so you don't have to type your username again. Neither token
+							is ever sent to your browser or shared.
+						</p>
+						<p>
+							<strong className="text-foreground">Email confirmation.</strong>{" "}
+							We email you a link to confirm your address. Confirming it is
+							required before you can pay for Pro, so receipts, refunds and
+							billing notices reach you.
+						</p>
+						<p>
 							<strong className="text-foreground">Profile content.</strong>{" "}
 							Anything you add to build your profile — bio, location, primary
 							language, seniority, availability for hire, website, links,
@@ -92,16 +104,23 @@ function PrivacyPage() {
 							visible to anyone who visits your plaqo URL.
 						</p>
 						<p>
+							If you turn on{" "}
+							<strong className="text-foreground">Discover</strong> (off by
+							default), your profile also appears in the public directory at
+							plaqo.dev/discover, searchable by stack, seniority, availability
+							and country. Turn it off at any time and it leaves the directory.
+						</p>
+						<p>
 							<strong className="text-foreground">
 								Connected accounts (integrations).
 							</strong>{" "}
-							plaqo can display live stats from other services on your
-							profile. Most integrations (GitHub, GitLab, Dev.to, Medium, Stack
-							Overflow, WakaTime, LeetCode, npm, Bluesky, Mastodon, Docker Hub,
-							YouTube, Hugging Face) only need the public username you type in —
-							we fetch publicly available data from that service's own API and
-							cache it. We don't authenticate as you or store a password or
-							token for these.
+							plaqo can display live stats from other services on your profile.
+							Most integrations (GitHub, GitLab, Dev.to, Medium, Stack Overflow,
+							WakaTime, LeetCode, npm, Bluesky, Mastodon, Docker Hub, YouTube,
+							Hugging Face) only need the public username you type in — we fetch
+							publicly available data from that service's own API and cache it.
+							We don't authenticate as you or store a password or token for
+							these.
 						</p>
 						<p>
 							Three integrations — Product Hunt, Dribbble, and Pinterest — work
@@ -114,17 +133,21 @@ function PrivacyPage() {
 						</p>
 						<p>
 							<strong className="text-foreground">Billing.</strong> If you
-							upgrade to Pro, payments are handled entirely by Dodo Payments,
-							our payment processor. We store a Dodo customer ID to link your
-							account to your subscription; we never see or store your full card
-							number.
+							upgrade to Pro, Dodo Payments runs the checkout as merchant of
+							record: they collect your payment details, billing address and any
+							tax information, under their own privacy policy. We store a Dodo
+							customer ID, your plan, and the status of your subscription
+							(active, renewed, payment failed, cancelled). We never see or
+							store your card number.
 						</p>
 						<p>
 							<strong className="text-foreground">
 								Contact form and support.
 							</strong>{" "}
 							If you email us or use the contact form, we keep your name, email,
-							and message to respond to you.
+							and message to respond to you. They live in our support inbox,
+							hosted by Zoho Mail. If you delete your account, the reason you
+							pick reaches the same inbox along with your username.
 						</p>
 						<p>
 							<strong className="text-foreground">Avatar images.</strong>{" "}
@@ -138,15 +161,16 @@ function PrivacyPage() {
 							<strong className="text-foreground">
 								Profile visit analytics.
 							</strong>{" "}
-							When someone views a public plaqo profile or clicks a link on
-							one, we log: a hashed version of the visitor's IP address (we
-							never store the raw IP — it's run through SHA-256 with a salt that
-							rotates daily, so it can't be reversed or matched across days), a
-							coarse device/browser/OS category parsed from the user agent,
-							country (from a CDN header, not precise location), the referring
-							page, and which link was clicked. This exists so profile owners
-							can see aggregate traffic to their own page — we don't use it to
-							build a profile of individual visitors.
+							When someone views a public plaqo profile or clicks a link on one,
+							we log: a hashed version of the visitor's IP address (we never
+							store the raw IP; it's run through SHA-256 with a secret salt that
+							changes every week, so it can't be reversed and the same visitor
+							can only be recognized within that week), a coarse
+							device/browser/OS category parsed from the user agent, country
+							(from a CDN header, not precise location), the referring page, and
+							which link was clicked. This exists so profile owners can see
+							aggregate traffic to their own page — we don't use it to build a
+							profile of individual visitors.
 						</p>
 						<p>
 							<strong className="text-foreground">Session cookies.</strong> When
@@ -154,6 +178,14 @@ function PrivacyPage() {
 							session record includes your IP address and user agent, used only
 							to detect suspicious activity (like a login from an unexpected
 							location).
+						</p>
+						<p>
+							<strong className="text-foreground">Security logs.</strong>{" "}
+							Sign-ins, password changes, blocked requests and similar security
+							events are logged with the IP address involved, to detect and stop
+							abuse. Our host, Vercel, keeps these logs for a limited period and
+							then deletes them. To limit how often forms can be sent, we also
+							store a keyed hash of your IP address, never the IP itself.
 						</p>
 						<p>
 							<strong className="text-foreground">Product analytics.</strong> We
@@ -166,11 +198,15 @@ function PrivacyPage() {
 
 					<Section title="How we use your information">
 						<ul className="list-disc space-y-2 pl-5">
-							<li>
-								To create and run your plaqo account and public profile.
-							</li>
+							<li>To create and run your plaqo account and public profile.</li>
 							<li>To fetch and display data from services you've connected.</li>
 							<li>To process Pro subscription payments.</li>
+							<li>
+								To send account and billing emails: email confirmation, password
+								reset, a welcome email, and notices about your Pro plan
+								(welcome, a failed payment, the plan ending). We don't send
+								marketing emails or newsletters.
+							</li>
 							<li>To respond to support requests.</li>
 							<li>
 								To keep the service secure — detecting abuse, fraud, or
@@ -188,8 +224,7 @@ function PrivacyPage() {
 					<Section title="Who we share information with">
 						<p>
 							We don't sell or rent your data. We share it only with the service
-							providers that make plaqo work, each only for the purpose
-							below:
+							providers that make plaqo work, each only for the purpose below:
 						</p>
 						<ul className="list-disc space-y-2 pl-5">
 							<li>
@@ -198,20 +233,26 @@ function PrivacyPage() {
 							</li>
 							<li>
 								<strong className="text-foreground">Vercel</strong> — hosts the
-								application and runs our scheduled jobs.
+								application, runs our scheduled jobs and keeps server and
+								security logs.
 							</li>
 							<li>
 								<strong className="text-foreground">Cloudflare R2</strong> —
 								stores uploaded avatar images.
 							</li>
 							<li>
-								<strong className="text-foreground">Resend</strong> — sends
-								transactional email (verification, password reset, contact form
-								replies).
+								<strong className="text-foreground">Resend</strong> — sends our
+								account and billing emails (listed above).
+							</li>
+							<li>
+								<strong className="text-foreground">Zoho Mail</strong> — hosts
+								our support inbox: contact form messages and your replies to our
+								emails.
 							</li>
 							<li>
 								<strong className="text-foreground">Dodo Payments</strong> —
-								processes Pro plan payments.
+								merchant of record for Pro: checkout, payments, invoices, taxes
+								and refunds.
 							</li>
 							<li>
 								<strong className="text-foreground">PostHog</strong> — product
@@ -243,15 +284,11 @@ function PrivacyPage() {
 
 					<Section title="Where your data lives">
 						<p>
-							plaqo and the providers listed above operate infrastructure in
-							the United States. If you're accessing plaqo from outside the
-							US, your information will be processed there.{" "}
-							<span className="italic">
-								[We haven't yet confirmed each provider's specific
-								international-transfer safeguards (e.g. Standard Contractual
-								Clauses) — get this reviewed before relying on it for EU/UK
-								users.]
-							</span>
+							plaqo and the providers listed above operate infrastructure in the
+							United States. If you're accessing plaqo from outside the US, your
+							information is processed there. Transfers from the EU and UK are
+							covered by the Standard Contractual Clauses in each provider's
+							data processing agreement.
 						</p>
 					</Section>
 
@@ -261,13 +298,16 @@ function PrivacyPage() {
 								Account and profile data: kept as long as your account exists.
 							</li>
 							<li>
-								Deleting your account deletes your profile content and
-								disconnects all integrations. Cached data from connected
-								services is deleted with it.
+								Deleting your account (Settings → Delete your account) removes
+								your account, profile, content, integrations, cached data from
+								connected services, your page's analytics and your avatar right
+								away. Dodo keeps its own billing records as the law requires.
+								Product analytics events in PostHog aren't removed
+								automatically; email us and we'll delete them.
 							</li>
 							<li>
-								Profile visit analytics (hashed IP, device, referrer): kept for
-								12 months, then deleted.
+								Profile visit analytics (hashed IP, device, referrer): deleted
+								automatically after 12 months.
 							</li>
 							<li>
 								Contact form messages: kept for as long as needed to resolve
@@ -290,19 +330,22 @@ function PrivacyPage() {
 							. We'll respond within 30 days.
 						</p>
 						<p>
-							You can also edit or delete most of your profile content directly
-							from the dashboard at any time, and disconnect any integration
-							whenever you want.
+							You can also edit or delete your profile content from the
+							dashboard at any time, disconnect any integration, and delete your
+							whole account from Settings.
+						</p>
+						<p>
+							For EU and UK users, the legal bases we rely on are: providing the
+							service you signed up for (your account, profile, integrations,
+							payments and account emails); our legitimate interest in keeping
+							plaqo secure and in showing profile owners their own traffic
+							(security logs, profile analytics); and your consent for product
+							analytics (PostHog), which you can withdraw at any time.
 						</p>
 						<p>
 							If you're in the EU/UK and believe we haven't addressed your
 							concern, you have the right to lodge a complaint with your local
-							data protection authority.{" "}
-							<span className="italic">
-								[Legal basis for each processing activity under GDPR Art. 6
-								hasn't been formally mapped out — recommend legal review before
-								this policy is relied on for EU users at scale.]
-							</span>
+							data protection authority.
 						</p>
 					</Section>
 
@@ -316,11 +359,17 @@ function PrivacyPage() {
 							they're not something you can opt out of.
 						</p>
 						<p>
+							We also save a few preferences in your browser's local storage,
+							not in cookies: light or dark mode, the plan you picked before
+							signing up, and whether you hid the setup checklist. They never
+							leave your browser.
+						</p>
+						<p>
 							Product analytics (PostHog) is different: it only runs if you
 							accept it in the cookie banner shown on your first visit. Nothing
 							is captured before you choose, and you can change your mind at any
-							time by clearing your browser's site data for plaqo.dev. We
-							don't use advertising or cross-site tracking cookies at all.
+							time by clearing your browser's site data for plaqo.dev. We don't
+							use advertising or cross-site tracking cookies at all.
 						</p>
 					</Section>
 
@@ -337,9 +386,9 @@ function PrivacyPage() {
 
 					<Section title="Children's privacy">
 						<p>
-							plaqo is not directed at children under 13, and we don't
-							knowingly collect data from them. If you believe a child has
-							created an account, email us and we'll delete it.
+							plaqo is not directed at children under 13, and we don't knowingly
+							collect data from them. If you believe a child has created an
+							account, email us and we'll delete it.
 						</p>
 					</Section>
 

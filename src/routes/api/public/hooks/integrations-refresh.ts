@@ -7,6 +7,7 @@ import { integrationAccounts, integrationCache } from "@/db/schema";
 import { methodNotAllowed } from "@/lib/http";
 import { runProviderFetch } from "@/lib/integrations/dispatch.server";
 import type { Provider } from "@/lib/integrations/types";
+import { purgeExpiredAnalytics } from "@/lib/retention.server";
 
 // Cron: refresca integraciones stale (>24h) de todas las cuentas.
 // Protegido con Authorization: Bearer $CRON_SECRET — sin sesión de usuario.
@@ -15,6 +16,8 @@ import type { Provider } from "@/lib/integrations/types";
 // Corre 1x/día (03:00 UTC, ±59min): límite del plan Hobby, que no permite
 // crons más frecuentes que diarios. Con plan Pro se puede bajar a cada 6h.
 // Writes multi-statement van por db.batch: neon-http no soporta db.transaction.
+// The same daily run also deletes profile analytics past their retention
+// (see retention.server.ts): Hobby only allows daily crons anyway.
 
 const STALE_MS = 24 * 60 * 60 * 1000;
 const MAX_ACCOUNTS = 100;
@@ -39,6 +42,15 @@ async function refreshStaleIntegrations(request: Request) {
 			{ status: 401 },
 		);
 	}
+
+	// Never blocks the sync: a failed purge is retried by tomorrow's run.
+	const purged = await purgeExpiredAnalytics().catch((err) => {
+		console.error(
+			"[cron] analytics purge failed",
+			err instanceof Error ? err.message : err,
+		);
+		return null;
+	});
 
 	const staleCutoff = new Date(Date.now() - STALE_MS);
 	const staleWhere: SQL | undefined = or(
@@ -154,6 +166,7 @@ async function refreshStaleIntegrations(request: Request) {
 		ok: true as const,
 		processed: results.length,
 		results,
+		purged,
 	});
 }
 

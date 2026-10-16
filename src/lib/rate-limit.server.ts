@@ -52,10 +52,14 @@ export async function consumeRateLimit(
 			.returning({ count: requestLimits.count });
 
 		// Opportunistic cleanup of long-expired windows (~1% of calls).
+		// welcome-email rows use a 365-day window as a "sent" flag
+		// (welcome.server.ts), so they're left alone.
 		if (Math.random() < 0.01) {
 			void db
 				.delete(requestLimits)
-				.where(sql`${requestLimits.windowStart} < now() - interval '1 day'`)
+				.where(
+					sql`${requestLimits.windowStart} < now() - interval '1 day' and ${requestLimits.key} not like 'welcome-email:%'`,
+				)
 				.catch(() => {});
 		}
 
