@@ -9,6 +9,7 @@ import { type ReactNode, useState } from "react";
 import toast from "react-hot-toast";
 
 import { ActiveSessions } from "@/components/dashboard/ActiveSessions";
+import { DeleteAccount } from "@/components/dashboard/DeleteAccount";
 import { EmailField } from "@/components/dashboard/VerifyEmail";
 import { PageTitle } from "@/components/motion/PageTitle";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { openBillingPortal, startProCheckout } from "@/lib/billing";
 import { useProMonthlyLabel } from "@/lib/queries/pricing";
 import { useProfileCore, useWipeProfileData } from "@/lib/queries/profile-data";
 import { passwordSchema } from "@/lib/schemas/auth";
+import { SITE_DOMAIN } from "@/lib/site";
 
 export const Route = createFileRoute("/_authenticated/dashboard/settings")({
 	head: () => ({ meta: [{ title: "Settings — plaqo" }] }),
@@ -293,6 +295,18 @@ function SettingsPage() {
 									</Button>
 								</div>
 							</div>
+
+							<h2 className="mt-12 border-t border-destructive/20 pt-10 font-display text-3xl tracking-[-0.03em]">
+								Delete your account.
+							</h2>
+
+							<p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+								Your page at {SITE_DOMAIN}/{user.username} goes offline and
+								everything you added is deleted for good: profile, content,
+								integrations and analytics. This can't be undone.
+							</p>
+
+							<DeleteAccount username={user.username ?? ""} />
 						</div>
 					</div>
 				</section>

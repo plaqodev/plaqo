@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+	DeleteObjectCommand,
+	PutObjectCommand,
+	S3Client,
+} from "@aws-sdk/client-s3";
 
 let client: S3Client | null = null;
 
@@ -54,4 +58,14 @@ export async function uploadAvatar(
 
 	// Cache-bust: la key no cambia entre uploads pero el contenido sí.
 	return `${publicUrl.replace(/\/$/, "")}/${key}?v=${Date.now()}`;
+}
+
+// Account deletion: the avatar is the only user file outside the database.
+// Deleting a key that doesn't exist (never uploaded) succeeds in S3/R2.
+export async function deleteAvatar(userId: string) {
+	const bucket = process.env.R2_BUCKET_NAME;
+	if (!bucket) return;
+	await getClient().send(
+		new DeleteObjectCommand({ Bucket: bucket, Key: `avatars/${userId}` }),
+	);
 }

@@ -5,7 +5,7 @@
 // https://vite.dev/guide/build.html#load-error-handling
 export const reloadOnChunkErrorScript = `
 (function(){try{
-  var k='devlinks-chunk-reload';
+  var k='plaqo-chunk-reload';
   window.addEventListener('vite:preloadError', function(){
     if (sessionStorage.getItem(k)) return;
     sessionStorage.setItem(k, '1');

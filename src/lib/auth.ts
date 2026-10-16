@@ -25,6 +25,7 @@ import { auditAuthEndpoint } from "@/lib/auth-audit.server";
 import { sendEmail } from "@/lib/email";
 import * as emails from "@/lib/emails/templates";
 import { FOUNDING_SPOTS } from "@/lib/pricing";
+import { deleteAvatar } from "@/lib/r2.server";
 import { securityLog } from "@/lib/security-log";
 import { absoluteUrl } from "@/lib/site";
 import { allowedImageOrigins, validateUserInput } from "@/lib/user-input";
@@ -373,6 +374,34 @@ export const auth = betterAuth({
 	],
 
 	user: {
+		// Settings → Delete account (deleteMyAccount in api/account.functions.ts).
+		// Needs the password, or a sign-in within freshAge for accounts that
+		// only use GitHub/Google. App tables cascade from the user row.
+		deleteUser: {
+			enabled: true,
+			// An active subscription would keep charging a deleted account.
+			beforeDelete: async (user) => {
+				const [profile] = await db
+					.select({ plan: profiles.plan })
+					.from(profiles)
+					.where(eq(profiles.id, user.id))
+					.limit(1);
+				if (profile?.plan === "pro") {
+					throw new APIError("BAD_REQUEST", {
+						message:
+							"Cancel your Pro subscription first (Billing, above). You can delete your account once it ends.",
+					});
+				}
+			},
+			afterDelete: async (user) => {
+				await deleteAvatar(user.id).catch((e) => {
+					console.error(
+						"[account] avatar delete failed",
+						e instanceof Error ? e.message : e,
+					);
+				});
+			},
+		},
 		additionalFields: {
 			displayName: {
 				type: "string",
@@ -487,7 +516,7 @@ export const auth = betterAuth({
 		// the promise simply runs to completion.
 		backgroundTasks: { handler: waitUntil },
 		useSecureCookies: process.env.NODE_ENV === "production",
-		cookiePrefix: "devlinks",
+		cookiePrefix: "plaqo",
 		defaultCookieAttributes: {
 			sameSite: "lax",
 		},

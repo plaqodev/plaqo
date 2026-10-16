@@ -1,10 +1,12 @@
 // Tiny theme helper for class-based dark mode with no-flash hydration.
-export const THEME_STORAGE_KEY = "devlinks-theme";
+export const THEME_STORAGE_KEY = "plaqo-theme";
+// Pre-rename key, still read so a saved choice survives the rename.
+const LEGACY_THEME_STORAGE_KEY = "devlinks-theme";
 
 export const noFlashThemeScript = `
 (function(){try{
   var k='${THEME_STORAGE_KEY}';
-  var t=localStorage.getItem(k);
+  var t=localStorage.getItem(k)||localStorage.getItem('${LEGACY_THEME_STORAGE_KEY}');
   if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'dark';}
   if(t==='dark'){document.documentElement.classList.add('dark');}
 }catch(e){document.documentElement.classList.add('dark');}})();

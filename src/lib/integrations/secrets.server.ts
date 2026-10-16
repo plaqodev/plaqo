@@ -36,6 +36,8 @@ function getKey(): Buffer {
 		hkdfSync(
 			"sha256",
 			secret,
+			// Salt from before the plaqo rename. Never change it: every stored
+			// integration token was encrypted with a key derived from it.
 			"devlinks-integrations",
 			"integration-config-tokens-v1",
 			32,
