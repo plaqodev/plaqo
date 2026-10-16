@@ -62,7 +62,9 @@ function buildCsp(env: Record<string, string>) {
 
 		`img-src ${imgHosts.join(" ")}`,
 
-		"font-src 'self'",
+		// data: because Vite inlines small font files (under 4 KB, mostly
+		// the fontsource unicode-range subsets) into the CSS as data URIs.
+		"font-src 'self' data:",
 
 		`connect-src ${connectHosts.join(" ")}`,
 
