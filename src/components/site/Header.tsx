@@ -31,7 +31,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 // Leaving accelerates out (ease-in), the mirror of the ease-out entrance.
 const easeIn = [0.7, 0, 0.84, 0] as const;
 
-const GITHUB_URL = "https://github.com/ingfranciscastillo/dev-links";
+const GITHUB_URL = "https://github.com/plaqodev/plaqo";
 
 export function Header() {
 	const { data: session } = authClient.useSession();

@@ -35,4 +35,4 @@ A developer profile for your work, writing, projects, and everything you want pe
 
 ## License
 
-plaqo source is available under the [Business Source License 1.1](LICENSE). You're free to read, self-host, and modify it for personal or internal use; you may not offer it (or a substantially similar service) as a hosted product to third parties. It converts to Apache 2.0 on 2030-09-15. For a commercial/hosting license, contact franciscastillodev@proton.me.
+plaqo source is available under the [Business Source License 1.1](LICENSE). You're free to read, self-host, and modify it for personal or internal use; you may not offer it (or a substantially similar service) as a hosted product to third parties. It converts to Apache 2.0 on 2030-09-15. For a commercial/hosting license, contact contacto@franciscode.dev.

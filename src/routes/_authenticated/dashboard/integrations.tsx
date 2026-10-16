@@ -52,7 +52,7 @@ type ConfigField = {
 };
 
 const INTEGRATION_REQUEST_URL =
-	"https://github.com/ingfranciscastillo/dev-links/issues/new?template=integration-request.yml";
+	"https://github.com/plaqodev/plaqo/issues/new?template=integration-request.yml";
 
 const PROVIDER_HELP: Record<
 	Provider,
