@@ -7,7 +7,11 @@ import {
 } from "@dodopayments/better-auth";
 import { waitUntil } from "@vercel/functions";
 import { betterAuth } from "better-auth";
-import { APIError, createAuthMiddleware } from "better-auth/api";
+import {
+	APIError,
+	createAuthMiddleware,
+	getSessionFromCtx,
+} from "better-auth/api";
 import { admin } from "better-auth/plugins/admin";
 import { haveIBeenPwned } from "better-auth/plugins/haveibeenpwned";
 import { username } from "better-auth/plugins/username";
@@ -24,6 +28,10 @@ import { FOUNDING_SPOTS } from "@/lib/pricing";
 import { securityLog } from "@/lib/security-log";
 import { absoluteUrl } from "@/lib/site";
 import { allowedImageOrigins, validateUserInput } from "@/lib/user-input";
+import {
+	EMAIL_NOT_VERIFIED_CODE,
+	withVerifyCallback,
+} from "@/lib/verification";
 import { sendWelcomeOnce } from "@/lib/welcome.server";
 
 // El SDK exige un bearerToken no vacío al construirse — sin fallback, no
@@ -48,6 +56,12 @@ const DODO_PRO_PRODUCT_ID = process.env.DODO_PRO_PRODUCT_ID || "pdt_REPLACE_ME";
 // monthly. Both products grant the same "pro" plan (the webhook doesn't
 // look at which product was bought). See src/lib/pricing.ts.
 const DODO_PRO_ANNUAL_PRODUCT_ID = process.env.DODO_PRO_ANNUAL_PRODUCT_ID;
+
+// Both checkout endpoints of the Dodo plugin (paths without the /api/auth base).
+const CHECKOUT_PATHS = new Set([
+	"/dodopayments/checkout",
+	"/dodopayments/checkout-session",
+]);
 
 // Returns the plan before the change, so callers can tell a real
 // transition (free → pro) from a redelivered webhook that changes nothing.
@@ -232,7 +246,10 @@ export const auth = betterAuth({
 		sendVerificationEmail: async ({ user, url }) => {
 			await sendEmail({
 				to: user.email,
-				...emails.verifyEmail({ name: user.name, url }),
+				...emails.verifyEmail({
+					name: user.name,
+					url: withVerifyCallback(url),
+				}),
 			});
 		},
 	},
@@ -426,6 +443,21 @@ export const auth = betterAuth({
 	// 60 chars, but updateUser accepted anything, and any string as image).
 	hooks: {
 		before: createAuthMiddleware(async (ctx) => {
+			// Paying needs a confirmed address: receipts, the refund window and
+			// failed-payment notices all go there. Skips the cookie cache so a
+			// verification from another tab counts right away.
+			if (CHECKOUT_PATHS.has(ctx.path)) {
+				const session = await getSessionFromCtx(ctx, {
+					disableCookieCache: true,
+				});
+				if (session && !session.user.emailVerified) {
+					throw new APIError("FORBIDDEN", {
+						code: EMAIL_NOT_VERIFIED_CODE,
+						message: "Verify your email before upgrading to Pro.",
+					});
+				}
+				return;
+			}
 			if (ctx.path !== "/sign-up/email" && ctx.path !== "/update-user") return;
 			const error = validateUserInput(
 				ctx.body as Record<string, unknown> | undefined,

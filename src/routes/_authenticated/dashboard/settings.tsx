@@ -9,6 +9,7 @@ import { type ReactNode, useState } from "react";
 import toast from "react-hot-toast";
 
 import { ActiveSessions } from "@/components/dashboard/ActiveSessions";
+import { EmailField } from "@/components/dashboard/VerifyEmail";
 import { PageTitle } from "@/components/motion/PageTitle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -137,7 +138,7 @@ function SettingsPage() {
 					/>
 
 					<div className="mt-7 grid gap-6 sm:grid-cols-2">
-						<ReadOnlyField label="Email" value={user.email} />
+						<EmailField email={user.email} verified={user.emailVerified} />
 						<ReadOnlyField label="Username" value={user.username ?? ""} mono />
 					</div>
 				</section>

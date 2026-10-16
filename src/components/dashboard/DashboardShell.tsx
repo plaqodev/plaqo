@@ -34,12 +34,17 @@ import toast from "react-hot-toast";
 import { Logo } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 import { authClient } from "@/lib/auth-client";
-import { startProCheckout, takeCheckoutIntent } from "@/lib/billing";
+import {
+	peekCheckoutIntent,
+	startProCheckout,
+	takeCheckoutIntent,
+} from "@/lib/billing";
 import { PLAN_LIMITS } from "@/lib/plan-limits";
 import type { Billing } from "@/lib/pricing";
 import { useProfileCore } from "@/lib/queries/profile-data";
 import { SITE_DOMAIN } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { VerifyEmailBanner } from "./VerifyEmail";
 
 type NavIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -105,14 +110,47 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
 	// "Go Pro" on the landing page while signed out leaves a checkout intent;
 	// once the new account reaches the dashboard, pick the checkout back up.
+	// Checkout needs a confirmed email (gated in auth.ts), so an unconfirmed
+	// account keeps the intent until the confirmation link brings it back.
 	// Already-Pro accounts just drop it.
 	const plan = core.data?.plan;
-	// biome-ignore lint/correctness/useExhaustiveDependencies: run once per loaded plan; handleUpgrade only touches state setters
+	const verified = user.emailVerified;
+	const [pendingIntent, setPendingIntent] = useState(false);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: run once per loaded plan and verification; handleUpgrade only touches state setters
 	useEffect(() => {
 		if (!plan) return;
+		if (plan !== "pro" && !verified) {
+			setPendingIntent(peekCheckoutIntent() !== null);
+			return;
+		}
+		setPendingIntent(false);
 		const intent = takeCheckoutIntent();
 		if (intent && plan !== "pro") handleUpgrade(intent);
-	}, [plan]);
+	}, [plan, verified]);
+
+	// Landing from the confirmation email (see VERIFY_EMAIL_CALLBACK). An
+	// expired or used link comes back with ?error= instead.
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		const ok = params.get("verified") === "1";
+		const failed = params.get("error");
+		if (!ok && !failed) return;
+		if (failed) {
+			toast.error(
+				"That confirmation link expired or was already used. Send a new one below.",
+			);
+		} else if (verified) {
+			toast.success("Email confirmed.");
+		}
+		params.delete("verified");
+		params.delete("error");
+		const query = params.toString();
+		window.history.replaceState(
+			null,
+			"",
+			window.location.pathname + (query ? `?${query}` : ""),
+		);
+	}, [verified]);
 
 	async function handleSignOut() {
 		await authClient.signOut();
@@ -270,6 +308,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 							</div>
 						</div>
 					</header>
+
+					{!verified && (
+						<VerifyEmailBanner
+							email={user.email}
+							finishingUpgrade={pendingIntent}
+						/>
+					)}
 
 					<main className="flex-1 px-5 py-8 sm:px-8 sm:py-10 lg:px-10">
 						{children}

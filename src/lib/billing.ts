@@ -1,5 +1,15 @@
 import { authClient } from "@/lib/auth-client";
 import type { Billing } from "@/lib/pricing";
+import { EMAIL_NOT_VERIFIED_CODE } from "@/lib/verification";
+
+export class EmailNotVerifiedError extends Error {
+	constructor() {
+		super(
+			"Confirm your email before upgrading. You can resend the link from the banner or Settings.",
+		);
+		this.name = "EmailNotVerifiedError";
+	}
+}
 
 const CHECKOUT_SLUG: Record<Billing, string> = {
 	monthly: "pro",
@@ -13,6 +23,8 @@ export async function startProCheckout(
 		slug: CHECKOUT_SLUG[billing],
 	});
 
+	if (error?.code === EMAIL_NOT_VERIFIED_CODE)
+		throw new EmailNotVerifiedError();
 	if (error || !data) {
 		throw new Error(error?.message ?? "Couldn't start checkout");
 	}
@@ -21,26 +33,49 @@ export async function startProCheckout(
 }
 
 // "Go Pro" from the landing page while signed out: the choice survives the
-// signup + onboarding detour in sessionStorage, and the dashboard resumes it
-// (resumeCheckoutIntent) once there's an account to check out with.
+// signup + onboarding detour, and the dashboard resumes it once there's a
+// confirmed account to check out with. localStorage, not sessionStorage: the
+// confirmation link usually opens in a new tab.
 const INTENT_KEY = "plaqo:checkout-intent";
+const INTENT_TTL_MS = 24 * 60 * 60 * 1000;
 
 export function saveCheckoutIntent(billing: Billing) {
 	try {
-		sessionStorage.setItem(INTENT_KEY, billing);
+		localStorage.setItem(
+			INTENT_KEY,
+			JSON.stringify({ billing, at: Date.now() }),
+		);
 	} catch {
 		// Storage blocked: the user can still upgrade from the dashboard.
 	}
 }
 
-export function takeCheckoutIntent(): Billing | null {
+export function peekCheckoutIntent(): Billing | null {
 	try {
-		const value = sessionStorage.getItem(INTENT_KEY);
-		sessionStorage.removeItem(INTENT_KEY);
-		return value === "monthly" || value === "yearly" ? value : null;
+		const raw = localStorage.getItem(INTENT_KEY);
+		if (!raw) return null;
+		const { billing, at } = JSON.parse(raw) as {
+			billing?: unknown;
+			at?: unknown;
+		};
+		const fresh = typeof at === "number" && Date.now() - at < INTENT_TTL_MS;
+		if (fresh && (billing === "monthly" || billing === "yearly"))
+			return billing;
+		localStorage.removeItem(INTENT_KEY);
+		return null;
 	} catch {
 		return null;
 	}
+}
+
+export function takeCheckoutIntent(): Billing | null {
+	const billing = peekCheckoutIntent();
+	try {
+		localStorage.removeItem(INTENT_KEY);
+	} catch {
+		// Nothing stored to clear.
+	}
+	return billing;
 }
 
 export async function openBillingPortal(): Promise<void> {
