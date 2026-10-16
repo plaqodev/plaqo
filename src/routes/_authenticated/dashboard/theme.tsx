@@ -84,7 +84,7 @@ function ThemePage() {
 		<div className="mx-auto w-full max-w-350">
 			<header className="border-b border-border pb-8">
 				<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-brand">
-					08 / Theme
+					11 / Theme
 				</p>
 
 				<div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">

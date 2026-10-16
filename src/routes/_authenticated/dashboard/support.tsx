@@ -79,7 +79,7 @@ function SupportPage() {
 		<>
 			<header className="border-b border-border pb-8">
 				<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-brand">
-					10 / Support
+					09 / Community
 				</p>
 
 				<div className="mt-5">

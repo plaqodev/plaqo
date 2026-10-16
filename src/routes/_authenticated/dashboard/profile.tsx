@@ -153,7 +153,7 @@ function ProfilePage() {
 		<div className="mx-auto w-full max-w-6xl">
 			<header className="border-b border-border pb-8">
 				<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-brand">
-					02 / Profile
+					03 / Profile
 				</p>
 
 				<PageTitle className="mt-5 font-display text-5xl leading-[0.95] tracking-[-0.04em] sm:text-6xl">

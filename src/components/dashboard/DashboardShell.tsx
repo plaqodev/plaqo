@@ -65,46 +65,51 @@ type NavItem = {
 	end?: boolean;
 };
 
-const nav: NavItem[] = [
-	{ label: "Overview", to: "/dashboard", icon: Home2Icon, end: true },
-	{ label: "Profile", to: "/dashboard/profile", icon: UserIcon },
-	{ label: "Links", to: "/dashboard/links", icon: LinkMinimalistic2Icon },
+// Grouped by intent: how the page is doing; what it shows (in the order
+// it appears on the page); how it's put together; the account. Only the
+// two middle groups need a name; the others read on their own. The
+// "NN /" label on each page follows this order, so renumber those when
+// it changes.
+const navGroups: { label?: string; items: NavItem[] }[] = [
 	{
-		label: "Projects",
-		to: "/dashboard/projects",
-		icon: FolderWithFilesIcon,
+		items: [
+			{ label: "Overview", to: "/dashboard", icon: Home2Icon, end: true },
+			{ label: "Analytics", to: "/dashboard/analytics", icon: Chart2Icon },
+		],
 	},
 	{
-		label: "Snippets",
-		to: "/dashboard/snippets",
-		icon: CodeSquareIcon,
-	},
-	{ label: "Articles", to: "/dashboard/articles", icon: NotesIcon },
-	{
-		label: "Integrations",
-		to: "/dashboard/integrations",
-		icon: PlugCircleIcon,
-	},
-	{ label: "Theme", to: "/dashboard/theme", icon: PaletteIcon },
-	{
-		label: "Analytics",
-		to: "/dashboard/analytics",
-		icon: Chart2Icon,
-	},
-	{
-		label: "Support",
-		to: "/dashboard/support",
-		icon: HeartIcon,
+		label: "Your page",
+		items: [
+			{ label: "Profile", to: "/dashboard/profile", icon: UserIcon },
+			{ label: "Links", to: "/dashboard/links", icon: LinkMinimalistic2Icon },
+			{
+				label: "Projects",
+				to: "/dashboard/projects",
+				icon: FolderWithFilesIcon,
+			},
+			{ label: "Snippets", to: "/dashboard/snippets", icon: CodeSquareIcon },
+			{ label: "Articles", to: "/dashboard/articles", icon: NotesIcon },
+			{ label: "Talks", to: "/dashboard/talks", icon: MicrophoneIcon },
+			// The page covers support links (Ko-fi, Sponsors) and community
+			// links; "Support" alone read like a help center.
+			{ label: "Community", to: "/dashboard/support", icon: HeartIcon },
+		],
 	},
 	{
-		label: "Talks",
-		to: "/dashboard/talks",
-		icon: MicrophoneIcon,
+		label: "Setup",
+		items: [
+			{
+				label: "Integrations",
+				to: "/dashboard/integrations",
+				icon: PlugCircleIcon,
+			},
+			{ label: "Theme", to: "/dashboard/theme", icon: PaletteIcon },
+		],
 	},
 	{
-		label: "Settings",
-		to: "/dashboard/settings",
-		icon: SettingsIcon,
+		items: [
+			{ label: "Settings", to: "/dashboard/settings", icon: SettingsIcon },
+		],
 	},
 ];
 
@@ -246,7 +251,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 							</Link>
 						</div>
 
-						<div className="flex flex-1 flex-col px-4 py-5">
+						<div className="flex min-h-0 flex-1 flex-col px-4 py-5">
 							<WorkspaceNav
 								pathname={pathname}
 								isPro={isPro}
@@ -455,73 +460,86 @@ function WorkspaceNav({
 
 	return (
 		<>
-			<p
-				className={cn(
-					"px-2 font-mono text-[9px] uppercase tracking-[0.14em] text-brand",
-					fadeWhenCollapsed,
-				)}
+			{/* Scrolls on its own on short screens so the plan below never
+			    gets cut off. -mx-4/px-4 keep the active indicator (at
+			    -left-4) inside the scroll container's clip box. */}
+			<nav
+				aria-label="Dashboard"
+				className="-mx-4 min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-2 [scrollbar-width:thin]"
 			>
-				Workspace
-			</p>
+				{navGroups.map((group) => (
+					<div key={group.items[0].to}>
+						{group.label && (
+							<p
+								className={cn(
+									"mb-2 px-2 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground",
+									collapse && fadeWhenCollapsed,
+								)}
+							>
+								{group.label}
+							</p>
+						)}
+						<div className="space-y-0.5">
+							{group.items.map((item) => {
+								const active = item.end
+									? pathname === item.to
+									: pathname.startsWith(item.to);
 
-			<nav className="mt-4 space-y-0.5">
-				{nav.map((item) => {
-					const active = item.end
-						? pathname === item.to
-						: pathname.startsWith(item.to);
+								const Icon = item.icon;
 
-					const Icon = item.icon;
+								const link = (
+									<Link
+										to={item.to}
+										onClick={onNavigate}
+										aria-current={active ? "page" : undefined}
+										className={`group relative flex items-center gap-3 px-2 py-2.5 text-sm transition-colors ${
+											active
+												? "text-foreground"
+												: "text-muted-foreground hover:bg-surface/60 hover:text-foreground"
+										}`}
+									>
+										{active && (
+											<motion.span
+												layoutId="active-nav-indicator"
+												className="absolute -left-4 top-0 h-full w-px bg-brand"
+												transition={{
+													duration: reduceMotion ? 0 : 0.25,
+													ease: [0.16, 1, 0.3, 1],
+												}}
+											/>
+										)}
 
-					const link = (
-						<Link
-							to={item.to}
-							onClick={onNavigate}
-							aria-current={active ? "page" : undefined}
-							className={`group relative flex items-center gap-3 px-2 py-2.5 text-sm transition-colors ${
-								active
-									? "text-foreground"
-									: "text-muted-foreground hover:bg-surface/60 hover:text-foreground"
-							}`}
-						>
-							{active && (
-								<motion.span
-									layoutId="active-nav-indicator"
-									className="absolute -left-4 top-0 h-full w-px bg-brand"
-									transition={{
-										duration: reduceMotion ? 0 : 0.25,
-										ease: [0.16, 1, 0.3, 1],
-									}}
-								/>
-							)}
+										<Icon
+											className={`size-5 shrink-0 transition-colors ${
+												active
+													? "text-brand"
+													: "text-muted-foreground group-hover:text-foreground"
+											}`}
+											strokeWidth={1}
+										/>
 
-							<Icon
-								className={`size-5 shrink-0 transition-colors ${
-									active
-										? "text-brand"
-										: "text-muted-foreground group-hover:text-foreground"
-								}`}
-								strokeWidth={1}
-							/>
+										<span className={collapse ? fadeWhenCollapsed : undefined}>
+											{item.label}
+										</span>
+									</Link>
+								);
 
-							<span className={collapse ? fadeWhenCollapsed : undefined}>
-								{item.label}
-							</span>
-						</Link>
-					);
+								if (!collapse) return <Fragment key={item.to}>{link}</Fragment>;
 
-					if (!collapse) return <Fragment key={item.to}>{link}</Fragment>;
-
-					// Labels are hidden while collapsed, so the name moves to a
-					// tooltip. Expanded, the tooltip would only repeat the label.
-					return (
-						<Tooltip key={item.to}>
-							<TooltipTrigger asChild>{link}</TooltipTrigger>
-							{collapsed && (
-								<TooltipContent side="right">{item.label}</TooltipContent>
-							)}
-						</Tooltip>
-					);
-				})}
+								// Labels are hidden while collapsed, so the name moves to a
+								// tooltip. Expanded, the tooltip would only repeat the label.
+								return (
+									<Tooltip key={item.to}>
+										<TooltipTrigger asChild>{link}</TooltipTrigger>
+										{collapsed && (
+											<TooltipContent side="right">{item.label}</TooltipContent>
+										)}
+									</Tooltip>
+								);
+							})}
+						</div>
+					</div>
+				))}
 			</nav>
 
 			<div className="mt-auto">

@@ -171,7 +171,7 @@ function IntegrationsPage() {
 		<>
 			<header className="border-b border-border pb-8">
 				<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-brand">
-					07 / Integrations
+					10 / Integrations
 				</p>
 
 				<div className="mt-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">

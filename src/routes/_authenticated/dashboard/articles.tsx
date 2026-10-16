@@ -59,7 +59,7 @@ function ArticlesPage() {
 		<>
 			<header className="border-b border-border pb-8">
 				<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-brand">
-					06 / Articles
+					07 / Articles
 				</p>
 
 				<div className="mt-5 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">

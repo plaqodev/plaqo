@@ -59,7 +59,7 @@ function AnalyticsPage() {
 		<div className="mx-auto w-full max-w-6xl">
 			<header className="border-b border-border pb-8">
 				<p className="font-mono text-[10px] uppercase tracking-[0.14em] text-brand">
-					09 / Analytics
+					02 / Analytics
 				</p>
 
 				<div className="mt-5 flex flex-wrap items-end justify-between gap-6">
