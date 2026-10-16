@@ -1,6 +1,11 @@
 import { Resend } from "resend";
 
-const FROM = process.env.EMAIL_FROM ?? "no-reply@plaqo.dev";
+const FROM = process.env.EMAIL_FROM ?? "plaqo <hello@plaqo.dev>";
+// Replies to any automated email reach a person (support@ is a Zoho alias).
+const REPLY_TO =
+	process.env.EMAIL_REPLY_TO ??
+	process.env.CONTACT_EMAIL ??
+	"support@plaqo.dev";
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 const client = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
@@ -42,11 +47,19 @@ export async function sendEmail({ to, subject, html, text }: SendArgs) {
 		return;
 	}
 
-	await client.emails.send({
+	// The SDK reports failures through `error` instead of throwing — without
+	// this check a bad key or an unverified domain silently dropped every
+	// email, password resets included.
+	const { error } = await client.emails.send({
 		from: FROM,
 		to,
+		replyTo: REPLY_TO,
 		subject,
 		html,
 		text,
 	});
+	if (error) {
+		console.error("[email] send failed", { subject, error: error.message });
+		throw new Error(`Email not sent: ${error.message}`);
+	}
 }

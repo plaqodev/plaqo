@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { autoConnectGithub } from "@/lib/api/integrations/account.functions";
 import { profileInput } from "@/lib/api/profile-data.schemas";
+import { sendWelcomeEmail } from "@/lib/api/welcome.functions";
 import { useUpdateProfile } from "@/lib/queries/profile-data";
 import { zodField } from "@/lib/schemas/field";
 import { SITE_DOMAIN } from "@/lib/site";
@@ -74,6 +75,14 @@ function OnboardingPage() {
 					}
 				} catch {
 					// Ignorado a propósito — nunca debe bloquear el onboarding.
+				}
+
+				// After the GitHub attempt, so the email knows whether it's
+				// connected. Best effort: never blocks reaching the dashboard.
+				try {
+					await sendWelcomeEmail();
+				} catch {
+					// The server already swallows send errors; this covers the call.
 				}
 
 				await router.invalidate();

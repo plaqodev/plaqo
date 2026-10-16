@@ -13,15 +13,18 @@ import { haveIBeenPwned } from "better-auth/plugins/haveibeenpwned";
 import { username } from "better-auth/plugins/username";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import DodoPayments from "dodopayments";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import * as authSchema from "@/db/auth-schema";
 import { db } from "@/db/index";
 import { profiles } from "@/db/schema";
 import { auditAuthEndpoint } from "@/lib/auth-audit.server";
-import { escapeHtml, sendEmail } from "@/lib/email";
+import { sendEmail } from "@/lib/email";
+import * as emails from "@/lib/emails/templates";
+import { FOUNDING_SPOTS } from "@/lib/pricing";
 import { securityLog } from "@/lib/security-log";
 import { absoluteUrl } from "@/lib/site";
 import { allowedImageOrigins, validateUserInput } from "@/lib/user-input";
+import { sendWelcomeOnce } from "@/lib/welcome.server";
 
 // El SDK exige un bearerToken no vacío al construirse — sin fallback, no
 // tener DODO_PAYMENTS_API_KEY seteada tira abajo *todo* auth.ts (login
@@ -37,13 +40,26 @@ const dodoClient = new DodoPayments({
 
 // Distinto product ID entre sandbox y producción en el dashboard de Dodo,
 // por eso va por env var y no hardcodeado.
+// One value for the token's lifetime and the "expires in N minutes" copy.
+const RESET_TOKEN_SECONDS = 60 * 30;
+
 const DODO_PRO_PRODUCT_ID = process.env.DODO_PRO_PRODUCT_ID || "pdt_REPLACE_ME";
 // Yearly Pro. Optional: until it's created in Dodo, checkout only offers
 // monthly. Both products grant the same "pro" plan (the webhook doesn't
 // look at which product was bought). See src/lib/pricing.ts.
 const DODO_PRO_ANNUAL_PRODUCT_ID = process.env.DODO_PRO_ANNUAL_PRODUCT_ID;
 
-async function setPlan(userId: string, plan: "free" | "pro") {
+// Returns the plan before the change, so callers can tell a real
+// transition (free → pro) from a redelivered webhook that changes nothing.
+async function setPlan(
+	userId: string,
+	plan: "free" | "pro",
+): Promise<"free" | "pro"> {
+	const [current] = await db
+		.select({ plan: profiles.plan })
+		.from(profiles)
+		.where(eq(profiles.id, userId))
+		.limit(1);
 	await db
 		.insert(profiles)
 		.values({ id: userId, plan })
@@ -51,6 +67,49 @@ async function setPlan(userId: string, plan: "free" | "pro") {
 			target: profiles.id,
 			set: { plan, updatedAt: new Date() },
 		});
+	return current?.plan === "pro" ? "pro" : "free";
+}
+
+// Billing emails never fail a webhook: Dodo would retry it and the plan
+// change has already been written. A send error is logged and dropped.
+async function notifyUser(
+	userId: string,
+	render: (user: { name: string | null }) => {
+		subject: string;
+		html: string;
+		text: string;
+	},
+) {
+	try {
+		const [user] = await db
+			.select({ email: authSchema.user.email, name: authSchema.user.name })
+			.from(authSchema.user)
+			.where(eq(authSchema.user.id, userId))
+			.limit(1);
+		if (!user) return;
+		await sendEmail({ to: user.email, ...render(user) });
+	} catch (e) {
+		console.error(
+			"[dodo] billing email failed",
+			e instanceof Error ? e.message : e,
+		);
+	}
+}
+
+function currentProTier(): "founding" | "regular" {
+	return process.env.PRO_PRICING_TIER === "regular" ? "regular" : "founding";
+}
+
+// Founding member number for the welcome email: this account's place among
+// Pro accounts right after the upgrade. Null once past the founding spots.
+async function foundingNumber(): Promise<number | null> {
+	if (currentProTier() !== "founding") return null;
+	const [row] = await db
+		.select({ count: sql<number>`count(*)::int` })
+		.from(profiles)
+		.where(eq(profiles.plan, "pro"));
+	const n = row?.count ?? 0;
+	return n > 0 && n <= FOUNDING_SPOTS ? n : null;
 }
 
 // El plugin de Dodo también ofrece `createCustomerOnSignUp`, pero su hook
@@ -102,6 +161,17 @@ const PRO_REVOKE_EVENTS = new Set([
 	"subscription.on_hold",
 	"subscription.paused",
 ]);
+// A failed renewal inside Dodo's grace period: Pro stays on, the user gets
+// the "update your card" email. When the grace period ends Dodo sends
+// on_hold (or cancelled), which revokes above.
+const PAYMENT_PAST_DUE_EVENT = "subscription.past_due";
+// Which revocations email the user, and with which variant. failed (the
+// subscription never started) and paused are silent.
+const PRO_ENDED_REASON: Record<string, "cancelled" | "payment"> = {
+	"subscription.cancelled": "cancelled",
+	"subscription.expired": "cancelled",
+	"subscription.on_hold": "payment",
+};
 
 const trustedOrigins = (process.env.BETTER_AUTH_TRUSTED_ORIGINS ?? "")
 	.split(",")
@@ -145,12 +215,14 @@ export const auth = betterAuth({
 		sendResetPassword: async ({ user, url }) => {
 			await sendEmail({
 				to: user.email,
-				subject: "Reset your plaqo password",
-				html: `<p>Hi ${escapeHtml(user.name ?? "")},</p><p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
-				text: `Reset your password: ${url}`,
+				...emails.resetPassword({
+					email: user.email,
+					url,
+					expiresInMinutes: RESET_TOKEN_SECONDS / 60,
+				}),
 			});
 		},
-		resetPasswordTokenExpiresIn: 60 * 30,
+		resetPasswordTokenExpiresIn: RESET_TOKEN_SECONDS,
 		revokeSessionsOnPasswordReset: true,
 	},
 
@@ -160,9 +232,7 @@ export const auth = betterAuth({
 		sendVerificationEmail: async ({ user, url }) => {
 			await sendEmail({
 				to: user.email,
-				subject: "Verify your plaqo email",
-				html: `<p>Welcome to plaqo, ${escapeHtml(user.name ?? "")}.</p><p>Confirm your email: <a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
-				text: `Verify your email: ${url}`,
+				...emails.verifyEmail({ name: user.name, url }),
 			});
 		},
 	},
@@ -225,10 +295,12 @@ export const auth = betterAuth({
 					onPayload: async (payload) => {
 						const isGrant = PRO_GRANT_EVENTS.has(payload.type);
 						const isRevoke = PRO_REVOKE_EVENTS.has(payload.type);
-						if (!isGrant && !isRevoke) return;
+						const isPastDue = payload.type === PAYMENT_PAST_DUE_EVENT;
+						if (!isGrant && !isRevoke && !isPastDue) return;
 
 						const data = payload.data as {
 							customer?: { metadata?: Record<string, unknown> };
+							product_id?: string;
 						};
 						const userId = data.customer?.metadata?.better_auth_user_id;
 						if (typeof userId !== "string") {
@@ -239,7 +311,43 @@ export const auth = betterAuth({
 							return;
 						}
 
-						await setPlan(userId, isGrant ? "pro" : "free");
+						if (isPastDue) {
+							await notifyUser(userId, (user) =>
+								emails.paymentFailed({ name: user.name }),
+							);
+							return;
+						}
+
+						const previous = await setPlan(userId, isGrant ? "pro" : "free");
+
+						// Emails only on a real transition: Dodo can redeliver a
+						// webhook, and renewals re-send subscription.active.
+						if (isGrant && previous !== "pro") {
+							const number = await foundingNumber();
+							await notifyUser(userId, (user) =>
+								emails.proWelcome({
+									name: user.name,
+									tier: number === null ? currentProTier() : "founding",
+									billing:
+										data.product_id &&
+										data.product_id === DODO_PRO_ANNUAL_PRODUCT_ID
+											? "yearly"
+											: "monthly",
+									foundingNumber: number,
+								}),
+							);
+						}
+
+						const reason = PRO_ENDED_REASON[payload.type];
+						if (isRevoke && previous === "pro" && reason) {
+							await notifyUser(userId, (user) =>
+								emails.proEnded({
+									name: user.name,
+									wasFounding: currentProTier() === "founding",
+									reason,
+								}),
+							);
+						}
 					},
 				}),
 			],
@@ -370,7 +478,13 @@ export const auth = betterAuth({
 	databaseHooks: {
 		user: {
 			create: {
-				after: (user) => bestEffortCreateDodoCustomer(user),
+				after: async (user) => {
+					await bestEffortCreateDodoCustomer(user);
+					// Email sign-ups already have a username (chosen in the
+					// form), so the page exists now. OAuth sign-ups get theirs
+					// in onboarding, which sends the welcome there instead.
+					await sendWelcomeOnce(user.id);
+				},
 			},
 			update: {
 				after: async (user) => {
