@@ -1,5 +1,6 @@
+import { ArrowLeftIcon } from "@solar-icons/react/linear";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Suspense, lazy } from "react";
+import { lazy, Suspense } from "react";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { getBlogPost } from "@/content/blog/posts";
@@ -29,9 +30,7 @@ export const Route = createFileRoute("/blog/$slug")({
 				{ property: "og:description", content: loaderData.description },
 				{ property: "article:published_time", content: loaderData.date },
 			],
-			links: [
-				{ rel: "canonical", href: absoluteUrl(`/blog/${params.slug}`) },
-			],
+			links: [{ rel: "canonical", href: absoluteUrl(`/blog/${params.slug}`) }],
 		};
 	},
 	notFoundComponent: () => (
@@ -91,9 +90,10 @@ function BlogPostPage() {
 				<p className="mt-16 border-t border-border pt-10">
 					<Link
 						to="/blog"
-						className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
+						className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
 					>
-						← All posts
+						<ArrowLeftIcon size={13} aria-hidden />
+						All posts
 					</Link>
 				</p>
 			</main>

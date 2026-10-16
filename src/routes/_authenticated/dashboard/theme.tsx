@@ -1,4 +1,6 @@
 import {
+	ArrowRightIcon,
+	ArrowRightUpIcon,
 	LockKeyholeIcon,
 	RestartIcon,
 	UnreadIcon,
@@ -188,9 +190,10 @@ function ThemePage() {
 							href={`/${user.username ?? ""}`}
 							target="_blank"
 							rel="noreferrer"
-							className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground underline decoration-border underline-offset-4 transition-colors hover:text-foreground hover:decoration-brand"
+							className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground underline decoration-border underline-offset-4 transition-colors hover:text-foreground hover:decoration-brand"
 						>
-							Open my public page ↗
+							Open my public page
+							<ArrowRightUpIcon size={12} aria-hidden />
 						</a>
 					</div>
 				</div>
@@ -1030,7 +1033,11 @@ function ThemePreview({
 								className="tt-btn"
 								onClick={(event) => event.preventDefault()}
 							>
-								<span style={{ opacity: 0.8 }}>→</span>
+								<ArrowRightIcon
+									size={14}
+									aria-hidden
+									style={{ opacity: 0.8 }}
+								/>
 								<span style={{ flex: 1 }}>{label}</span>
 							</button>
 						))}

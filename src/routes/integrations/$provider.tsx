@@ -1,10 +1,21 @@
-import { ArrowRightIcon, UnreadIcon } from "@solar-icons/react/linear";
+import {
+	ArrowLeftIcon,
+	ArrowRightIcon,
+	UnreadIcon,
+} from "@solar-icons/react/linear";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { getIntegrationSeo, SEO_PROVIDERS } from "@/lib/integrations/seo-content";
-import { PROVIDER_LABEL, PROVIDER_SEGMENT, type Provider } from "@/lib/integrations/types";
+import {
+	getIntegrationSeo,
+	SEO_PROVIDERS,
+} from "@/lib/integrations/seo-content";
+import {
+	PROVIDER_LABEL,
+	PROVIDER_SEGMENT,
+	type Provider,
+} from "@/lib/integrations/types";
 import { absoluteUrl } from "@/lib/site";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -18,7 +29,11 @@ export const Route = createFileRoute("/integrations/$provider")({
 		if (!isSeoProvider(params.provider)) throw notFound();
 		const seo = getIntegrationSeo(params.provider);
 		if (!seo) throw notFound();
-		return { provider: params.provider, seo, label: PROVIDER_LABEL[params.provider] };
+		return {
+			provider: params.provider,
+			seo,
+			label: PROVIDER_LABEL[params.provider],
+		};
 	},
 	head: ({ loaderData, params }) => {
 		if (!loaderData) return {};
@@ -140,9 +155,10 @@ function IntegrationPage() {
 				<p className="mt-10">
 					<Link
 						to="/integrations"
-						className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
+						className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
 					>
-						← All integrations
+						<ArrowLeftIcon size={13} aria-hidden />
+						All integrations
 					</Link>
 				</p>
 			</main>

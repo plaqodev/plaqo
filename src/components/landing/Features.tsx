@@ -1,3 +1,4 @@
+import { ArrowRightUpIcon } from "@solar-icons/react/linear";
 import { motion, useReducedMotion } from "motion/react";
 
 const items = [
@@ -104,9 +105,9 @@ export function Features() {
 
 							<span
 								aria-hidden="true"
-								className="hidden font-mono text-xs text-muted-foreground transition-all duration-200 group-hover:translate-x-1 group-hover:text-brand sm:block"
+								className="hidden pt-1.5 text-muted-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand sm:block"
 							>
-								↗
+								<ArrowRightUpIcon size={16} />
 							</span>
 						</motion.div>
 					))}

@@ -1,4 +1,6 @@
 import {
+	ArrowDownIcon,
+	ArrowUpIcon,
 	CursorIcon,
 	EyeIcon,
 	GraphUpIcon,
@@ -756,7 +758,7 @@ function ChangeBadge({ changePct }: { changePct?: number | null }) {
 
 	return (
 		<span
-			className={`font-mono text-[10px] tabular-nums ${
+			className={`inline-flex items-center gap-0.5 font-mono text-[10px] tabular-nums ${
 				isFlat
 					? "text-muted-foreground"
 					: isUp
@@ -764,7 +766,14 @@ function ChangeBadge({ changePct }: { changePct?: number | null }) {
 						: "text-destructive"
 			}`}
 		>
-			{isFlat ? "—" : isUp ? "↑" : "↓"} {Math.abs(changePct)}%
+			{isFlat ? (
+				"—"
+			) : isUp ? (
+				<ArrowUpIcon size={11} aria-label="Up" />
+			) : (
+				<ArrowDownIcon size={11} aria-label="Down" />
+			)}
+			{Math.abs(changePct)}%
 		</span>
 	);
 }

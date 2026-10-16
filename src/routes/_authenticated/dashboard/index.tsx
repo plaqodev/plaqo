@@ -1,4 +1,5 @@
 import {
+	ArrowRightIcon,
 	ArrowRightUpIcon,
 	CodeSquareIcon,
 	CursorIcon,
@@ -449,9 +450,10 @@ function DashboardHome() {
 									{!done && to && (
 										<Link
 											to={to}
-											className="shrink-0 font-mono text-[9px] uppercase tracking-widest text-brand transition-colors hover:text-foreground"
+											className="inline-flex shrink-0 items-center gap-1 font-mono text-[9px] uppercase tracking-widest text-brand transition-colors hover:text-foreground"
 										>
-											Do it →
+											Do it
+											<ArrowRightIcon size={11} aria-hidden />
 										</Link>
 									)}
 
@@ -459,9 +461,10 @@ function DashboardHome() {
 										<button
 											type="button"
 											onClick={action}
-											className="shrink-0 font-mono text-[9px] uppercase tracking-widest text-brand transition-colors hover:text-foreground"
+											className="inline-flex shrink-0 items-center gap-1 font-mono text-[9px] uppercase tracking-widest text-brand transition-colors hover:text-foreground"
 										>
-											Do it →
+											Do it
+											<ArrowRightIcon size={11} aria-hidden />
 										</button>
 									)}
 								</motion.li>
@@ -503,9 +506,11 @@ function MiniStat({
 					<AnimatedNumber value={value} duration={0.5} />
 				</span>
 
-				<span className="font-mono text-xs text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-brand">
-					↗
-				</span>
+				<ArrowRightUpIcon
+					size={14}
+					aria-hidden
+					className="text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
+				/>
 			</div>
 		</Link>
 	);

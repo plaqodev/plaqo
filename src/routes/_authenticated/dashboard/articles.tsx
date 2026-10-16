@@ -236,9 +236,10 @@ function ArticleRow({
 								href={article.url}
 								target="_blank"
 								rel="noreferrer"
-								className="transition-colors hover:text-brand"
+								className="inline-flex items-center gap-1 transition-colors hover:text-brand"
 							>
-								Open ↗
+								Open
+								<ArrowRightUpIcon size={11} aria-hidden />
 							</a>
 						</div>
 					</div>

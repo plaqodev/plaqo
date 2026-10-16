@@ -1,5 +1,6 @@
 import {
 	AddIcon,
+	ArrowRightUpIcon,
 	MenuDotsIcon,
 	MicrophoneIcon,
 	PenIcon,
@@ -253,9 +254,10 @@ function TalkRow({
 									href={talk.slidesUrl}
 									target="_blank"
 									rel="noreferrer"
-									className="text-muted-foreground transition-colors hover:text-brand"
+									className="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-brand"
 								>
-									Slides ↗
+									Slides
+									<ArrowRightUpIcon size={11} aria-hidden />
 								</a>
 							)}
 							{talk.videoUrl && (
@@ -263,9 +265,10 @@ function TalkRow({
 									href={talk.videoUrl}
 									target="_blank"
 									rel="noreferrer"
-									className="text-muted-foreground transition-colors hover:text-brand"
+									className="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-brand"
 								>
-									Watch ↗
+									Watch
+									<ArrowRightUpIcon size={11} aria-hidden />
 								</a>
 							)}
 						</div>

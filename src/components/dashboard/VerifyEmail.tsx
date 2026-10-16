@@ -1,3 +1,4 @@
+import { CheckIcon } from "@solar-icons/react/linear";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -113,11 +114,18 @@ export function EmailField({
 				</span>
 
 				<span
-					className={`font-mono text-[9px] uppercase tracking-[0.12em] ${
+					className={`inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.12em] ${
 						verified ? "text-foreground" : "text-brand"
 					}`}
 				>
-					{verified ? "✓ Verified" : "Not verified"}
+					{verified ? (
+						<>
+							<CheckIcon size={12} aria-hidden />
+							Verified
+						</>
+					) : (
+						"Not verified"
+					)}
 				</span>
 			</div>
 

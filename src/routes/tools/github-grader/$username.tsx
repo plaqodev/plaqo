@@ -1,4 +1,5 @@
 import {
+	ArrowLeftIcon,
 	ArrowRightIcon,
 	CloseCircleIcon,
 	UnreadIcon,
@@ -11,8 +12,8 @@ import { XIcon } from "@/components/brand-icons";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import {
-	gradeGithubUsername,
 	type GithubGraderResult,
+	gradeGithubUsername,
 } from "@/lib/api/github-grader.functions";
 import { absoluteUrl } from "@/lib/site";
 
@@ -74,7 +75,8 @@ export const Route = createFileRoute("/tools/github-grader/$username")({
 		</div>
 	),
 	errorComponent: ({ error, reset }) => {
-		const rateLimited = error instanceof Error && error.message === "rate_limited";
+		const rateLimited =
+			error instanceof Error && error.message === "rate_limited";
 		return (
 			<div className="flex min-h-dvh items-center justify-center bg-background px-4">
 				<div className="text-center">
@@ -206,7 +208,10 @@ function GithubGraderResultPage() {
 					variants={{
 						hidden: {},
 						visible: {
-							transition: { staggerChildren: reduceMotion ? 0 : 0.05, delayChildren: reduceMotion ? 0 : 0.3 },
+							transition: {
+								staggerChildren: reduceMotion ? 0 : 0.05,
+								delayChildren: reduceMotion ? 0 : 0.3,
+							},
 						},
 					}}
 				>
@@ -244,8 +249,8 @@ function GithubGraderResultPage() {
 					</h2>
 					<p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
 						Your bio, pinned work, and activity — synced from GitHub (and
-						Dev.to, Stack Overflow, and more) onto one profile, without
-						editing a README by hand.
+						Dev.to, Stack Overflow, and more) onto one profile, without editing
+						a README by hand.
 					</p>
 					<a
 						href="/#cta"
@@ -262,9 +267,10 @@ function GithubGraderResultPage() {
 				<p className="mt-10">
 					<Link
 						to="/tools/github-grader"
-						className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
+						className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
 					>
-						← Check another username
+						<ArrowLeftIcon size={13} aria-hidden />
+						Check another username
 					</Link>
 				</p>
 			</main>
