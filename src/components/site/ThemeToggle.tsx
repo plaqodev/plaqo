@@ -1,9 +1,9 @@
 import { MoonIcon, Sun2Icon } from "@solar-icons/react/linear";
-import { useEffect, useState } from "react";
+import { type ComponentProps, useEffect, useState } from "react";
 
 import { getTheme, setTheme, type Theme } from "@/lib/theme";
 
-export function ThemeToggle() {
+export function ThemeToggle(props: ComponentProps<"button">) {
 	const [theme, setLocal] = useState<Theme>("dark");
 
 	useEffect(() => {
@@ -20,6 +20,7 @@ export function ThemeToggle() {
 	return (
 		<button
 			type="button"
+			{...props}
 			onClick={toggle}
 			aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
 			className="relative inline-flex h-11 w-11 items-center justify-center text-muted-foreground transition-[color,transform] md:h-8 md:w-8 active:scale-90 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"

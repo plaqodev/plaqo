@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { noFlashThemeScript } from "#/lib/theme";
 import { CookieConsentBanner } from "@/components/site/CookieConsentBanner";
 import { reloadOnChunkErrorScript } from "@/lib/reload-on-chunk-error";
+import { noFlashSidebarScript } from "@/lib/sidebar";
 import { absoluteUrl } from "@/lib/site";
 import PostHogProvider from "../integrations/posthog/provider";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
@@ -156,6 +157,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<head>
 				<ScriptOnce>{noFlashThemeScript}</ScriptOnce>
 				<ScriptOnce>{reloadOnChunkErrorScript}</ScriptOnce>
+				<ScriptOnce>{noFlashSidebarScript}</ScriptOnce>
 				<HeadContent />
 			</head>
 			<body>

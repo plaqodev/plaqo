@@ -73,6 +73,15 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
+/* Dashboard desktop sidebar collapsed (see lib/sidebar.ts). Scoped to the
+   element marked data-desktop-sidebar so the mobile drawer, which reuses
+   the same nav, never collapses. */
+@custom-variant sidebar-collapsed {
+	:root[data-sidebar="collapsed"] &[data-desktop-sidebar],
+	:root[data-sidebar="collapsed"] [data-desktop-sidebar] & {
+		@slot;
+	}
+}
 
 /*
  * plaqo

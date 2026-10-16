@@ -13,6 +13,7 @@ import {
 	PaletteIcon,
 	PlugCircleIcon,
 	SettingsIcon,
+	SidebarMinimalisticIcon,
 	UserIcon,
 } from "@solar-icons/react/linear";
 import {
@@ -25,6 +26,7 @@ import { motion, useReducedMotion } from "motion/react";
 import {
 	type ComponentType,
 	type CSSProperties,
+	Fragment,
 	type ReactNode,
 	type SVGProps,
 	useEffect,
@@ -33,6 +35,13 @@ import {
 import toast from "react-hot-toast";
 import { Logo } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
+import {
+	Kbd,
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { authClient } from "@/lib/auth-client";
 import {
 	peekCheckoutIntent,
@@ -42,6 +51,7 @@ import {
 import { PLAN_LIMITS } from "@/lib/plan-limits";
 import type { Billing } from "@/lib/pricing";
 import { useProfileCore } from "@/lib/queries/profile-data";
+import { isSidebarCollapsed, setSidebarCollapsed } from "@/lib/sidebar";
 import { SITE_DOMAIN } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { VerifyEmailBanner } from "./VerifyEmail";
@@ -152,6 +162,41 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 		);
 	}, [verified]);
 
+	// Desktop sidebar. The <html data-sidebar> attribute (set before paint
+	// by noFlashSidebarScript) drives the CSS; this state only feeds labels
+	// and tooltips, so it starts expanded and syncs after mount.
+	const [collapsed, setCollapsed] = useState(false);
+	const [modKey, setModKey] = useState("Ctrl");
+	useEffect(() => {
+		setCollapsed(isSidebarCollapsed());
+		if (/Mac|iPhone|iPad/.test(navigator.platform)) setModKey("⌘");
+	}, []);
+
+	function toggleSidebar() {
+		const next = !isSidebarCollapsed();
+		setSidebarCollapsed(next);
+		setCollapsed(next);
+	}
+
+	// Ctrl/⌘ + B, like most editors. Ignored while typing so it never
+	// steals a shortcut from a text field.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: toggleSidebar only reads the DOM and calls setters
+	useEffect(() => {
+		function onKey(event: KeyboardEvent) {
+			if (event.key.toLowerCase() !== "b") return;
+			if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey)
+				return;
+			const target = event.target as HTMLElement | null;
+			if (target?.closest("input, textarea, select, [contenteditable='true']"))
+				return;
+			if (!window.matchMedia("(min-width: 768px)").matches) return;
+			event.preventDefault();
+			toggleSidebar();
+		}
+		window.addEventListener("keydown", onKey);
+		return () => window.removeEventListener("keydown", onKey);
+	}, []);
+
 	async function handleSignOut() {
 		await authClient.signOut();
 		await router.invalidate();
@@ -171,159 +216,223 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 	}
 
 	return (
-		<div className="min-h-dvh bg-background text-foreground">
-			<div className="mx-auto flex min-h-dvh max-w-360">
-				<aside
-					className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-border bg-background md:flex"
-					// La sidebar no cambia entre subpáginas del dashboard — sin
-					// nombre propio, la view transition del router la incluiría
-					// en el crossfade de "root" y animaría píxeles idénticos.
-					style={{ viewTransitionName: "dashboard-sidebar" } as CSSProperties}
-				>
-					<div className="flex h-16 items-center border-b border-border px-6">
-						<Link to="/" className="flex items-center gap-2.5">
-							<Logo />
-
-							<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
-								01
-							</span>
-						</Link>
-					</div>
-
-					<div className="flex flex-1 flex-col px-4 py-5">
-						<WorkspaceNav
-							pathname={pathname}
-							isPro={isPro}
-							onUpgrade={() => handleUpgrade()}
-							upgradePending={upgradePending}
-						/>
-					</div>
-				</aside>
-
-				{mobileNavOpen && (
-					<MobileNavDrawer onClose={() => setMobileNavOpen(false)}>
-						{(requestClose) => (
-							<>
-								<div className="flex h-16 items-center justify-between border-b border-border px-6">
-									<Link
-										to="/"
-										className="flex items-center gap-2.5"
-										onClick={requestClose}
-									>
-										<Logo />
-
-										<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
-											01
-										</span>
-									</Link>
-
-									<button
-										type="button"
-										onClick={requestClose}
-										aria-label="Close menu"
-										className="inline-flex h-8 w-8 items-center justify-center text-muted-foreground transition-[color,transform] active:scale-90 hover:text-foreground"
-									>
-										<CloseIcon className="h-4 w-4" strokeWidth={1.5} />
-									</button>
-								</div>
-
-								<div className="flex flex-1 flex-col overflow-y-auto px-4 py-5">
-									<WorkspaceNav
-										pathname={pathname}
-										isPro={isPro}
-										onUpgrade={() => {
-											requestClose();
-											handleUpgrade();
-										}}
-										upgradePending={upgradePending}
-										onNavigate={requestClose}
-									/>
-								</div>
-							</>
-						)}
-					</MobileNavDrawer>
-				)}
-
-				<div className="flex min-w-0 flex-1 flex-col">
-					<header
-						className="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/95 px-5 backdrop-blur-sm sm:px-8"
-						style={{ viewTransitionName: "dashboard-header" } as CSSProperties}
+		<TooltipProvider>
+			<div className="min-h-dvh bg-background text-foreground">
+				<div className="mx-auto flex min-h-dvh max-w-360">
+					<aside
+						data-desktop-sidebar
+						className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col overflow-hidden border-r border-border bg-background transition-[width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none md:flex sidebar-collapsed:w-17"
+						// La sidebar no cambia entre subpáginas del dashboard — sin
+						// nombre propio, la view transition del router la incluiría
+						// en el crossfade de "root" y animaría píxeles idénticos.
+						style={{ viewTransitionName: "dashboard-sidebar" } as CSSProperties}
 					>
-						<div className="flex min-w-0 items-center gap-3">
-							<button
-								type="button"
-								onClick={() => setMobileNavOpen(true)}
-								aria-label="Open menu"
-								className="inline-flex h-8 w-8 shrink-0 items-center justify-center text-muted-foreground transition-[color,transform] active:scale-90 hover:text-foreground md:hidden"
-							>
-								<HamburgerMenuIcon className="h-5 w-5" strokeWidth={1.7} />
-							</button>
-
+						<div className="flex h-16 items-center border-b border-border px-6">
 							<Link
-								to="/$username"
-								params={{ username: user.username ?? "" }}
-								className="group flex min-w-0 items-center gap-2"
+								to="/"
+								aria-label="plaqo home"
+								className="flex items-center gap-2.5"
 							>
-								<span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
-									{SITE_DOMAIN}/
-								</span>
+								<Logo textClassName={fadeWhenCollapsed} />
 
-								<span className="truncate font-mono text-[10px] uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-brand">
-									{user.username}
+								<span
+									className={cn(
+										"font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground",
+										fadeWhenCollapsed,
+									)}
+								>
+									01
 								</span>
 							</Link>
 						</div>
 
-						<div className="flex items-center gap-3">
-							<Link
-								to="/$username"
-								params={{ username: user.username ?? "" }}
-								className="hidden border border-border px-3 py-2 font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground sm:inline-flex"
-							>
-								View public page
-							</Link>
-
-							<ThemeToggle />
-
-							<button
-								type="button"
-								onClick={handleSignOut}
-								title="Sign out"
-								aria-label="Sign out"
-								className="inline-flex h-8 w-8 items-center justify-center text-muted-foreground transition-[color,transform] active:scale-90 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-							>
-								<Logout2Icon className="h-4 w-4" strokeWidth={1.7} />
-							</button>
-
-							<div className="ml-1 flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border border-border bg-surface font-display text-sm text-foreground">
-								{user.image ? (
-									<img
-										src={user.image}
-										alt=""
-										className="h-full w-full object-cover"
-									/>
-								) : (
-									user.name.slice(0, 1).toUpperCase()
-								)}
-							</div>
+						<div className="flex flex-1 flex-col px-4 py-5">
+							<WorkspaceNav
+								pathname={pathname}
+								isPro={isPro}
+								onUpgrade={() => handleUpgrade()}
+								upgradePending={upgradePending}
+								collapse={{ collapsed }}
+							/>
 						</div>
-					</header>
+					</aside>
 
-					{!verified && (
-						<VerifyEmailBanner
-							email={user.email}
-							finishingUpgrade={pendingIntent}
-						/>
+					{mobileNavOpen && (
+						<MobileNavDrawer onClose={() => setMobileNavOpen(false)}>
+							{(requestClose) => (
+								<>
+									<div className="flex h-16 items-center justify-between border-b border-border px-6">
+										<Link
+											to="/"
+											className="flex items-center gap-2.5"
+											onClick={requestClose}
+										>
+											<Logo />
+
+											<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+												01
+											</span>
+										</Link>
+
+										<button
+											type="button"
+											onClick={requestClose}
+											aria-label="Close menu"
+											className="inline-flex h-8 w-8 items-center justify-center text-muted-foreground transition-[color,transform] active:scale-90 hover:text-foreground"
+										>
+											<CloseIcon className="h-4 w-4" strokeWidth={1.5} />
+										</button>
+									</div>
+
+									<div className="flex flex-1 flex-col overflow-y-auto px-4 py-5">
+										<WorkspaceNav
+											pathname={pathname}
+											isPro={isPro}
+											onUpgrade={() => {
+												requestClose();
+												handleUpgrade();
+											}}
+											upgradePending={upgradePending}
+											onNavigate={requestClose}
+										/>
+									</div>
+								</>
+							)}
+						</MobileNavDrawer>
 					)}
 
-					<main className="flex-1 px-5 py-8 sm:px-8 sm:py-10 lg:px-10">
-						{children}
-					</main>
+					<div className="flex min-w-0 flex-1 flex-col">
+						<header
+							className="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/95 px-5 backdrop-blur-sm sm:px-8"
+							style={
+								{ viewTransitionName: "dashboard-header" } as CSSProperties
+							}
+						>
+							<div className="flex min-w-0 items-center gap-3">
+								<button
+									type="button"
+									onClick={() => setMobileNavOpen(true)}
+									aria-label="Open menu"
+									className="inline-flex h-8 w-8 shrink-0 items-center justify-center text-muted-foreground transition-[color,transform] active:scale-90 hover:text-foreground md:hidden"
+								>
+									<HamburgerMenuIcon className="h-5 w-5" strokeWidth={1.7} />
+								</button>
+
+								{/* Desktop takes the hamburger's spot: same size, same slot. */}
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<button
+											type="button"
+											onClick={toggleSidebar}
+											aria-label={
+												collapsed ? "Expand sidebar" : "Collapse sidebar"
+											}
+											aria-expanded={!collapsed}
+											className="-ml-1.5 hidden h-8 w-8 shrink-0 items-center justify-center text-muted-foreground transition-[color,transform] active:scale-90 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring md:inline-flex"
+										>
+											<SidebarMinimalisticIcon
+												className={cn(
+													"h-5 w-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+													collapsed && "-scale-x-100",
+												)}
+												strokeWidth={1.5}
+											/>
+										</button>
+									</TooltipTrigger>
+									<TooltipContent side="bottom">
+										{collapsed ? "Expand" : "Collapse"}
+										<Kbd>{modKey} B</Kbd>
+									</TooltipContent>
+								</Tooltip>
+
+								<span
+									aria-hidden="true"
+									className="hidden h-4 w-px bg-border md:block"
+								/>
+
+								<Link
+									to="/$username"
+									params={{ username: user.username ?? "" }}
+									className="group flex min-w-0 items-center gap-2"
+								>
+									<span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+										{SITE_DOMAIN}/
+									</span>
+
+									<span className="truncate font-mono text-[10px] uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-brand">
+										{user.username}
+									</span>
+								</Link>
+							</div>
+
+							<div className="flex items-center gap-3">
+								<Link
+									to="/$username"
+									params={{ username: user.username ?? "" }}
+									className="hidden border border-border px-3 py-2 font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground sm:inline-flex"
+								>
+									View public page
+								</Link>
+
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<ThemeToggle />
+									</TooltipTrigger>
+									<TooltipContent side="bottom">Theme</TooltipContent>
+								</Tooltip>
+
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<button
+											type="button"
+											onClick={handleSignOut}
+											aria-label="Sign out"
+											className="inline-flex h-8 w-8 items-center justify-center text-muted-foreground transition-[color,transform] active:scale-90 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+										>
+											<Logout2Icon className="h-4 w-4" strokeWidth={1.7} />
+										</button>
+									</TooltipTrigger>
+									<TooltipContent side="bottom">Sign out</TooltipContent>
+								</Tooltip>
+
+								<div className="ml-1 flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden border border-border bg-surface font-display text-sm text-foreground">
+									{user.image ? (
+										<img
+											src={user.image}
+											alt=""
+											className="h-full w-full object-cover"
+										/>
+									) : (
+										user.name.slice(0, 1).toUpperCase()
+									)}
+								</div>
+							</div>
+						</header>
+
+						{!verified && (
+							<VerifyEmailBanner
+								email={user.email}
+								finishingUpgrade={pendingIntent}
+							/>
+						)}
+
+						<main className="flex-1 px-5 py-8 sm:px-8 sm:py-10 lg:px-10">
+							{children}
+						</main>
+					</div>
 				</div>
 			</div>
-		</div>
+		</TooltipProvider>
 	);
 }
+
+// Text that fades out while the desktop sidebar collapses. visibility
+// follows opacity (it flips at the end of the fade), so hidden text also
+// leaves the tab order and the accessibility tree.
+const fadeWhenCollapsed =
+	"whitespace-nowrap transition-[opacity,visibility] duration-200 ease-out motion-reduce:transition-none sidebar-collapsed:invisible sidebar-collapsed:opacity-0";
+
+type SidebarCollapse = { collapsed: boolean };
 
 function WorkspaceNav({
 	pathname,
@@ -331,18 +440,27 @@ function WorkspaceNav({
 	onUpgrade,
 	upgradePending,
 	onNavigate,
+	collapse,
 }: {
 	pathname: string;
 	isPro: boolean;
 	onUpgrade: () => void;
 	upgradePending: boolean;
 	onNavigate?: () => void;
+	// Only the desktop sidebar collapses; the mobile drawer leaves it out.
+	collapse?: SidebarCollapse;
 }) {
 	const reduceMotion = useReducedMotion();
+	const collapsed = collapse?.collapsed ?? false;
 
 	return (
 		<>
-			<p className="px-2 font-mono text-[9px] uppercase tracking-[0.14em] text-brand">
+			<p
+				className={cn(
+					"px-2 font-mono text-[9px] uppercase tracking-[0.14em] text-brand",
+					fadeWhenCollapsed,
+				)}
+			>
 				Workspace
 			</p>
 
@@ -354,11 +472,11 @@ function WorkspaceNav({
 
 					const Icon = item.icon;
 
-					return (
+					const link = (
 						<Link
-							key={item.to}
 							to={item.to}
 							onClick={onNavigate}
+							aria-current={active ? "page" : undefined}
 							className={`group relative flex items-center gap-3 px-2 py-2.5 text-sm transition-colors ${
 								active
 									? "text-foreground"
@@ -377,7 +495,7 @@ function WorkspaceNav({
 							)}
 
 							<Icon
-								className={`size-5 transition-colors ${
+								className={`size-5 shrink-0 transition-colors ${
 									active
 										? "text-brand"
 										: "text-muted-foreground group-hover:text-foreground"
@@ -385,39 +503,89 @@ function WorkspaceNav({
 								strokeWidth={1}
 							/>
 
-							<span>{item.label}</span>
+							<span className={collapse ? fadeWhenCollapsed : undefined}>
+								{item.label}
+							</span>
 						</Link>
+					);
+
+					if (!collapse) return <Fragment key={item.to}>{link}</Fragment>;
+
+					// Labels are hidden while collapsed, so the name moves to a
+					// tooltip. Expanded, the tooltip would only repeat the label.
+					return (
+						<Tooltip key={item.to}>
+							<TooltipTrigger asChild>{link}</TooltipTrigger>
+							{collapsed && (
+								<TooltipContent side="right">{item.label}</TooltipContent>
+							)}
+						</Tooltip>
 					);
 				})}
 			</nav>
 
-			<div className="mt-auto border-t border-border pt-5">
-				<div className="flex items-start justify-between gap-4">
-					<div>
-						<p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
-							Current plan
-						</p>
+			<div className="mt-auto">
+				<div className="relative border-t border-border pt-5">
+					<div
+						className={cn(
+							"flex w-56 items-start justify-between gap-4",
+							collapse && fadeWhenCollapsed,
+						)}
+					>
+						<div>
+							<p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+								Current plan
+							</p>
 
-						<p className="mt-2 font-display text-2xl tracking-[-0.02em]">
-							{isPro ? "Pro" : "Free"}
-						</p>
+							<p className="mt-2 font-display text-2xl tracking-[-0.02em]">
+								{isPro ? "Pro" : "Free"}
+							</p>
 
-						<p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-							{isPro
-								? "Unlimited links · projects · snippets"
-								: `${PLAN_LIMITS.free.links} links · ${PLAN_LIMITS.free.projects} projects · ${PLAN_LIMITS.free.snippets} snippets`}
-						</p>
+							<p className="mt-1 whitespace-normal text-xs leading-relaxed text-muted-foreground">
+								{isPro
+									? "Unlimited links · projects · snippets"
+									: `${PLAN_LIMITS.free.links} links · ${PLAN_LIMITS.free.projects} projects · ${PLAN_LIMITS.free.snippets} snippets`}
+							</p>
+						</div>
+
+						{!isPro && (
+							<button
+								type="button"
+								onClick={onUpgrade}
+								disabled={upgradePending}
+								className="font-mono text-[9px] uppercase tracking-[0.08em] text-brand transition-colors hover:text-foreground disabled:opacity-50"
+							>
+								{upgradePending ? "Redirecting…" : "Upgrade"}
+							</button>
+						)}
 					</div>
 
-					{!isPro && (
-						<button
-							type="button"
-							onClick={onUpgrade}
-							disabled={upgradePending}
-							className="font-mono text-[9px] uppercase tracking-[0.08em] text-brand transition-colors hover:text-foreground disabled:opacity-50"
-						>
-							{upgradePending ? "Redirecting…" : "Upgrade"}
-						</button>
+					{/* Collapsed: the plan shrinks to a mono chip in the same spot. */}
+					{collapse && (
+						<div className="invisible absolute top-5 left-0 flex w-9 justify-center opacity-0 transition-[opacity,visibility] duration-200 ease-out motion-reduce:transition-none sidebar-collapsed:visible sidebar-collapsed:opacity-100">
+							{isPro ? (
+								<span className="font-mono text-[9px] uppercase tracking-[0.12em] text-foreground">
+									Pro
+								</span>
+							) : (
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<button
+											type="button"
+											onClick={onUpgrade}
+											disabled={upgradePending}
+											aria-label="Upgrade to Pro"
+											className="font-mono text-[9px] uppercase tracking-[0.12em] text-brand transition-colors hover:text-foreground disabled:opacity-50"
+										>
+											Free
+										</button>
+									</TooltipTrigger>
+									{collapsed && (
+										<TooltipContent side="right">Upgrade to Pro</TooltipContent>
+									)}
+								</Tooltip>
+							)}
+						</div>
 					)}
 				</div>
 			</div>
