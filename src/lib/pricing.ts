@@ -1,16 +1,16 @@
 // Single source for Pro pricing copy. No server imports: the landing page,
 // the dashboard's upgrade buttons and the terms all read from here.
 //
-// Founding pricing: the first FOUNDING_SPOTS Pro subscribers pay the
-// founding price, locked for life — Dodo keeps each subscription on the
-// product it was bought with. When the spots run out, create the regular
-// products in Dodo, point DODO_PRO_PRODUCT_ID / DODO_PRO_ANNUAL_PRODUCT_ID at
-// them and set PRO_PRICING_TIER=regular; existing subscribers are untouched.
+// Founding pricing: the products are priced at the regular price and the
+// first FOUNDING_SPOTS subscribers get a 37.5% discount code
+// (DODO_FOUNDING_DISCOUNT_CODE) on every renewal, for as long as the
+// subscription stays active. The checkout adds the code by itself while
+// spots remain (see lib/founding.server.ts); nothing to switch afterwards.
 
 export const FOUNDING_SPOTS = 100;
 
 export const PRO_PRICES = {
-	founding: { monthly: 5, yearly: 48 },
+	founding: { monthly: 5, yearly: 50 },
 	regular: { monthly: 8, yearly: 80 },
 } as const;
 
@@ -24,7 +24,7 @@ export function proPrice(tier: ProTier, billing: Billing): number {
 	return PRO_PRICES[tier][billing];
 }
 
-// "$5/mo", "$48/yr"
+// "$5/mo", "$50/yr"
 export function proPriceLabel(tier: ProTier, billing: Billing): string {
 	return `$${proPrice(tier, billing)}/${billing === "monthly" ? "mo" : "yr"}`;
 }

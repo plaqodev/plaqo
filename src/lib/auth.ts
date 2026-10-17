@@ -16,14 +16,19 @@ import { admin } from "better-auth/plugins/admin";
 import { haveIBeenPwned } from "better-auth/plugins/haveibeenpwned";
 import { username } from "better-auth/plugins/username";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
-import DodoPayments from "dodopayments";
 import { eq, sql } from "drizzle-orm";
 import * as authSchema from "@/db/auth-schema";
 import { db } from "@/db/index";
 import { profiles } from "@/db/schema";
 import { auditAuthEndpoint } from "@/lib/auth-audit.server";
+import { dodoClient } from "@/lib/dodo.server";
 import { sendEmail } from "@/lib/email";
 import * as emails from "@/lib/emails/templates";
+import {
+	FOUNDING_DISCOUNT_CODE,
+	foundingStatus,
+	hasFoundingDiscount,
+} from "@/lib/founding.server";
 import { FOUNDING_SPOTS } from "@/lib/pricing";
 import { deleteAvatar } from "@/lib/r2.server";
 import { securityLog } from "@/lib/security-log";
@@ -34,18 +39,6 @@ import {
 	withVerifyCallback,
 } from "@/lib/verification";
 import { sendWelcomeOnce } from "@/lib/welcome.server";
-
-// El SDK exige un bearerToken no vacío al construirse — sin fallback, no
-// tener DODO_PAYMENTS_API_KEY seteada tira abajo *todo* auth.ts (login
-// incluido), no solo billing. Con el placeholder, las llamadas a Dodo
-// simplemente fallan con un error de auth hasta que se configure la key real.
-const dodoClient = new DodoPayments({
-	bearerToken: process.env.DODO_PAYMENTS_API_KEY || "missing_dodo_api_key",
-	environment:
-		process.env.DODO_PAYMENTS_ENVIRONMENT === "live_mode"
-			? "live_mode"
-			: "test_mode",
-});
 
 // Distinto product ID entre sandbox y producción en el dashboard de Dodo,
 // por eso va por env var y no hardcodeado.
@@ -111,14 +104,22 @@ async function notifyUser(
 	}
 }
 
-function currentProTier(): "founding" | "regular" {
+// Founding or regular, for the billing emails. With the founding discount
+// configured, the subscription itself says (it carries the code or not);
+// otherwise PRO_PRICING_TIER decides, as before the discount existed.
+function subscriptionTier(data: unknown): "founding" | "regular" {
+	if (FOUNDING_DISCOUNT_CODE) {
+		return hasFoundingDiscount(data) ? "founding" : "regular";
+	}
 	return process.env.PRO_PRICING_TIER === "regular" ? "regular" : "founding";
 }
 
 // Founding member number for the welcome email: this account's place among
 // Pro accounts right after the upgrade. Null once past the founding spots.
-async function foundingNumber(): Promise<number | null> {
-	if (currentProTier() !== "founding") return null;
+async function foundingNumber(
+	tier: "founding" | "regular",
+): Promise<number | null> {
+	if (tier !== "founding") return null;
 	const [row] = await db
 		.select({ count: sql<number>`count(*)::int` })
 		.from(profiles)
@@ -340,12 +341,14 @@ export const auth = betterAuth({
 
 						// Emails only on a real transition: Dodo can redeliver a
 						// webhook, and renewals re-send subscription.active.
+						const tier = subscriptionTier(payload.data);
+
 						if (isGrant && previous !== "pro") {
-							const number = await foundingNumber();
+							const number = await foundingNumber(tier);
 							await notifyUser(userId, (user) =>
 								emails.proWelcome({
 									name: user.name,
-									tier: number === null ? currentProTier() : "founding",
+									tier,
 									billing:
 										data.product_id &&
 										data.product_id === DODO_PRO_ANNUAL_PRODUCT_ID
@@ -361,7 +364,7 @@ export const auth = betterAuth({
 							await notifyUser(userId, (user) =>
 								emails.proEnded({
 									name: user.name,
-									wasFounding: currentProTier() === "founding",
+									wasFounding: tier === "founding",
 									reason,
 								}),
 							);
@@ -485,7 +488,24 @@ export const auth = betterAuth({
 						message: "Verify your email before upgrading to Pro.",
 					});
 				}
-				return;
+				// The app only uses checkout sessions (lib/billing.ts).
+				if (ctx.path !== "/dodopayments/checkout-session") return;
+				// The founding price: the server alone decides which codes a
+				// checkout gets, so codes sent by the browser are dropped.
+				const {
+					discount_code: _code,
+					discount_codes: _codes,
+					...body
+				} = (ctx.body ?? {}) as Record<string, unknown>;
+				const founding = await foundingStatus();
+				return {
+					context: {
+						...ctx,
+						body: founding?.active
+							? { ...body, discount_codes: [FOUNDING_DISCOUNT_CODE] }
+							: body,
+					},
+				};
 			}
 			if (ctx.path !== "/sign-up/email" && ctx.path !== "/update-user") return;
 			const error = validateUserInput(
