@@ -68,9 +68,10 @@ function buildCsp(env: Record<string, string>) {
 
 		`connect-src ${connectHosts.join(" ")}`,
 
-		// The application must never be embedded in a frame.
-		"frame-ancestors 'none'",
-		"frame-src 'none'",
+		// Only plaqo itself may frame plaqo: the theme editor previews the
+		// real public page in an iframe. Every other site is still refused.
+		"frame-ancestors 'self'",
+		"frame-src 'self'",
 
 		"object-src 'none'",
 		"base-uri 'self'",
@@ -86,7 +87,7 @@ function buildSecurityHeaders(env: Record<string, string>) {
 
 		"X-Content-Type-Options": "nosniff",
 
-		"X-Frame-Options": "DENY",
+		"X-Frame-Options": "SAMEORIGIN",
 
 		"Referrer-Policy": "strict-origin-when-cross-origin",
 

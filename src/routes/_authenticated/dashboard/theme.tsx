@@ -1,14 +1,15 @@
 import {
-	ArrowRightIcon,
 	ArrowRightUpIcon,
 	LockKeyholeIcon,
+	MonitorIcon,
 	RestartIcon,
+	SmartphoneIcon,
 	UnreadIcon,
 } from "@solar-icons/react/linear";
 import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
 import posthog from "posthog-js";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 import { ConfirmDialog } from "@/components/dashboard/ConfirmDialog";
@@ -39,14 +40,18 @@ import {
 	useResetTheme,
 	useUpdateTheme,
 } from "@/lib/queries/profile-data";
+import { SITE_DOMAIN } from "@/lib/site";
 import {
 	type FontCategory,
 	type FontKey,
 	fontOptions,
 	isValidThemeColor,
 	type ThemeV2,
-	themeToStyleTag,
 } from "@/lib/theme-config";
+import {
+	PREVIEW_READY_MESSAGE,
+	PREVIEW_THEME_MESSAGE,
+} from "@/lib/theme-preview";
 import { templates } from "@/lib/theme-templates";
 import { cn } from "@/lib/utils";
 
@@ -70,7 +75,6 @@ function ThemePage() {
 	const [confirmingReset, setConfirmingReset] = useState(false);
 
 	const theme = data.theme;
-	const bio = core.data?.bio ?? "";
 	const isPro = core.data?.plan === "pro";
 
 	const set = (patch: Partial<ThemeV2>) => {
@@ -132,8 +136,12 @@ function ThemePage() {
 				/>
 			)}
 
-			<div className="mt-8 grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.85fr)] xl:gap-14">
-				<div className="min-w-0">
+			{/* Controls in a narrow column, the preview as the main canvas, so
+			    the desktop layout shows big enough to read. The controls
+			    respond to their own column width (@container), not the
+			    viewport. */}
+			<div className="mt-8 grid min-w-0 gap-10 lg:grid-cols-[22.5rem_minmax(0,1fr)] xl:gap-12">
+				<div className="@container min-w-0">
 					<nav
 						className="grid min-w-0 grid-cols-6 border-b border-border"
 						aria-label="Theme sections"
@@ -198,23 +206,14 @@ function ThemePage() {
 					</div>
 				</div>
 
-				<div className="min-w-0 lg:sticky lg:top-24 lg:self-start">
-					<div className="mb-4 flex items-center justify-between border-b border-border pb-3">
-						<p className="font-mono text-[9px] uppercase tracking-[0.12em] text-brand">
-							Live preview
-						</p>
-
-						<p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-							/{user.username ?? "preview"}
-						</p>
-					</div>
-
+				{/* Below lg the preview comes first and sticks under the dashboard
+				    header, so changes stay visible while the controls scroll
+				    underneath. */}
+				<div className="sticky top-16 z-20 order-first -mx-5 min-w-0 bg-background px-5 pt-3 pb-4 sm:-mx-8 sm:px-8 lg:top-24 lg:order-none lg:mx-0 lg:self-start lg:px-0 lg:pt-0 lg:pb-0">
 					<ThemePreview
 						theme={theme}
 						username={user.username ?? ""}
-						name={user.name}
-						image={user.image ?? null}
-						bio={bio}
+						isPro={isPro}
 					/>
 				</div>
 			</div>
@@ -238,7 +237,7 @@ function TabBtn({
 			type="button"
 			onClick={onClick}
 			className={cn(
-				"relative min-w-0 whitespace-nowrap overflow-hidden px-0.5 pb-3 font-mono text-[8px] uppercase tracking-[0.02em] transition-colors sm:px-1 sm:text-[10px] sm:tracking-wider",
+				"relative min-w-0 whitespace-nowrap overflow-hidden px-0.5 pb-3 font-mono text-[9px] uppercase tracking-[0.02em] transition-colors @md:px-1 @md:text-[10px] @md:tracking-wider",
 				active
 					? "text-foreground"
 					: "text-muted-foreground hover:text-foreground",
@@ -376,7 +375,7 @@ function TemplatesPane({
 				</p>
 			</div>
 
-			<div className="grid gap-px border border-border bg-border sm:grid-cols-2">
+			<div className="grid gap-px border border-border bg-border @lg:grid-cols-2">
 				{templates.map((template) => {
 					const active = currentTemplateId === template.id;
 
@@ -449,7 +448,7 @@ function ColorsPane({
 }) {
 	return (
 		<Pane>
-			<div className="grid gap-6 sm:grid-cols-2">
+			<div className="grid gap-6 @lg:grid-cols-2">
 				<ColorField
 					label="Background"
 					value={theme.bg}
@@ -612,7 +611,7 @@ function FontPicker({
 
 	return (
 		<Row label={label}>
-			<div className="grid gap-px border border-border bg-border sm:grid-cols-2">
+			<div className="grid gap-px border border-border bg-border @lg:grid-cols-2">
 				{visible.map((font) => (
 					<button
 						type="button"
@@ -928,159 +927,254 @@ function CssPane({
 	);
 }
 
+type PreviewDevice = "desktop" | "mobile";
+
+// Layout width the page renders at for each device. 1024 is the smallest
+// width that gets the two-column desktop layout (lg in $username.tsx), so
+// it's scaled down the least. Mobile shows at (or near) its real size.
+const DEVICE_WIDTH: Record<PreviewDevice, number> = {
+	desktop: 1024,
+	mobile: 390,
+};
+
+// Below this panel width the desktop layout scales under ~55% and gets
+// hard to read, so the preview opens on mobile instead.
+const DESKTOP_MIN_PANEL = 560;
+
+// Mobile on a panel wide enough to leave space around it: the page sits
+// in a phone frame on a dotted backdrop, so the empty sides read as
+// intentional. Narrower panels (a real phone) show the page edge to edge.
+// statusBar: the strip under the notch; the page starts below it, like a
+// real phone, so the notch never covers the page.
+const PHONE = { minPanel: 480, margin: 20, bezel: 10, statusBar: 30 } as const;
+
+type PreviewLayout = {
+	framed: boolean;
+	scale: number;
+	// The page's own layout size (what the iframe renders at).
+	frameWidth: number;
+	frameHeight: number;
+	// Where the page starts inside the device (below the status bar).
+	frameTop: number;
+	// The visible device box (frame included) and its position.
+	deviceWidth: number;
+	deviceHeight: number;
+	left: number;
+	top: number;
+};
+
+function previewLayout(
+	device: PreviewDevice,
+	box: { width: number; height: number },
+): PreviewLayout {
+	const frameWidth = DEVICE_WIDTH[device];
+
+	if (device === "mobile" && box.width >= PHONE.minPanel) {
+		const inset = PHONE.margin + PHONE.bezel;
+		const innerHeight = Math.max(0, box.height - inset * 2);
+		const scale = Math.min(1, (box.width - inset * 2) / frameWidth);
+		const deviceWidth = frameWidth * scale + PHONE.bezel * 2;
+		return {
+			framed: true,
+			scale,
+			frameWidth,
+			frameHeight: (innerHeight - PHONE.statusBar) / scale,
+			frameTop: PHONE.statusBar,
+			deviceWidth,
+			deviceHeight: innerHeight + PHONE.bezel * 2,
+			left: (box.width - deviceWidth) / 2,
+			top: PHONE.margin,
+		};
+	}
+
+	const scale = box.width ? Math.min(1, box.width / frameWidth) : 1;
+	const deviceWidth = frameWidth * scale;
+	return {
+		framed: false,
+		scale,
+		frameWidth,
+		frameHeight: box.height / scale,
+		frameTop: 0,
+		deviceWidth,
+		deviceHeight: box.height,
+		// Centered when narrower than the panel, pinned left when scaled.
+		left: Math.max(0, (box.width - deviceWidth) / 2),
+		top: 0,
+	};
+}
+
+const devices: {
+	value: PreviewDevice;
+	label: string;
+	icon: typeof MonitorIcon;
+}[] = [
+	{ value: "desktop", label: "Desktop", icon: MonitorIcon },
+	{ value: "mobile", label: "Mobile", icon: SmartphoneIcon },
+];
+
+// The real public page in an iframe (/username?preview=true), so the preview
+// is exactly what gets published: same layout, blocks, breakpoints and
+// custom CSS. The unsaved theme is posted in on every change; the page
+// swaps it in without reloading (see lib/theme-preview.ts).
 function ThemePreview({
 	theme,
 	username,
-	name,
-	image,
-	bio,
+	isPro,
 }: {
 	theme: ThemeV2;
 	username: string;
-	name: string;
-	image: string | null;
-	bio: string;
+	isPro: boolean;
 }) {
-	const styleTag = useMemo(
-		() =>
-			themeToStyleTag(theme, ".tt-preview", {
-				scrollbarTarget: ".tt-preview",
-			}),
-		[theme],
+	const iframeRef = useRef<HTMLIFrameElement>(null);
+	const frameBoxRef = useRef<HTMLDivElement>(null);
+	const [device, setDevice] = useState<PreviewDevice>("desktop");
+	const devicePicked = useRef(false);
+	const [ready, setReady] = useState(false);
+	const [box, setBox] = useState({ width: 0, height: 0 });
+
+	// The public page drops custom CSS on the Free plan; match it here.
+	const draft = useMemo(
+		() => (isPro ? theme : { ...theme, customCss: "" }),
+		[theme, isPro],
 	);
 
+	useEffect(() => {
+		const el = frameBoxRef.current;
+		if (!el) return;
+		const observer = new ResizeObserver(([entry]) => {
+			const { width, height } = entry.contentRect;
+			setBox({ width, height });
+			// First measurement picks the readable default; after that the
+			// user's choice stands.
+			if (!devicePicked.current) {
+				devicePicked.current = true;
+				if (width < DESKTOP_MIN_PANEL) setDevice("mobile");
+			}
+		});
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, []);
+
+	useEffect(() => {
+		function onMessage(event: MessageEvent) {
+			if (event.origin !== window.location.origin) return;
+			if (event.source !== iframeRef.current?.contentWindow) return;
+			if (event.data?.type === PREVIEW_READY_MESSAGE) setReady(true);
+		}
+		window.addEventListener("message", onMessage);
+		return () => window.removeEventListener("message", onMessage);
+	}, []);
+
+	useEffect(() => {
+		if (!ready) return;
+		iframeRef.current?.contentWindow?.postMessage(
+			{ type: PREVIEW_THEME_MESSAGE, theme: draft },
+			window.location.origin,
+		);
+	}, [ready, draft]);
+
+	const layout = previewLayout(device, box);
+	const { scale } = layout;
+
 	return (
-		<div className="min-w-0 overflow-hidden border border-border bg-background">
-			{/* biome-ignore lint/security/noDangerouslySetInnerHtml: theme styles are generated server-side from user-controlled config and scoped to .tt-preview */}
-			<style dangerouslySetInnerHTML={{ __html: styleTag }} />
+		<>
+			<div className="mb-4 flex items-center justify-between border-b border-border pb-3">
+				<p className="font-mono text-[9px] uppercase tracking-[0.12em] text-brand">
+					Live preview
+				</p>
+
+				<fieldset className="flex items-center gap-1">
+					<legend className="sr-only">Preview size</legend>
+					{devices.map(({ value, label, icon: Icon }) => (
+						<button
+							key={value}
+							type="button"
+							aria-pressed={device === value}
+							onClick={() => {
+								devicePicked.current = true;
+								setDevice(value);
+							}}
+							className={cn(
+								"inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.08em] transition-colors",
+								device === value
+									? "text-foreground"
+									: "text-muted-foreground hover:text-foreground",
+							)}
+						>
+							<Icon size={14} strokeWidth={1.5} aria-hidden />
+							{label}
+						</button>
+					))}
+				</fieldset>
+			</div>
 
 			<div
-				className="tt-preview min-h-130 overflow-auto"
-				style={{ minHeight: 520 }}
+				ref={frameBoxRef}
+				className="relative h-[40dvh] overflow-hidden border border-border bg-surface lg:h-[calc(100dvh-10rem)] lg:max-h-225 lg:min-h-110"
 			>
-				<div
-					style={{
-						padding: `calc(var(--tt-card-padding) * 1.5)`,
-						maxWidth: "var(--tt-max-width)",
-						margin: "0 auto",
-					}}
-				>
-					<div className="flex items-center gap-3">
+				{box.width > 0 && (
+					// Same element tree in every mode, only sizes and classes
+					// change, so switching devices never reloads the iframe.
+					<div
+						className={cn(
+							"absolute inset-0",
+							layout.framed &&
+								"bg-[radial-gradient(var(--color-border)_1px,transparent_1px)] bg-size-[14px_14px]",
+						)}
+					>
 						<div
-							className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-full font-semibold"
+							className={cn(
+								"absolute overflow-hidden",
+								layout.framed &&
+									"rounded-[2.5rem] border-10 border-[#141311] bg-[#141311] shadow-[0_30px_60px_-24px_rgb(0_0_0/0.55)] ring-1 ring-border",
+							)}
 							style={{
-								background: theme.accent,
-								color: theme.bg,
+								left: layout.left,
+								top: layout.top,
+								width: layout.deviceWidth,
+								height: layout.deviceHeight,
 							}}
 						>
-							{image ? (
-								<img
-									src={image}
-									alt=""
-									className="h-full w-full object-cover"
+							<iframe
+								ref={iframeRef}
+								title="Live preview of your public page"
+								src={`/${username}?preview=true`}
+								className={cn(
+									"absolute left-0 border-0 bg-background transition-opacity duration-300 motion-reduce:transition-none",
+									ready ? "opacity-100" : "opacity-0",
+								)}
+								style={{
+									top: layout.frameTop,
+									width: layout.frameWidth,
+									height: layout.frameHeight,
+									transform: `scale(${scale})`,
+									transformOrigin: "top left",
+								}}
+							/>
+
+							{layout.framed && (
+								<span
+									aria-hidden="true"
+									className="pointer-events-none absolute top-1.5 left-1/2 h-4.5 w-21 -translate-x-1/2 rounded-full bg-black/60"
 								/>
-							) : (
-								name.slice(0, 1).toUpperCase()
 							)}
 						</div>
-
-						<div className="min-w-0">
-							<h1
-								style={{
-									fontSize: "calc(1.35rem * var(--tt-font-scale))",
-									fontWeight: 600,
-									margin: 0,
-								}}
-							>
-								{name}
-							</h1>
-
-							<p
-								className="tt-muted"
-								style={{
-									margin: 0,
-									fontSize: "calc(.85rem * var(--tt-font-scale))",
-								}}
-							>
-								@{username}
-							</p>
-						</div>
 					</div>
+				)}
 
-					{bio && (
-						<p
-							className="tt-muted"
-							style={{
-								marginTop: 12,
-								fontSize: "calc(.9rem * var(--tt-font-scale))",
-							}}
-						>
-							{bio}
+				{!ready && (
+					<div className="absolute inset-0 grid place-items-center">
+						<p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+							Loading preview…
 						</p>
-					)}
-
-					<div
-						style={{
-							marginTop: 20,
-							display: "grid",
-							gap: "calc(.5rem * var(--tt-spacing))",
-						}}
-					>
-						{["My portfolio", "GitHub", "Latest blog post"].map((label) => (
-							<button
-								type="button"
-								key={label}
-								className="tt-btn"
-								onClick={(event) => event.preventDefault()}
-							>
-								<ArrowRightIcon
-									size={14}
-									aria-hidden
-									style={{ opacity: 0.8 }}
-								/>
-								<span style={{ flex: 1 }}>{label}</span>
-							</button>
-						))}
 					</div>
-
-					<div
-						style={{
-							marginTop: 20,
-							display: "grid",
-							gap: "calc(.5rem * var(--tt-spacing))",
-							gridTemplateColumns: "1fr 1fr",
-						}}
-					>
-						<div className="tt-card">
-							<p style={{ fontWeight: 600, margin: 0 }}>Sample project</p>
-
-							<p
-								className="tt-muted"
-								style={{
-									margin: "4px 0 0",
-									fontSize: ".8rem",
-								}}
-							>
-								An example card so you can feel the theme.
-							</p>
-						</div>
-
-						<div className="tt-card">
-							<p style={{ fontWeight: 600, margin: 0 }}>Another card</p>
-
-							<p
-								className="tt-muted"
-								style={{
-									margin: "4px 0 0",
-									fontSize: ".8rem",
-								}}
-							>
-								Hover me to test the effect.
-							</p>
-						</div>
-					</div>
-				</div>
+				)}
 			</div>
-		</div>
+
+			<p className="mt-3 hidden font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground lg:block">
+				{SITE_DOMAIN}/{username}
+				{scale < 1 && ` · ${Math.round(scale * 100)}%`}
+			</p>
+		</>
 	);
 }

@@ -90,6 +90,7 @@ import { absoluteUrl, SITE_DOMAIN } from "@/lib/site";
 import { SOCIAL_PLATFORMS, type SocialLinks } from "@/lib/social-links";
 import { canonicalTechList } from "@/lib/technologies";
 import { themeToStyleTag } from "@/lib/theme-config";
+import { usePreviewTheme } from "@/lib/theme-preview";
 import { hueFromString } from "@/lib/user";
 
 type LoaderData = {
@@ -135,8 +136,13 @@ function RevealSection({ children }: { children: ReactNode }) {
 }
 
 export const Route = createFileRoute("/$username")({
-	validateSearch: (s: Record<string, unknown>): { ref?: string } => ({
+	validateSearch: (
+		s: Record<string, unknown>,
+	): { ref?: string; preview?: boolean } => ({
 		ref: typeof s.ref === "string" ? s.ref.slice(0, 32) : undefined,
+		// Set by the theme editor's iframe (see lib/theme-preview.ts). The
+		// router re-validates its own output (preview=true), so accept that.
+		preview: s.preview === true || s.preview === "true" ? true : undefined,
 	}),
 	loader: async ({ params }): Promise<LoaderData> => {
 		const username = params.username.toLowerCase();
@@ -231,8 +237,10 @@ function NotFoundBlock() {
 
 function ProfilePage() {
 	const { live, username } = Route.useLoaderData();
-	const { ref } = Route.useSearch();
-	const theme = live.data.theme;
+	const { ref, preview } = Route.useSearch();
+	// Inside the theme editor, the unsaved theme replaces the saved one.
+	const previewTheme = usePreviewTheme(Boolean(preview));
+	const theme = previewTheme ?? live.data.theme;
 	const themed = Boolean(theme);
 	// "narrow" deja de ser el mismo grid de 2 columnas aplastado y pasa a ser
 	// un layout real de una sola columna (estilo link-in-bio clásico).
@@ -251,10 +259,10 @@ function ProfilePage() {
 	const trackedRef = useRef(false);
 
 	useEffect(() => {
-		if (isSessionPending || isOwner || trackedRef.current) return;
+		if (preview || isSessionPending || isOwner || trackedRef.current) return;
 		trackedRef.current = true;
 		trackView(username, `/${username}`, ref);
-	}, [username, isOwner, isSessionPending, ref]);
+	}, [username, isOwner, isSessionPending, ref, preview]);
 
 	const styleTag = theme ? themeToStyleTag(theme, ".tt-scope") : "";
 
