@@ -462,10 +462,11 @@ function WorkspaceNav({
 		<>
 			{/* Scrolls on its own on short screens so the plan below never
 			    gets cut off. -mx-4/px-4 keep the active indicator (at
-			    -left-4) inside the scroll container's clip box. */}
+			    -left-4) inside the scroll container's clip box. No x scroll:
+			    collapsed, the hidden labels are still wider than the rail. */}
 			<nav
 				aria-label="Dashboard"
-				className="-mx-4 min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-2 [scrollbar-width:thin]"
+				className="-mx-4 min-h-0 flex-1 space-y-4 overflow-x-hidden overflow-y-auto px-4 pb-2 [scrollbar-width:thin]"
 			>
 				{navGroups.map((group) => (
 					<div key={group.items[0].to}>
