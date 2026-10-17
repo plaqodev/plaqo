@@ -466,15 +466,19 @@ function WorkspaceNav({
 			    collapsed, the hidden labels are still wider than the rail. */}
 			<nav
 				aria-label="Dashboard"
-				className="-mx-4 min-h-0 flex-1 space-y-4 overflow-x-hidden overflow-y-auto px-4 pb-2 [scrollbar-width:thin]"
+				className="-mx-4 min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pb-2 [scrollbar-width:thin]"
 			>
 				{navGroups.map((group) => (
-					<div key={group.items[0].to}>
+					// Collapsed, the groups close up into one icon column: the
+					// gap and the label's height animate away with the width.
+					<div
+						key={group.items[0].to}
+						className="transition-[margin] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] not-first:mt-4 motion-reduce:transition-none sidebar-collapsed:not-first:mt-0.5"
+					>
 						{group.label && (
 							<p
 								className={cn(
-									"mb-2 px-2 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground",
-									collapse && fadeWhenCollapsed,
+									"mb-2 h-3 overflow-hidden px-2 font-mono text-[9px] leading-3 uppercase tracking-[0.14em] whitespace-nowrap text-muted-foreground transition-[height,margin,opacity,visibility] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sidebar-collapsed:invisible sidebar-collapsed:mb-0 sidebar-collapsed:h-0 sidebar-collapsed:opacity-0",
 								)}
 							>
 								{group.label}
